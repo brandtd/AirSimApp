@@ -23,6 +23,7 @@
 #endregion
 
 using MsgPackRpc;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -45,7 +46,36 @@ namespace AirSimRpc
         /// <returns><c>true></c> if connection is successful, <c>false</c> othewrise.</returns>
         Task<bool> ConnectAsync(IPEndPoint endpoint);
 
+        // TODO simGetImages
+        // TODO simGetImage
+        // TODO simSetSegmentationObjectID
+        // TODO simGetSegmentationObjectID
+        // TODO simPrintLogMessage
+        // TODO setSafety
+        // TODO setRCData
+
+        Task<RpcResult<MultirotorState>> GetMultirotorStateAsync();
+
+        Task<RpcResult<Vector3R>> GetPositionAsync();
+
+        Task<RpcResult<Vector3R>> GetVelocityAsync();
+
+        Task<RpcResult<QuaternionR>> GetOrientationAsync();
+
+        Task<RpcResult<LandedState>> GetLandedStateAsync();
+
         Task<RpcResult<CameraInfo>> GetCameraInfoAsync();
+
+        Task<RpcResult<RcData>> GetRcDataAsync();
+
+        Task<RpcResult<GeoPoint>> GetGpsLocationAsync();
+
+        Task<RpcResult<bool>> GetIsSimulationMode();
+
+        Task<RpcResult<Pose>> GetSimPoseAsync();
+
+        Task<RpcResult<Pose>> GetSimObjectPoseAsync(string objectName);
+
 
         Task<RpcResult<CollisionInfo>> GetCollisionInfoAsync();
 
@@ -53,12 +83,44 @@ namespace AirSimRpc
 
         Task<RpcResult<bool>> GetIsApiControlEnabledAsync();
 
-        Task<RpcResult<LandedState>> GetLandedStateAsync();
+        Task<RpcResult<bool>> CmdSetPoseAsync(Pose pose, bool ignoreCollision);
 
-        Task<RpcResult<QuaternionR>> GetOrientationAsync();
+        Task<RpcResult<bool>> CmdArmDisarmAsync(bool armVehicle);
 
-        Task<RpcResult<Vector3R>> GetPositionAsync();
+        Task<RpcResult<bool>> CmdSimulationModeAsync(bool simulate);
 
-        Task<RpcResult<Vector3R>> GetVelocityAsync();
+        Task<RpcResult<bool>> CmdTakeoffAsync(float maxWaitSeconds);
+
+        Task<RpcResult<bool>> CmdLandAsync(float maxWaitSeconds);
+
+        Task<RpcResult<bool>> CmdGoHomeAsync(float maxWaitSeconds);
+
+        Task<RpcResult<bool>> CmdMoveByAngleZAsync(float pitch, float roll, float z, float yaw, float duration);
+
+        Task<RpcResult<bool>> CmdMoveByAngleThrottleAsync(float pitch, float roll, float throttle, float yaw_rate, float duration);
+
+        Task<RpcResult<bool>> CmdMoveByVelocityAsync(float vx, float vy, float vz, float duration, DrivetrainType drivetrain, YawMode yawMode);
+
+        Task<RpcResult<bool>> CmdMoveByVelocityZAsync(float vx, float vy, float z, float duration, DrivetrainType drivetrain, YawMode yawMode);
+
+        Task<RpcResult<bool>> CmdMoveOnPathAsync(IEnumerable<Vector3R> path, float velocity, float maxWaitSeconds, DrivetrainType drivetrain, YawMode yawMode, float lookahead, float adaptiveLookahead);
+
+        Task<RpcResult<bool>> CmdMoveToPositionAsync(float x, float y, float z, float velocity, float maxWaitSeconds, DrivetrainType drivetrain, YawMode yawMode, float lookahead, float adaptiveLookahead);
+
+        Task<RpcResult<bool>> CmdMoveToZAsync(float z, float velocity, float maxWaitSeconds, DrivetrainType drivetrain, YawMode yawMode, float lookahead, float adaptiveLookahead);
+
+        Task<RpcResult<bool>> CmdMoveByManualAsync(float vx_max, float vy_max, float z_min, float duration, DrivetrainType drivetrain, YawMode yawMode, float lookahead, float adaptiveLookahead);
+
+        Task<RpcResult<bool>> CmdRotateToYawAsync(float yaw, float maxWaitSeconds, float margin);
+
+        Task<RpcResult<bool>> CmdRotateByYawRateAsync(float yaw_rate, float duration);
+
+        Task<RpcResult<bool>> CmdHoverInPlaceAsync();
+
+        Task<RpcResult<bool>> CmdResetAsync();
+
+        Task<RpcResult<bool>> CmdSetCameraOrientationAsync(int cameraId, QuaternionR orientation);
+
+        Task<RpcResult<bool>> CmdSetApiControlAsync(bool enable);
     }
 }
