@@ -1,4 +1,4 @@
-﻿#region MIT License
+﻿#region MIT License (c) 2018
 
 // Copyright 2018 Dan Brandt
 //
