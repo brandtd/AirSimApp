@@ -28,28 +28,25 @@ namespace AirSimRpc
 {
     public class CollisionInfo
     {
-        [JsonProperty]
+        [JsonProperty("has_collided")]
         public bool HasCollided { get; set; }
 
-        [JsonProperty]
+        [JsonProperty("normal")]
         public Vector3R Normal { get; set; }
 
-        [JsonProperty]
+        [JsonProperty("impact_point")]
         public Vector3R ImpactPoint { get; set; }
 
-        [JsonProperty]
+        [JsonProperty("position")]
         public Vector3R Position { get; set; }
 
-        [JsonProperty]
-        public float PenetrationDepth { get; set; }
-
-        [JsonProperty]
-        public float TimeStamp { get; set; }
-
-        [JsonProperty]
+        [JsonProperty("object_name")]
         public string ObjectName { get; set; }
 
-        [JsonProperty]
+        [JsonProperty("object_id")]
         public int ObjectId { get; set; }
+
+        // TODO: public float PenetrationDepth { get; set; }
+        // TODO: public float TimeStamp { get; set; }
     }
 }

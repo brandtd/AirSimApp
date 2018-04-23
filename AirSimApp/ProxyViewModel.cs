@@ -22,6 +22,7 @@
 
 #endregion
 
+using AirSimApp.Commands;
 using System;
 using System.ComponentModel;
 using System.Net;

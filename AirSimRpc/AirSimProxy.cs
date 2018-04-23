@@ -243,9 +243,9 @@ namespace AirSimRpc
         }
 
         /// <inheritdoc cref="IAirSim.CmdResetAsync" />
-        public Task<RpcResult<bool>> CmdResetAsync()
+        public Task<RpcResult> CmdResetAsync()
         {
-            return _proxy.CallAsync<bool>("reset");
+            return _proxy.CallAsync("reset");
         }
 
         /// <inheritdoc cref="IAirSim.CmdSetCameraOrientationAsync" />
@@ -255,9 +255,9 @@ namespace AirSimRpc
         }
 
         /// <inheritdoc cref="IAirSim.CmdSetApiControlAsync" />
-        public Task<RpcResult<bool>> CmdSetApiControlAsync(bool enable)
+        public Task<RpcResult> CmdSetApiControlAsync(bool enable)
         {
-            return _proxy.CallAsync<bool>("enableApiControl", enable);
+            return _proxy.CallAsync("enableApiControl", enable);
         }
 
         /// <inheritdoc cref="IDisposable.Dispose" />

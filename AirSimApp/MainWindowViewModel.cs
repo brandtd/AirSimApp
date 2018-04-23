@@ -22,6 +22,8 @@
 
 #endregion
 
+using AirSimApp.Commands;
+using DotSpatial.Positioning;
 using System;
 using System.ComponentModel;
 using System.Net;
@@ -34,28 +36,49 @@ namespace AirSimApp
         private readonly ProxyController _controller;
         private readonly ProxyViewModel _proxyViewModel;
         private readonly VehicleViewModel _vehicleViewModel;
+        private readonly GoHomeCommand _goHomeCommand;
+        private readonly HoverInPlaceCommand _hoverInPlaceCommand;
+        private readonly LandNowCommand _landNowCommand;
+        private readonly ResetCommand _resetCommand;
+        private readonly EnableApiControlCommand _enableApiCommand;
+        private readonly DisableApiControlCommand _disableApiCommand;
 
         private bool _disposed = false;
 
-        public ICommand Connect => _proxyViewModel.Connect;
+        public ICommand ConnectCommand => _proxyViewModel.Connect;
+        public ICommand GoHomeCommand => _goHomeCommand;
+        public ICommand HoverInPlaceCommand => _hoverInPlaceCommand;
+        public ICommand LandNowCommand => _landNowCommand;
+        public ICommand ResetCommand => _resetCommand;
+        public ICommand EnableApiCommand => _enableApiCommand;
+        public ICommand DisableApiCommand => _disableApiCommand;
         public IPAddress AddressToUse { get => _proxyViewModel.AddressToUse; set => _proxyViewModel.AddressToUse = value; }
         public ushort PortToUse { get => _proxyViewModel.PortToUse; set => _proxyViewModel.PortToUse = value; }
         public IPAddress ConnectedAddress { get => _proxyViewModel.ConnectedAddress; set => _proxyViewModel.ConnectedAddress = value; }
         public ushort ConnectedPort { get => _proxyViewModel.ConnectedPort; set => _proxyViewModel.ConnectedPort = value; }
 
-        public double HomeLatitude { get => _vehicleViewModel.HomeLatitude; set => _vehicleViewModel.HomeLatitude = value; }
-        public double HomeLongitude { get => _vehicleViewModel.HomeLongitude; set => _vehicleViewModel.HomeLongitude = value; }
-        public double HomeAltitude { get => _vehicleViewModel.HomeAltitude; set => _vehicleViewModel.HomeAltitude = value; }
-        public double VehicleLatitude { get => _vehicleViewModel.VehicleLatitude; set => _vehicleViewModel.VehicleLatitude = value; }
-        public double VehicleLongitude { get => _vehicleViewModel.VehicleLongitude; set => _vehicleViewModel.VehicleLongitude = value; }
-        public double VehicleAltitude { get => _vehicleViewModel.VehicleAltitude; set => _vehicleViewModel.VehicleAltitude = value; }
-        public double VehicleRoll { get => _vehicleViewModel.VehicleRoll; set => _vehicleViewModel.VehicleRoll = value; }
-        public double VehiclePitch { get => _vehicleViewModel.VehiclePitch; set => _vehicleViewModel.VehiclePitch = value; }
-        public double VehicleYaw { get => _vehicleViewModel.VehicleYaw; set => _vehicleViewModel.VehicleYaw = value; }
+        public Latitude GpsLatitude { get => _vehicleViewModel.GpsLatitude; set => _vehicleViewModel.GpsLatitude = value; }
+        public Longitude GpsLongitude { get => _vehicleViewModel.GpsLongitude; set => _vehicleViewModel.GpsLongitude = value; }
+        public Distance GpsAltitude { get => _vehicleViewModel.GpsAltitude; set => _vehicleViewModel.GpsAltitude = value; }
+        public Latitude HomeLatitude { get => _vehicleViewModel.HomeLatitude; set => _vehicleViewModel.HomeLatitude = value; }
+        public Longitude HomeLongitude { get => _vehicleViewModel.HomeLongitude; set => _vehicleViewModel.HomeLongitude = value; }
+        public Distance HomeAltitude { get => _vehicleViewModel.HomeAltitude; set => _vehicleViewModel.HomeAltitude = value; }
+        public Latitude VehicleLatitude { get => _vehicleViewModel.VehicleLatitude; set => _vehicleViewModel.VehicleLatitude = value; }
+        public Longitude VehicleLongitude { get => _vehicleViewModel.VehicleLongitude; set => _vehicleViewModel.VehicleLongitude = value; }
+        public Distance VehicleAltitude { get => _vehicleViewModel.VehicleAltitude; set => _vehicleViewModel.VehicleAltitude = value; }
+        public Angle VehicleRoll { get => _vehicleViewModel.VehicleRoll; set => _vehicleViewModel.VehicleRoll = value; }
+        public Angle VehiclePitch { get => _vehicleViewModel.VehiclePitch; set => _vehicleViewModel.VehiclePitch = value; }
+        public Angle VehicleYaw { get => _vehicleViewModel.VehicleYaw; set => _vehicleViewModel.VehicleYaw = value; }
 
         public MainWindowViewModel()
         {
             _controller = new ProxyController();
+            _disableApiCommand = new DisableApiControlCommand(_controller);
+            _enableApiCommand = new EnableApiControlCommand(_controller);
+            _goHomeCommand = new GoHomeCommand(_controller);
+            _hoverInPlaceCommand = new HoverInPlaceCommand(_controller);
+            _landNowCommand = new LandNowCommand(_controller);
+            _resetCommand = new ResetCommand(_controller);
             _proxyViewModel = new ProxyViewModel(_controller);
             _vehicleViewModel = new VehicleViewModel(_controller);
 
@@ -72,6 +95,16 @@ namespace AirSimApp
 
                 _proxyViewModel.PropertyChanged -= onProxyViewModelPropertyChanged;
                 _vehicleViewModel.PropertyChanged -= onVehicleViewModelPropertyChanged;
+
+                _vehicleViewModel.Dispose();
+                _proxyViewModel.Dispose();
+                _resetCommand.Dispose();
+                _landNowCommand.Dispose();
+                _hoverInPlaceCommand.Dispose();
+                _goHomeCommand.Dispose();
+                _enableApiCommand.Dispose();
+                _disableApiCommand.Dispose();
+                _controller.Dispose();
             }
         }
 
@@ -79,6 +112,18 @@ namespace AirSimApp
         {
             switch (e.PropertyName)
             {
+            case nameof(_vehicleViewModel.GpsLatitude):
+                OnPropertyChanged(nameof(GpsLatitude));
+                break;
+
+            case nameof(_vehicleViewModel.GpsLongitude):
+                OnPropertyChanged(nameof(GpsLongitude));
+                break;
+
+            case nameof(_vehicleViewModel.GpsAltitude):
+                OnPropertyChanged(nameof(GpsAltitude));
+                break;
+
             case nameof(_vehicleViewModel.HomeLatitude):
                 OnPropertyChanged(nameof(HomeLatitude));
                 break;

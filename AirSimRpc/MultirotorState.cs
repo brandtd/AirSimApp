@@ -31,16 +31,16 @@ namespace AirSimRpc
         [JsonProperty("collision")]
         public CollisionInfo CollisionInfo { get; set; }
 
-        [JsonProperty]
+        [JsonProperty("kinematics_estimated")]
         public KinematicsState KinematicsEstimated { get; set; }
 
-        [JsonProperty]
+        [JsonProperty("kinematics_true")]
         public KinematicsState KinematicsTrue { get; set; }
 
-        [JsonProperty]
+        [JsonProperty("gps_location")]
         public GeoPoint GpsLocation { get; set; }
 
-        [JsonProperty]
+        [JsonProperty("timestamp")]
         public long TimeStamp { get; set; }
     }
 }

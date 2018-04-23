@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:local="clr-namespace:AirSimApp"
+        xmlns:conv="clr-namespace:AirSimApp.Converters"
         mc:Ignorable="d"
         Title="MainWindow" Width="525" ResizeMode="NoResize" SizeToContent="Height">
     <StackPanel>
@@ -20,21 +21,21 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Label Grid.Row="0" Grid.Column="0" Content="RPC Server:"/>
-            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding AddressToUse, Converter={local:IpAddressToStringConverter}}"/>
+            <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding AddressToUse, Converter={conv:IpAddressToStringConverter}}"/>
             <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding PortToUse}"/>
 
-            <Button Grid.Row="0" Grid.Column="4" Command="{Binding Connect}" Content="Connect"/>
+            <Button Grid.Row="0" Grid.Column="4" Command="{Binding ConnectCommand}" Content="Connect"/>
 
-            <Label Grid.Row="1" Grid.Column="1" Content="{Binding ConnectedAddress, Converter={local:IpAddressToStringConverter}}" IsEnabled="{Binding Connected}"/>
+            <Label Grid.Row="1" Grid.Column="1" Content="{Binding ConnectedAddress, Converter={conv:IpAddressToStringConverter}}" IsEnabled="{Binding Connected}"/>
             <Label Grid.Row="1" Grid.Column="2" Content="{Binding ConnectedPort}" IsEnabled="{Binding Connected}"/>
         </Grid>
 
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="120"/>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="120"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition/>
@@ -50,40 +51,48 @@
             </Grid.RowDefinitions>
             
             <Label Grid.Row="0" Grid.Column="0" Content="Home Latitude:"/>
-            <Label Grid.Row="0" Grid.Column="1" Content="{Binding HomeLatitude}"/>
+            <Label Grid.Row="0" Grid.Column="1" Content="{Binding HomeLatitude, Converter={conv:LatitudeToStringConverter}}"/>
 
             <Label Grid.Row="1" Grid.Column="0" Content="Home Longitude:"/>
-            <Label Grid.Row="1" Grid.Column="1" Content="{Binding HomeLongitude}"/>
+            <Label Grid.Row="1" Grid.Column="1" Content="{Binding HomeLongitude, Converter={conv:LongitudeToStringConverter}}"/>
 
             <Label Grid.Row="2" Grid.Column="0" Content="Home Altitude:"/>
-            <Label Grid.Row="2" Grid.Column="1" Content="{Binding HomeAltitude}"/>
+            <Label Grid.Row="2" Grid.Column="1" Content="{Binding HomeAltitude, Converter={conv:DistanceToStringConverter}}"/>
 
             <Label Grid.Row="0" Grid.Column="2" Content="Vehicle Latitude:"/>
-            <Label Grid.Row="0" Grid.Column="3" Content="{Binding VehicleLatitude}"/>
+            <Label Grid.Row="0" Grid.Column="3" Content="{Binding VehicleLatitude, Converter={conv:LatitudeToStringConverter}}"/>
 
             <Label Grid.Row="1" Grid.Column="2" Content="Vehicle Longitude:"/>
-            <Label Grid.Row="1" Grid.Column="3" Content="{Binding VehicleLongitude}"/>
+            <Label Grid.Row="1" Grid.Column="3" Content="{Binding VehicleLongitude, Converter={conv:LongitudeToStringConverter}}"/>
 
             <Label Grid.Row="2" Grid.Column="2" Content="Vehicle Altitude:"/>
-            <Label Grid.Row="2" Grid.Column="3" Content="{Binding VehicleAltitude}"/>
+            <Label Grid.Row="2" Grid.Column="3" Content="{Binding VehicleAltitude, Converter={conv:DistanceToStringConverter}}"/>
 
-            <Label Grid.Row="3" Grid.Column="0" Content="Camera X:"/>
-            <Label Grid.Row="3" Grid.Column="1" Content="{Binding CamreaX}"/>
+            <Label Grid.Row="3" Grid.Column="0" Content="GPS Lat:"/>
+            <Label Grid.Row="3" Grid.Column="1" Content="{Binding GpsLatitude, Converter={conv:LatitudeToStringConverter}}"/>
 
-            <Label Grid.Row="4" Grid.Column="0" Content="Camera Y:"/>
-            <Label Grid.Row="4" Grid.Column="1" Content="{Binding CamreaY}"/>
+            <Label Grid.Row="4" Grid.Column="0" Content="GPS Lon:"/>
+            <Label Grid.Row="4" Grid.Column="1" Content="{Binding GpsLongitude, Converter={conv:LongitudeToStringConverter}}"/>
 
-            <Label Grid.Row="5" Grid.Column="0" Content="Camera Z:"/>
-            <Label Grid.Row="5" Grid.Column="1" Content="{Binding CamreaZ}"/>
+            <Label Grid.Row="5" Grid.Column="0" Content="Gps Alt:"/>
+            <Label Grid.Row="5" Grid.Column="1" Content="{Binding GpsAltitude, Converter={conv:DistanceToStringConverter}}"/>
 
             <Label Grid.Row="3" Grid.Column="2" Content="Vehicle Roll:"/>
-            <Label Grid.Row="3" Grid.Column="3" Content="{Binding VehicleRoll}"/>
+            <Label Grid.Row="3" Grid.Column="3" Content="{Binding VehicleRoll, Converter={conv:AngleToStringConverter}}"/>
 
             <Label Grid.Row="4" Grid.Column="2" Content="Vehicle Pitch:"/>
-            <Label Grid.Row="4" Grid.Column="3" Content="{Binding VehiclePitch}"/>
+            <Label Grid.Row="4" Grid.Column="3" Content="{Binding VehiclePitch, Converter={conv:AngleToStringConverter}}"/>
 
             <Label Grid.Row="5" Grid.Column="2" Content="Vehicle Yaw:"/>
-            <Label Grid.Row="5" Grid.Column="3" Content="{Binding VehicleYaw}"/>
+            <Label Grid.Row="5" Grid.Column="3" Content="{Binding VehicleYaw, Converter={conv:AngleToStringConverter}}"/>
         </Grid>
+
+        <Button Content="Hover In Place" Command="{Binding HoverInPlaceCommand}" />
+        <Button Content="Reset" Command="{Binding ResetCommand}" />
+        <Button Content="Land Now" Command="{Binding LandNowCommand}" />
+        <Button Content="Go Home" Command="{Binding GoHomeCommand}" />
+        <Button Content="Enable API" Command="{Binding EnableApiCommand}" />
+        <Button Content="Disable API" Command="{Binding DisableApiCommand}" />
+
     </StackPanel>
 </Window>

@@ -1,14 +1,15 @@
-﻿using System;
+﻿using DotSpatial.Positioning;
+using System;
 using System.Globalization;
-using System.Net;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace AirSimApp
+namespace AirSimApp.Converters
 {
-    [ValueConversion(typeof(IPAddress), typeof(string))]
-    public class IpAddressToStringConverter : MarkupExtension, IValueConverter
+    [ValueConversion(typeof(Distance), typeof(string))]
+    public class DistanceToStringConverter : MarkupExtension, IValueConverter
     {
+        /// <inheritdoc cref="MarkupExtension.ProvideValue(IServiceProvider)" />
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
             return this;
@@ -32,9 +33,10 @@ namespace AirSimApp
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             string valAsString = value as string;
-            if (!string.IsNullOrEmpty(valAsString) && IPAddress.TryParse(valAsString, out IPAddress address))
+            if (!string.IsNullOrEmpty(valAsString))
             {
-                return address;
+                Distance distance = Distance.Parse(valAsString);
+                return distance;
             }
             else
             {

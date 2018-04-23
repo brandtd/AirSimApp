@@ -27,7 +27,6 @@ using DotSpatial.Positioning;
 using MsgPackRpc;
 using System;
 using System.ComponentModel;
-using System.Device.Location;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -43,20 +42,88 @@ namespace AirSimApp
         private bool _disposed = false;
         private CancellationTokenSource _cancellationTokenSource;
 
-        private double _homeAltitude;
-        private double _homeLatitude;
-        private double _homeLongitude;
-        private double _vehicleAltitude;
-        private double _vehicleLatitude;
-        private double _vehicleLongitude;
-        private double _vehicleRoll;
-        private double _vehiclePitch;
-        private double _vehicleYaw;
+        private bool _isApiControlEnabled;
+        private Distance _homeAltitude;
+        private Latitude _homeLatitude;
+        private Longitude _homeLongitude;
+        private Distance _vehicleAltitude;
+        private Latitude _vehicleLatitude;
+        private Longitude _vehicleLongitude;
+        private Angle _vehicleRoll;
+        private Angle _vehiclePitch;
+        private Angle _vehicleYaw;
+        private Distance _gpsAltitude;
+        private Latitude _gpsLatitude;
+        private Longitude _gpsLongitude;
+
+        /// <summary>
+        /// Are we able to control the vehicle via the API?
+        /// </summary>
+        public bool IsApiControlEnabled
+        {
+            get => _isApiControlEnabled;
+            set
+            {
+                if (_isApiControlEnabled != value)
+                {
+                    _isApiControlEnabled = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Vehicle's GPS latitude.
+        /// </summary>
+        public Latitude GpsLatitude
+        {
+            get => _gpsLatitude;
+            set
+            {
+                if (_gpsLatitude != value)
+                {
+                    _gpsLatitude = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Vehicle's GPS longitude.
+        /// </summary>
+        public Longitude GpsLongitude
+        {
+            get => _gpsLongitude;
+            set
+            {
+                if (_gpsLongitude != value)
+                {
+                    _gpsLongitude = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Vehicle's GPS altitude.
+        /// </summary>
+        public Distance GpsAltitude
+        {
+            get => _gpsAltitude;
+            set
+            {
+                if (_gpsAltitude != value)
+                {
+                    _gpsAltitude = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         /// <summary>
         /// Vehicle latitude.
         /// </summary>
-        public double VehicleLatitude
+        public Latitude VehicleLatitude
         {
             get => _vehicleLatitude;
             set
@@ -72,7 +139,7 @@ namespace AirSimApp
         /// <summary>
         /// Vehicle longitude.
         /// </summary>
-        public double VehicleLongitude
+        public Longitude VehicleLongitude
         {
             get => _vehicleLongitude;
             set
@@ -88,7 +155,7 @@ namespace AirSimApp
         /// <summary>
         /// Vehicle altitude.
         /// </summary>
-        public double VehicleAltitude
+        public Distance VehicleAltitude
         {
             get => _vehicleAltitude;
             set
@@ -104,7 +171,7 @@ namespace AirSimApp
         /// <summary>
         /// Vehicle roll.
         /// </summary>
-        public double VehicleRoll
+        public Angle VehicleRoll
         {
             get => _vehicleRoll;
             set
@@ -120,7 +187,7 @@ namespace AirSimApp
         /// <summary>
         /// Vehicle pitch.
         /// </summary>
-        public double VehiclePitch
+        public Angle VehiclePitch
         {
             get => _vehiclePitch;
             set
@@ -136,7 +203,7 @@ namespace AirSimApp
         /// <summary>
         /// Vehicle yaw.
         /// </summary>
-        public double VehicleYaw
+        public Angle VehicleYaw
         {
             get => _vehicleYaw;
             set
@@ -152,7 +219,7 @@ namespace AirSimApp
         /// <summary>
         /// Home point latitude.
         /// </summary>
-        public double HomeLatitude
+        public Latitude HomeLatitude
         {
             get => _homeLatitude;
             set
@@ -168,7 +235,7 @@ namespace AirSimApp
         /// <summary>
         /// Home point longitude.
         /// </summary>
-        public double HomeLongitude
+        public Longitude HomeLongitude
         {
             get => _homeLongitude;
             set
@@ -184,7 +251,7 @@ namespace AirSimApp
         /// <summary>
         /// Home point altitude.
         /// </summary>
-        public double HomeAltitude
+        public Distance HomeAltitude
         {
             get => _homeAltitude;
             set
@@ -253,9 +320,9 @@ namespace AirSimApp
                     RpcResult<GeoPoint> homeLocation = await _controller.GetHomeGeoPointAsync();
                     if (homeLocation.Successful)
                     {
-                        HomeLatitude = homeLocation.Value.Latitude;
-                        HomeLongitude = homeLocation.Value.Longitude;
-                        HomeAltitude = homeLocation.Value.Altitude;
+                        HomeLatitude = new Latitude(homeLocation.Value.Latitude);
+                        HomeLongitude = new Longitude(homeLocation.Value.Longitude);
+                        HomeAltitude = Distance.FromMeters(homeLocation.Value.Altitude);
                     }
                     else
                     {
@@ -269,7 +336,7 @@ namespace AirSimApp
                     RpcResult<Vector3R> vehicleLocation = await _controller.GetPositionAsync();
                     if (vehicleLocation.Successful)
                     {
-                        Position3D homePosition = new Position3D(new Latitude(HomeLatitude), new Longitude(HomeLongitude), Distance.FromMeters(HomeAltitude));
+                        Position3D homePosition = new Position3D(HomeLatitude, HomeLongitude, HomeAltitude);
                         CartesianPoint homeEcef = homePosition.ToCartesianPoint();
                         Distance vehicleX = homeEcef.X + Distance.FromMeters(vehicleLocation.Value.X);
                         Distance vehicleY = homeEcef.Y + Distance.FromMeters(vehicleLocation.Value.Y);
@@ -277,9 +344,9 @@ namespace AirSimApp
                         CartesianPoint vehicleEcef = new CartesianPoint(vehicleX, vehicleY, vehicleZ);
                         Position3D vehiclePosition = vehicleEcef.ToPosition3D();
 
-                        VehicleLatitude = vehiclePosition.Latitude.DecimalDegrees;
-                        VehicleLongitude = vehiclePosition.Longitude.DecimalDegrees;
-                        VehicleAltitude = vehiclePosition.Altitude.ToMeters().Value;
+                        VehicleLatitude = vehiclePosition.Latitude;
+                        VehicleLongitude = vehiclePosition.Longitude;
+                        VehicleAltitude = vehiclePosition.Altitude;
                     }
                     else
                     {
@@ -294,9 +361,41 @@ namespace AirSimApp
                     if (vehicleOrientation.Successful)
                     {
                         toEulerAngles(vehicleOrientation.Value, out double roll, out double pitch, out double yaw);
-                        VehicleRoll = roll;
-                        VehiclePitch = pitch;
-                        VehicleYaw = yaw;
+                        VehicleRoll = Angle.FromRadians(roll);
+                        VehiclePitch = Angle.FromRadians(pitch);
+                        VehicleYaw = Angle.FromRadians(yaw);
+                    }
+                    else
+                    {
+                        if (!_controller.Connected)
+                        {
+                            return;
+                        }
+                    }
+
+                    token.ThrowIfCancellationRequested();
+                    RpcResult<MultirotorState> state = await _controller.GetMultirotorStateAsync();
+                    if (state.Successful)
+                    {
+                        GpsLatitude = new Latitude(state.Value.GpsLocation.Latitude);
+                        GpsLongitude = new Longitude(state.Value.GpsLocation.Longitude);
+                        GpsAltitude = Distance.FromMeters(state.Value.GpsLocation.Altitude);
+                    }
+                    else
+                    {
+                        if (!_controller.Connected)
+                        {
+                            return;
+                        }
+                    }
+
+                    token.ThrowIfCancellationRequested();
+                    RpcResult<bool> isApiControlEnabled = await _controller.GetIsApiControlEnabledAsync();
+                    if (state.Successful)
+                    {
+                        GpsLatitude = new Latitude(state.Value.GpsLocation.Latitude);
+                        GpsLongitude = new Longitude(state.Value.GpsLocation.Longitude);
+                        GpsAltitude = Distance.FromMeters(state.Value.GpsLocation.Altitude);
                     }
                     else
                     {

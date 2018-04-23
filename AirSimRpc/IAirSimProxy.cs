@@ -76,12 +76,12 @@ namespace AirSimRpc
 
         Task<RpcResult<Pose>> GetSimObjectPoseAsync(string objectName);
 
-
         Task<RpcResult<CollisionInfo>> GetCollisionInfoAsync();
 
         Task<RpcResult<GeoPoint>> GetHomeGeoPointAsync();
 
         Task<RpcResult<bool>> GetIsApiControlEnabledAsync();
+
 
         Task<RpcResult<bool>> CmdSetPoseAsync(Pose pose, bool ignoreCollision);
 
@@ -117,10 +117,10 @@ namespace AirSimRpc
 
         Task<RpcResult<bool>> CmdHoverInPlaceAsync();
 
-        Task<RpcResult<bool>> CmdResetAsync();
+        Task<RpcResult> CmdResetAsync();
 
         Task<RpcResult<bool>> CmdSetCameraOrientationAsync(int cameraId, QuaternionR orientation);
 
-        Task<RpcResult<bool>> CmdSetApiControlAsync(bool enable);
+        Task<RpcResult> CmdSetApiControlAsync(bool enable);
     }
 }

@@ -132,6 +132,63 @@ namespace MsgPackRpc
             };
         }
 
+        /// <summary>
+        /// Make an RPC call with no return value.
+        /// </summary>
+        /// <param name="method">Name of RPC method.</param>
+        /// <param name="args">Arguments for method.</param>
+        /// <returns>Awaitable task with RPC result.</returns>
+        public async Task<RpcResult> CallAsync(string method, params object[] args)
+        {
+            if (_disposed)
+            {
+                return new RpcResult
+                {
+                    Failed = true,
+                    Error = "Proxy disposed",
+                };
+            }
+            if (_client == null || !_client.Connected)
+            {
+                return new RpcResult
+                {
+                    Failed = true,
+                    Error = "Proxy not connected with RPC server",
+                };
+            }
+
+            RpcRequest request = new RpcRequest
+            {
+                Type = 0,
+                MsgId = _msgIdCounter,
+                Method = method,
+                Params = args ?? new object[] { },
+            };
+            ++_msgIdCounter;
+
+            addRequest(request.MsgId);
+
+            byte[] data = MessagePackSerializer.Serialize(request);
+            await _client.GetStream().WriteAsync(data, 0, data.Length);
+            RpcResponse response = await taskForRequest(request.MsgId).Task;
+
+            removeRequest(request.MsgId);
+
+            if (response.Error != null)
+            {
+                return new RpcResult
+                {
+                    Failed = true,
+                    Error = $"{response.Error}"
+                };
+            }
+
+            return new RpcResult
+            {
+                Successful = true
+            };
+        }
+
         /// <inheritdoc cref="IDisposable.Dispose" />
         public void Dispose()
         {

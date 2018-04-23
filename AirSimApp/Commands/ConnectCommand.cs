@@ -27,7 +27,7 @@ using System.ComponentModel;
 using System.Net;
 using System.Windows.Input;
 
-namespace AirSimApp
+namespace AirSimApp.Commands
 {
     /// <summary>
     /// Command for connecting with AirSim RPC server.

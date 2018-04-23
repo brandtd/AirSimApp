@@ -28,22 +28,22 @@ namespace AirSimRpc
 {
     public class KinematicsState
     {
-        [JsonProperty]
+        [JsonProperty("position")]
         public Vector3R Position { get; set; }
 
-        [JsonProperty]
+        [JsonProperty("orientation")]
         public QuaternionR Orientation { get; set; }
 
-        [JsonProperty]
+        [JsonProperty("linear_velocity")]
         public Vector3R LinearVelocity { get; set; }
 
-        [JsonProperty]
+        [JsonProperty("angular_velocity")]
         public Vector3R AngularVelocity { get; set; }
 
-        [JsonProperty]
+        [JsonProperty("linear_accleration")]
         public Vector3R LinearAcceleration { get; set; }
 
-        [JsonProperty]
+        [JsonProperty("angular_acceleration")]
         public Vector3R AngularAcceleration { get; set; }
     }
 }

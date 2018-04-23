@@ -171,6 +171,24 @@ namespace AirSimApp
         /// <inheritdoc cref="IAirSimProxy.GetVelocityAsync()" />
         public Task<RpcResult<Vector3R>> GetVelocityAsync() => _proxy.GetVelocityAsync();
 
+        /// <inheritdoc cref="IAirSimProxy.GetMultirotorStateAsync()" />
+        public Task<RpcResult<MultirotorState>> GetMultirotorStateAsync() => _proxy.GetMultirotorStateAsync();
+
+        /// <inheritdoc cref="IAirSimProxy.CmdHoverInPlaceAsync()" />
+        public Task<RpcResult<bool>> CmdHoverInPlaceAsync() => _proxy.CmdHoverInPlaceAsync();
+
+        /// <inheritdoc cref="IAirSimProxy.CmdResetAsync()" />
+        public Task<RpcResult> CmdResetAsync() => _proxy.CmdResetAsync();
+
+        /// <inheritdoc cref="IAirSimProxy.CmdGoHomeAsync(float)" />
+        public Task<RpcResult<bool>> CmdGoHomeAsync(float maxWaitSeconds) => _proxy.CmdGoHomeAsync(maxWaitSeconds);
+
+        /// <inheritdoc cref="IAirSimProxy.CmdLandAsync(float)" />
+        public Task<RpcResult<bool>> CmdLandAsync(float maxWaitSeconds) => _proxy.CmdLandAsync(maxWaitSeconds);
+
+        /// <inheritdoc cref="IAirSimProxy.CmdSetApiControlAsync(bool)" />
+        public Task<RpcResult> CmdSetApiControlAsync(bool allow) => _proxy.CmdSetApiControlAsync(allow);
+
         /// <inheritdoc cref="IDisposable.Dispose" />
         public void Dispose()
         {
