@@ -1,4 +1,4 @@
-﻿#region MIT License (c) 2018
+﻿#region MIT License (c) 2018 Dan Brandt
 
 // Copyright 2018 Dan Brandt
 //
@@ -23,25 +23,27 @@
 #endregion
 
 using AirSimApp.Commands;
+using AirSimApp.Models;
 using DotSpatial.Positioning;
 using System;
 using System.ComponentModel;
 using System.Net;
 using System.Windows.Input;
 
-namespace AirSimApp
+namespace AirSimApp.ViewModels
 {
     public class MainWindowViewModel : PropertyChangedBase, IDisposable
     {
-        private readonly ProxyController _controller;
-        private readonly ProxyViewModel _proxyViewModel;
-        private readonly VehicleViewModel _vehicleViewModel;
+        private readonly DisableApiControlCommand _disableApiCommand;
+        private readonly EnableApiControlCommand _enableApiCommand;
         private readonly GoHomeCommand _goHomeCommand;
         private readonly HoverInPlaceCommand _hoverInPlaceCommand;
         private readonly LandNowCommand _landNowCommand;
+        private readonly MultirotorVehicleModel _multirotorVehicle;
+        private readonly ProxyController _controller;
+        private readonly ProxyViewModel _proxyViewModel;
         private readonly ResetCommand _resetCommand;
-        private readonly EnableApiControlCommand _enableApiCommand;
-        private readonly DisableApiControlCommand _disableApiCommand;
+        private readonly VehicleViewModel _vehicleViewModel;
 
         private bool _disposed = false;
 
@@ -57,30 +59,32 @@ namespace AirSimApp
         public IPAddress ConnectedAddress { get => _proxyViewModel.ConnectedAddress; set => _proxyViewModel.ConnectedAddress = value; }
         public ushort ConnectedPort { get => _proxyViewModel.ConnectedPort; set => _proxyViewModel.ConnectedPort = value; }
 
-        public Latitude GpsLatitude { get => _vehicleViewModel.GpsLatitude; set => _vehicleViewModel.GpsLatitude = value; }
-        public Longitude GpsLongitude { get => _vehicleViewModel.GpsLongitude; set => _vehicleViewModel.GpsLongitude = value; }
-        public Distance GpsAltitude { get => _vehicleViewModel.GpsAltitude; set => _vehicleViewModel.GpsAltitude = value; }
-        public Latitude HomeLatitude { get => _vehicleViewModel.HomeLatitude; set => _vehicleViewModel.HomeLatitude = value; }
-        public Longitude HomeLongitude { get => _vehicleViewModel.HomeLongitude; set => _vehicleViewModel.HomeLongitude = value; }
-        public Distance HomeAltitude { get => _vehicleViewModel.HomeAltitude; set => _vehicleViewModel.HomeAltitude = value; }
-        public Latitude VehicleLatitude { get => _vehicleViewModel.VehicleLatitude; set => _vehicleViewModel.VehicleLatitude = value; }
-        public Longitude VehicleLongitude { get => _vehicleViewModel.VehicleLongitude; set => _vehicleViewModel.VehicleLongitude = value; }
-        public Distance VehicleAltitude { get => _vehicleViewModel.VehicleAltitude; set => _vehicleViewModel.VehicleAltitude = value; }
-        public Angle VehicleRoll { get => _vehicleViewModel.VehicleRoll; set => _vehicleViewModel.VehicleRoll = value; }
-        public Angle VehiclePitch { get => _vehicleViewModel.VehiclePitch; set => _vehicleViewModel.VehiclePitch = value; }
-        public Angle VehicleYaw { get => _vehicleViewModel.VehicleYaw; set => _vehicleViewModel.VehicleYaw = value; }
+        public Latitude GpsLatitude => _vehicleViewModel.GpsLatitude;
+        public Longitude GpsLongitude => _vehicleViewModel.GpsLongitude;
+        public Distance GpsAltitude => _vehicleViewModel.GpsAltitude;
+        public Latitude HomeLatitude => _vehicleViewModel.HomeLatitude;
+        public Longitude HomeLongitude => _vehicleViewModel.HomeLongitude;
+        public Distance HomeAltitude => _vehicleViewModel.HomeAltitude;
+        public Latitude VehicleLatitude => _vehicleViewModel.VehicleLatitude;
+        public Longitude VehicleLongitude => _vehicleViewModel.VehicleLongitude;
+        public Distance VehicleAltitude => _vehicleViewModel.VehicleAltitude;
+        public Angle VehicleRoll => _vehicleViewModel.VehicleRoll;
+        public Angle VehiclePitch => _vehicleViewModel.VehiclePitch;
+        public Angle VehicleYaw => _vehicleViewModel.VehicleYaw;
 
         public MainWindowViewModel()
         {
             _controller = new ProxyController();
-            _disableApiCommand = new DisableApiControlCommand(_controller);
-            _enableApiCommand = new EnableApiControlCommand(_controller);
-            _goHomeCommand = new GoHomeCommand(_controller);
-            _hoverInPlaceCommand = new HoverInPlaceCommand(_controller);
-            _landNowCommand = new LandNowCommand(_controller);
-            _resetCommand = new ResetCommand(_controller);
+            _multirotorVehicle = new MultirotorVehicleModel(_controller);
+
+            _disableApiCommand = new DisableApiControlCommand(_multirotorVehicle);
+            _enableApiCommand = new EnableApiControlCommand(_multirotorVehicle);
+            _goHomeCommand = new GoHomeCommand(_multirotorVehicle);
+            _hoverInPlaceCommand = new HoverInPlaceCommand(_multirotorVehicle);
+            _landNowCommand = new LandNowCommand(_multirotorVehicle);
             _proxyViewModel = new ProxyViewModel(_controller);
-            _vehicleViewModel = new VehicleViewModel(_controller);
+            _resetCommand = new ResetCommand(_multirotorVehicle);
+            _vehicleViewModel = new VehicleViewModel(_multirotorVehicle);
 
             _proxyViewModel.PropertyChanged += onProxyViewModelPropertyChanged;
             _vehicleViewModel.PropertyChanged += onVehicleViewModelPropertyChanged;
@@ -97,13 +101,15 @@ namespace AirSimApp
                 _vehicleViewModel.PropertyChanged -= onVehicleViewModelPropertyChanged;
 
                 _vehicleViewModel.Dispose();
-                _proxyViewModel.Dispose();
                 _resetCommand.Dispose();
+                _proxyViewModel.Dispose();
                 _landNowCommand.Dispose();
                 _hoverInPlaceCommand.Dispose();
                 _goHomeCommand.Dispose();
                 _enableApiCommand.Dispose();
                 _disableApiCommand.Dispose();
+
+                _multirotorVehicle.Dispose();
                 _controller.Dispose();
             }
         }

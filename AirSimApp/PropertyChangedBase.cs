@@ -1,4 +1,4 @@
-﻿#region MIT License (c) 2018
+﻿#region MIT License (c) 2018 Dan Brandt
 
 // Copyright 2018 Dan Brandt
 //
@@ -22,6 +22,7 @@
 
 #endregion
 
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -34,6 +35,18 @@ namespace AirSimApp
     {
         /// <inheritdoc cref="INotifyPropertyChanged" />
         public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Sets the property and fires <see cref="PropertyChanged"/> event if new value is not equal to current value.
+        /// </summary>
+        protected void SetProperty<T>(ref T property, T value, [CallerMemberName] string name = "") where T : IEquatable<T>
+        {
+            if (!property.Equals(value))
+            {
+                property = value;
+                OnPropertyChanged(name);
+            }
+        }
 
         /// <summary>
         /// Fires property changed event, automatically figuring out the property name if called from within the setter of a property.

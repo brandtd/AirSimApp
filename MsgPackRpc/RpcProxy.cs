@@ -1,4 +1,4 @@
-﻿#region MIT License (c) 2018
+﻿#region MIT License (c) 2018 Dan Brandt
 
 // Copyright 2018 Dan Brandt
 //
@@ -24,8 +24,10 @@
 
 using MessagePack;
 using Newtonsoft.Json;
+using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -41,6 +43,7 @@ namespace MsgPackRpc
         private readonly Dictionary<uint, TaskCompletionSource<RpcResponse>> _requests = new Dictionary<uint, TaskCompletionSource<RpcResponse>>();
         private readonly object _lockObject = new object();
 
+        private bool _connecting = false;
         private bool _disposed = false;
         private CancellationTokenSource _cancellationTokenSource;
         private TcpClient _client;
@@ -52,25 +55,66 @@ namespace MsgPackRpc
         public bool Connected => _client != null && _client.Connected;
 
         /// <summary>
+        /// Fired when connection with server is closed (either it failed or was purposefully closed).
+        /// </summary>
+        public event EventHandler ConnectionClosed;
+
+        /// <summary>
         /// Connect with the RPC server.
         /// </summary>
-        public async Task<bool> ConnectAsync(IPEndPoint endpoint)
+        public Task<bool> ConnectAsync(IPEndPoint endpoint)
         {
-            _cancellationTokenSource?.Cancel();
-            _client?.Dispose();
-            _client = new TcpClient()
+            return ConnectAsync(endpoint, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Connect with the RPC server.
+        /// </summary>
+        public Task<bool> ConnectAsync(IPEndPoint endpoint, TimeSpan timeout)
+        {
+            return ConnectAsync(endpoint, new CancellationTokenSource(timeout).Token);
+        }
+
+        /// <summary>
+        /// Connect with the RPC server.
+        /// </summary>
+        public async Task<bool> ConnectAsync(IPEndPoint endpoint, CancellationToken token)
+        {
+            if (!_connecting)
             {
-                ReceiveTimeout = 1000,
-                SendTimeout = 1000
-            };
+                try
+                {
+                    _connecting = true;
 
-            // TODO: allow for cancellation token on ConnectAsync and configuring connect timeout
-            await _client.ConnectAsync(endpoint.Address, endpoint.Port);
+                    _cancellationTokenSource?.Cancel();
+                    _client?.Dispose();
+                    _client = new TcpClient()
+                    {
+                        ReceiveTimeout = 1000,
+                        SendTimeout = 1000
+                    };
 
-            _cancellationTokenSource = new CancellationTokenSource();
-            runReceiveLoop(_cancellationTokenSource.Token);
+                    await _client.ConnectAsync(endpoint.Address, endpoint.Port).WaitAsync(token);
 
-            return _client.Connected;
+                    _cancellationTokenSource = new CancellationTokenSource();
+                    runReceiveLoop(_cancellationTokenSource.Token);
+                }
+                catch (Exception ex) when (ex is ArgumentOutOfRangeException || ex is SocketException || ex is ArgumentNullException)
+                {
+                    _client = null;
+                }
+                catch (OperationCanceledException)
+                {
+                    _client?.Dispose();
+                    _client = null;
+                }
+                finally
+                {
+                    _connecting = false;
+                }
+            }
+
+            return !_connecting && _client != null && _client.Connected;
         }
 
         /// <summary>
@@ -243,12 +287,12 @@ namespace MsgPackRpc
                     }
                 }
             }
-            catch (OperationCanceledException e)
+            catch (Exception ex) when (ex is OperationCanceledException || ex is ObjectDisposedException || ex is IOException)
             {
-                if (e.CancellationToken == token)
-                {
-                    throw;
-                }
+            }
+            finally
+            {
+                ConnectionClosed?.Invoke(this, EventArgs.Empty);
             }
         }
     }

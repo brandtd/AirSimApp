@@ -1,4 +1,4 @@
-﻿#region MIT License (c) 2018
+﻿#region MIT License (c) 2018 Dan Brandt
 
 // Copyright 2018 Dan Brandt
 //
@@ -22,6 +22,7 @@
 
 #endregion
 
+using AirSimApp.Models;
 using System;
 using System.ComponentModel;
 using System.Net;
@@ -37,6 +38,7 @@ namespace AirSimApp.Commands
         private readonly ProxyController _controller;
 
         private bool _canExecute;
+        private bool _connecting = false;
 
         /// <inheritdoc cref="ICommand.CanExecuteChanged" />
         public event EventHandler CanExecuteChanged;
@@ -56,12 +58,13 @@ namespace AirSimApp.Commands
         /// <inheritdoc cref="ICommand.CanExecute" />
         public bool CanExecute(object parameter)
         {
+            bool notConnecting = !_connecting;
             bool notConnected = !_controller.Connected;
             bool addressOrPortChanged =
                 _controller.AddressToUse != _controller.ConnectedAddress ||
                 _controller.PortToUse != _controller.ConnectedPort;
 
-            return notConnected || addressOrPortChanged;
+            return notConnecting && (notConnected || addressOrPortChanged);
         }
 
         /// <inheritdoc cref="ICommand.Execute" />
@@ -69,7 +72,9 @@ namespace AirSimApp.Commands
         {
             if (CanExecute(parameter))
             {
+                setConnecting(true);
                 await _controller.ConnectAsync(new IPEndPoint(_controller.AddressToUse, _controller.PortToUse));
+                setConnecting(false);
             }
         }
 
@@ -80,6 +85,17 @@ namespace AirSimApp.Commands
         }
 
         private void onControllerPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            checkForCanExecuteChanged();
+        }
+
+        private void setConnecting(bool connecting)
+        {
+            _connecting = connecting;
+            checkForCanExecuteChanged();
+        }
+
+        private void checkForCanExecuteChanged()
         {
             bool newCanExecute = CanExecute(null);
             if (newCanExecute != _canExecute)

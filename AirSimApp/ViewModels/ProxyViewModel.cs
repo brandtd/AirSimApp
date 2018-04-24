@@ -1,4 +1,4 @@
-﻿#region MIT License (c) 2018
+﻿#region MIT License (c) 2018 Dan Brandt
 
 // Copyright 2018 Dan Brandt
 //
@@ -23,6 +23,7 @@
 #endregion
 
 using AirSimApp.Commands;
+using AirSimApp.Models;
 using System;
 using System.ComponentModel;
 using System.Net;
@@ -40,19 +41,19 @@ namespace AirSimApp
 
         private bool _disposed = false;
 
-        /// <inheritdoc cref="ProxyController.AddressToUse" />
+        /// <inheritdoc cref="ProxyModel.AddressToUse" />
         public IPAddress AddressToUse { get => _controller.AddressToUse; set => _controller.AddressToUse = value; }
 
-        /// <inheritdoc cref="ProxyController.PortToUse" />
+        /// <inheritdoc cref="ProxyModel.PortToUse" />
         public ushort PortToUse { get => _controller.PortToUse; set => _controller.PortToUse = value; }
 
-        /// <inheritdoc cref="ProxyController.ConnectedAddress" />
+        /// <inheritdoc cref="ProxyModel.ConnectedAddress" />
         public IPAddress ConnectedAddress { get => _controller.ConnectedAddress; set => _controller.ConnectedAddress = value; }
 
-        /// <inheritdoc cref="ProxyController.ConnectedPort" />
+        /// <inheritdoc cref="ProxyModel.ConnectedPort" />
         public ushort ConnectedPort { get => _controller.ConnectedPort; set => _controller.ConnectedPort = value; }
 
-        /// <inheritdoc cref="ProxyController.Connected" />
+        /// <inheritdoc cref="ProxyModel.Connected" />
         public bool Connected { get => _controller.Connected; set => _controller.Connected = value; }
 
         /// <summary>

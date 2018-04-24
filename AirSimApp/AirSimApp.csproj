@@ -145,13 +145,15 @@
     <Compile Include="Converters\IpAddressToStringConverter.cs" />
     <Compile Include="Converters\LatitudeToStringConverter.cs" />
     <Compile Include="Converters\LongitudeToStringConverter.cs" />
+    <Compile Include="DotSpatialExtensions\Position3DExtensions.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\MultirotorVehicleModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -166,9 +168,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="PropertyChangedBase.cs" />
-    <Compile Include="ProxyController.cs" />
-    <Compile Include="ProxyViewModel.cs" />
-    <Compile Include="VehicleViewModel.cs" />
+    <Compile Include="Models\ProxyController.cs" />
+    <Compile Include="ViewModels\VehicleViewModel.cs" />
+    <Compile Include="ViewModels\ProxyViewModel.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -192,5 +194,6 @@
       <Name>MsgPackRpc</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

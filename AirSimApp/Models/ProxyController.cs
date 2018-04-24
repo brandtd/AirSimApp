@@ -1,4 +1,4 @@
-﻿#region MIT License (c) 2018
+﻿#region MIT License (c) 2018 Dan Brandt
 
 // Copyright 2018 Dan Brandt
 //
@@ -23,12 +23,11 @@
 #endregion
 
 using AirSimRpc;
-using MsgPackRpc;
 using System;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace AirSimApp
+namespace AirSimApp.Models
 {
     /// <summary>
     /// Controls access to an AirSim RPC server.
@@ -124,16 +123,22 @@ namespace AirSimApp
             }
         }
 
+        /// <summary>
+        /// The RPC proxy, <c>null</c> if not connected.
+        /// </summary>
+        public IAirSimProxy Proxy => Connected ? _proxy : null;
+
         /// <summary />
         public ProxyController()
         {
             _proxy = new AirSimProxy();
+            _proxy.ConnectionClosed += onProxyConnectionClosed;
         }
 
         /// <inheritdoc cref="IAirSimProxy.ConnectAsync(IPEndPoint)" />
         public async Task<bool> ConnectAsync(IPEndPoint endpoint)
         {
-            if (await _proxy.ConnectAsync(endpoint))
+            if (await _proxy.ConnectAsync(endpoint, TimeSpan.FromSeconds(1)))
             {
                 ConnectedAddress = endpoint.Address;
                 ConnectedPort = (ushort)endpoint.Port;
@@ -147,56 +152,20 @@ namespace AirSimApp
             return Connected;
         }
 
-        /// <inheritdoc cref="IAirSimProxy.GetCameraInfoAsync()" />
-        public Task<RpcResult<CameraInfo>> GetCameraInfoAsync() => _proxy.GetCameraInfoAsync();
-
-        /// <inheritdoc cref="IAirSimProxy.GetCollisionInfoAsync()" />
-        public Task<RpcResult<CollisionInfo>> GetCollisionInfoAsync() => _proxy.GetCollisionInfoAsync();
-
-        /// <inheritdoc cref="IAirSimProxy.GetHomeGeoPointAsync()" />
-        public Task<RpcResult<GeoPoint>> GetHomeGeoPointAsync() => _proxy.GetHomeGeoPointAsync();
-
-        /// <inheritdoc cref="IAirSimProxy.GetIsApiControlEnabledAsync()" />
-        public Task<RpcResult<bool>> GetIsApiControlEnabledAsync() => _proxy.GetIsApiControlEnabledAsync();
-
-        /// <inheritdoc cref="IAirSimProxy.GetLandedStateAsync()" />
-        public Task<RpcResult<LandedState>> GetLandedStateAsync() => _proxy.GetLandedStateAsync();
-
-        /// <inheritdoc cref="IAirSimProxy.GetOrientationAsync()" />
-        public Task<RpcResult<QuaternionR>> GetOrientationAsync() => _proxy.GetOrientationAsync();
-
-        /// <inheritdoc cref="IAirSimProxy.GetPositionAsync()" />
-        public Task<RpcResult<Vector3R>> GetPositionAsync() => _proxy.GetPositionAsync();
-
-        /// <inheritdoc cref="IAirSimProxy.GetVelocityAsync()" />
-        public Task<RpcResult<Vector3R>> GetVelocityAsync() => _proxy.GetVelocityAsync();
-
-        /// <inheritdoc cref="IAirSimProxy.GetMultirotorStateAsync()" />
-        public Task<RpcResult<MultirotorState>> GetMultirotorStateAsync() => _proxy.GetMultirotorStateAsync();
-
-        /// <inheritdoc cref="IAirSimProxy.CmdHoverInPlaceAsync()" />
-        public Task<RpcResult<bool>> CmdHoverInPlaceAsync() => _proxy.CmdHoverInPlaceAsync();
-
-        /// <inheritdoc cref="IAirSimProxy.CmdResetAsync()" />
-        public Task<RpcResult> CmdResetAsync() => _proxy.CmdResetAsync();
-
-        /// <inheritdoc cref="IAirSimProxy.CmdGoHomeAsync(float)" />
-        public Task<RpcResult<bool>> CmdGoHomeAsync(float maxWaitSeconds) => _proxy.CmdGoHomeAsync(maxWaitSeconds);
-
-        /// <inheritdoc cref="IAirSimProxy.CmdLandAsync(float)" />
-        public Task<RpcResult<bool>> CmdLandAsync(float maxWaitSeconds) => _proxy.CmdLandAsync(maxWaitSeconds);
-
-        /// <inheritdoc cref="IAirSimProxy.CmdSetApiControlAsync(bool)" />
-        public Task<RpcResult> CmdSetApiControlAsync(bool allow) => _proxy.CmdSetApiControlAsync(allow);
-
         /// <inheritdoc cref="IDisposable.Dispose" />
         public void Dispose()
         {
             if (!_disposed)
             {
                 _disposed = true;
+                _proxy.ConnectionClosed -= onProxyConnectionClosed;
                 _proxy.Dispose();
             }
+        }
+
+        private void onProxyConnectionClosed(object sender, EventArgs e)
+        {
+            Connected = false;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿#region MIT License (c) 2018
+﻿#region MIT License (c) 2018 Dan Brandt
 
 // Copyright 2018 Dan Brandt
 //
@@ -22,6 +22,7 @@
 
 #endregion
 
+using AirSimApp.Models;
 using System;
 using System.ComponentModel;
 using System.Windows.Input;
@@ -29,11 +30,11 @@ using System.Windows.Input;
 namespace AirSimApp.Commands
 {
     /// <summary>
-    /// Command for telling vehicle to go home.
+    /// Command for telling vehicle to land in place.
     /// </summary>
     public class LandNowCommand : ICommand, IDisposable
     {
-        private readonly ProxyController _controller;
+        private readonly MultirotorVehicleModel _vehicle;
 
         private bool _canExecute;
 
@@ -43,11 +44,11 @@ namespace AirSimApp.Commands
         /// <summary>
         /// Wire up command.
         /// </summary>
-        public LandNowCommand(ProxyController controller)
+        public LandNowCommand(MultirotorVehicleModel vehicle)
         {
-            _controller = controller;
+            _vehicle = vehicle;
 
-            _controller.PropertyChanged += onControllerPropertyChanged;
+            _vehicle.PropertyChanged += onControllerPropertyChanged;
 
             _canExecute = CanExecute(null);
         }
@@ -55,7 +56,7 @@ namespace AirSimApp.Commands
         /// <inheritdoc cref="ICommand.CanExecute" />
         public bool CanExecute(object parameter)
         {
-            return _controller.Connected;
+            return _vehicle.Connected && _vehicle.ApiEnabled;
         }
 
         /// <inheritdoc cref="ICommand.Execute" />
@@ -63,14 +64,14 @@ namespace AirSimApp.Commands
         {
             if (CanExecute(parameter))
             {
-                await _controller.CmdLandAsync(60);
+                await _vehicle.LandAsync();
             }
         }
 
         /// <inheritdoc cref="IDisposable.Dispose" />
         public void Dispose()
         {
-            _controller.PropertyChanged -= onControllerPropertyChanged;
+            _vehicle.PropertyChanged -= onControllerPropertyChanged;
         }
 
         private void onControllerPropertyChanged(object sender, PropertyChangedEventArgs e)

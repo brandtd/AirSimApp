@@ -1,4 +1,4 @@
-﻿#region MIT License (c) 2018
+﻿#region MIT License (c) 2018 Dan Brandt
 
 // Copyright 2018 Dan Brandt
 //
@@ -23,6 +23,7 @@
 #endregion
 
 using MsgPackRpc;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
@@ -34,10 +35,11 @@ namespace AirSimRpc
     /// </summary>
     public interface IAirSimProxy
     {
-        /// <summary>
-        /// Whether this proxy is connected with a server.
-        /// </summary>
+        /// <inheritdoc cref="RpcProxy.Connected" />
         bool Connected { get; }
+
+        /// <inheritdoc cref="RpcProxy.ConnectionClosed" />
+        event EventHandler ConnectionClosed;
 
         /// <summary>
         /// Connect to the AirSim RPC server.
@@ -93,7 +95,7 @@ namespace AirSimRpc
 
         Task<RpcResult<bool>> CmdLandAsync(float maxWaitSeconds);
 
-        Task<RpcResult<bool>> CmdGoHomeAsync(float maxWaitSeconds);
+        Task<RpcResult<bool>> CmdGoHomeAsync();
 
         Task<RpcResult<bool>> CmdMoveByAngleZAsync(float pitch, float roll, float z, float yaw, float duration);
 
