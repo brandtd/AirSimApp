@@ -2,25 +2,22 @@
 
 // Copyright 2018 Dan Brandt
 //
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-// of the Software, and to permit persons to whom the Software is furnished to do
-// so, subject to the following conditions:
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
 //
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+// NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
+// OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#endregion
+#endregion MIT License (c) 2018 Dan Brandt
 
 using AirSimRpc;
 using System;
@@ -29,9 +26,7 @@ using System.Threading.Tasks;
 
 namespace AirSimApp.Models
 {
-    /// <summary>
-    /// Controls access to an AirSim RPC server.
-    /// </summary>
+    /// <summary>Controls access to an AirSim RPC server.</summary>
     public class ProxyController : PropertyChangedBase, IDisposable
     {
         private readonly AirSimProxy _proxy;
@@ -43,9 +38,7 @@ namespace AirSimApp.Models
         private ushort _connectedPort = 41451;
         private ushort _portToUse = 41451;
 
-        /// <summary>
-        /// Address to use to connect to server.
-        /// </summary>
+        /// <summary>Address to use to connect to server.</summary>
         public IPAddress AddressToUse
         {
             get => _addressToUse;
@@ -59,9 +52,7 @@ namespace AirSimApp.Models
             }
         }
 
-        /// <summary>
-        /// Port number to use to connect to server.
-        /// </summary>
+        /// <summary>Port number to use to connect to server.</summary>
         public ushort PortToUse
         {
             get => _portToUse;
@@ -75,9 +66,7 @@ namespace AirSimApp.Models
             }
         }
 
-        /// <summary>
-        /// Address of connected server.
-        /// </summary>
+        /// <summary>Address of connected server.</summary>
         public IPAddress ConnectedAddress
         {
             get => _connectedAddress;
@@ -91,9 +80,7 @@ namespace AirSimApp.Models
             }
         }
 
-        /// <summary>
-        /// Port of connected server.
-        /// </summary>
+        /// <summary>Port of connected server.</summary>
         public ushort ConnectedPort
         {
             get => _connectedPort;
@@ -107,9 +94,7 @@ namespace AirSimApp.Models
             }
         }
 
-        /// <summary>
-        /// Whether proxy is connected with server.
-        /// </summary>
+        /// <summary>Whether proxy is connected with server.</summary>
         public bool Connected
         {
             get => _connected;
@@ -123,9 +108,7 @@ namespace AirSimApp.Models
             }
         }
 
-        /// <summary>
-        /// The RPC proxy, <c>null</c> if not connected.
-        /// </summary>
+        /// <summary>The RPC proxy, <c>null</c> if not connected.</summary>
         public IAirSimProxy Proxy => Connected ? _proxy : null;
 
         /// <summary />

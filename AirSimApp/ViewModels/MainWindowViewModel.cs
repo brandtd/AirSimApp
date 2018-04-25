@@ -2,25 +2,22 @@
 
 // Copyright 2018 Dan Brandt
 //
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-// of the Software, and to permit persons to whom the Software is furnished to do
-// so, subject to the following conditions:
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
 //
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+// NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
+// OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#endregion
+#endregion MIT License (c) 2018 Dan Brandt
 
 using AirSimApp.Commands;
 using AirSimApp.Models;
@@ -118,53 +115,53 @@ namespace AirSimApp.ViewModels
         {
             switch (e.PropertyName)
             {
-            case nameof(_vehicleViewModel.GpsLatitude):
-                OnPropertyChanged(nameof(GpsLatitude));
-                break;
+                case nameof(_vehicleViewModel.GpsLatitude):
+                    OnPropertyChanged(nameof(GpsLatitude));
+                    break;
 
-            case nameof(_vehicleViewModel.GpsLongitude):
-                OnPropertyChanged(nameof(GpsLongitude));
-                break;
+                case nameof(_vehicleViewModel.GpsLongitude):
+                    OnPropertyChanged(nameof(GpsLongitude));
+                    break;
 
-            case nameof(_vehicleViewModel.GpsAltitude):
-                OnPropertyChanged(nameof(GpsAltitude));
-                break;
+                case nameof(_vehicleViewModel.GpsAltitude):
+                    OnPropertyChanged(nameof(GpsAltitude));
+                    break;
 
-            case nameof(_vehicleViewModel.HomeLatitude):
-                OnPropertyChanged(nameof(HomeLatitude));
-                break;
+                case nameof(_vehicleViewModel.HomeLatitude):
+                    OnPropertyChanged(nameof(HomeLatitude));
+                    break;
 
-            case nameof(_vehicleViewModel.HomeLongitude):
-                OnPropertyChanged(nameof(HomeLongitude));
-                break;
+                case nameof(_vehicleViewModel.HomeLongitude):
+                    OnPropertyChanged(nameof(HomeLongitude));
+                    break;
 
-            case nameof(_vehicleViewModel.HomeAltitude):
-                OnPropertyChanged(nameof(HomeAltitude));
-                break;
+                case nameof(_vehicleViewModel.HomeAltitude):
+                    OnPropertyChanged(nameof(HomeAltitude));
+                    break;
 
-            case nameof(_vehicleViewModel.VehicleLatitude):
-                OnPropertyChanged(nameof(VehicleLatitude));
-                break;
+                case nameof(_vehicleViewModel.VehicleLatitude):
+                    OnPropertyChanged(nameof(VehicleLatitude));
+                    break;
 
-            case nameof(_vehicleViewModel.VehicleLongitude):
-                OnPropertyChanged(nameof(VehicleLongitude));
-                break;
+                case nameof(_vehicleViewModel.VehicleLongitude):
+                    OnPropertyChanged(nameof(VehicleLongitude));
+                    break;
 
-            case nameof(_vehicleViewModel.VehicleAltitude):
-                OnPropertyChanged(nameof(VehicleAltitude));
-                break;
+                case nameof(_vehicleViewModel.VehicleAltitude):
+                    OnPropertyChanged(nameof(VehicleAltitude));
+                    break;
 
-            case nameof(_vehicleViewModel.VehicleRoll):
-                OnPropertyChanged(nameof(VehicleRoll));
-                break;
+                case nameof(_vehicleViewModel.VehicleRoll):
+                    OnPropertyChanged(nameof(VehicleRoll));
+                    break;
 
-            case nameof(_vehicleViewModel.VehiclePitch):
-                OnPropertyChanged(nameof(VehiclePitch));
-                break;
+                case nameof(_vehicleViewModel.VehiclePitch):
+                    OnPropertyChanged(nameof(VehiclePitch));
+                    break;
 
-            case nameof(_vehicleViewModel.VehicleYaw):
-                OnPropertyChanged(nameof(VehicleYaw));
-                break;
+                case nameof(_vehicleViewModel.VehicleYaw):
+                    OnPropertyChanged(nameof(VehicleYaw));
+                    break;
             }
         }
 
@@ -172,21 +169,21 @@ namespace AirSimApp.ViewModels
         {
             switch (e.PropertyName)
             {
-            case nameof(_proxyViewModel.AddressToUse):
-                OnPropertyChanged(nameof(AddressToUse));
-                break;
+                case nameof(_proxyViewModel.AddressToUse):
+                    OnPropertyChanged(nameof(AddressToUse));
+                    break;
 
-            case nameof(_proxyViewModel.PortToUse):
-                OnPropertyChanged(nameof(PortToUse));
-                break;
+                case nameof(_proxyViewModel.PortToUse):
+                    OnPropertyChanged(nameof(PortToUse));
+                    break;
 
-            case nameof(_proxyViewModel.ConnectedAddress):
-                OnPropertyChanged(nameof(ConnectedAddress));
-                break;
+                case nameof(_proxyViewModel.ConnectedAddress):
+                    OnPropertyChanged(nameof(ConnectedAddress));
+                    break;
 
-            case nameof(_proxyViewModel.ConnectedPort):
-                OnPropertyChanged(nameof(ConnectedPort));
-                break;
+                case nameof(_proxyViewModel.ConnectedPort):
+                    OnPropertyChanged(nameof(ConnectedPort));
+                    break;
             }
         }
     }
