@@ -2,25 +2,22 @@
 
 // Copyright 2018 Dan Brandt
 //
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-// of the Software, and to permit persons to whom the Software is furnished to do
-// so, subject to the following conditions:
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
 //
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+// NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
+// OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#endregion
+#endregion MIT License (c) 2018 Dan Brandt
 
 using MsgPackRpc;
 using System;
@@ -30,9 +27,7 @@ using System.Threading.Tasks;
 
 namespace AirSimRpc
 {
-    /// <summary>
-    /// Interface for an AirSim RPC proxy.
-    /// </summary>
+    /// <summary>Interface for an AirSim RPC proxy.</summary>
     public interface IAirSimProxy
     {
         /// <inheritdoc cref="RpcProxy.Connected" />
@@ -41,20 +36,13 @@ namespace AirSimRpc
         /// <inheritdoc cref="RpcProxy.ConnectionClosed" />
         event EventHandler ConnectionClosed;
 
-        /// <summary>
-        /// Connect to the AirSim RPC server.
-        /// </summary>
+        /// <summary>Connect to the AirSim RPC server.</summary>
         /// <param name="endpoint">Server location.</param>
-        /// <returns><c>true></c> if connection is successful, <c>false</c> othewrise.</returns>
+        /// <returns><c>true&gt;</c> if connection is successful, <c>false</c> othewrise.</returns>
         Task<bool> ConnectAsync(IPEndPoint endpoint);
 
-        // TODO simGetImages
-        // TODO simGetImage
-        // TODO simSetSegmentationObjectID
-        // TODO simGetSegmentationObjectID
-        // TODO simPrintLogMessage
-        // TODO setSafety
-        // TODO setRCData
+        // TODO simGetImages TODO simGetImage TODO simSetSegmentationObjectID TODO
+        // simGetSegmentationObjectID TODO simPrintLogMessage TODO setSafety TODO setRCData
 
         Task<RpcResult<MultirotorState>> GetMultirotorStateAsync();
 
@@ -83,7 +71,6 @@ namespace AirSimRpc
         Task<RpcResult<GeoPoint>> GetHomeGeoPointAsync();
 
         Task<RpcResult<bool>> GetIsApiControlEnabledAsync();
-
 
         Task<RpcResult<bool>> CmdSetPoseAsync(Pose pose, bool ignoreCollision);
 
