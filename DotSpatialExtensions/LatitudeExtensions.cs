@@ -19,38 +19,24 @@
 
 #endregion MIT License (c) 2018 Dan Brandt
 
-namespace MsgPackRpc
+using DotSpatial.Positioning;
+using System;
+
+namespace DotSpatialExtensions
 {
-    /// <summary>
-    ///     Result of RPC, signalling failure through properties instead of throwing exceptions.
-    /// </summary>
-    public class RpcResult
+    /// <summary>Extensions for <see cref="Latitude" />.</summary>
+    public static class LatitudeExtensions
     {
-        /// <summary>Error associated with RPC.</summary>
-        public string Error { get; internal set; } = string.Empty;
-
-        /// <summary>Whether RPC failed.</summary>
-        public bool Failed
+        /// <summary>Get angle in degrees, limited to the range [0, 360).</summary>
+        public static double InDegrees(this Latitude lat)
         {
-            get => !_successful;
-            internal set => _successful = !value;
+            return CanonicalModulo.Compute(lat.DecimalDegrees, 360.0);
         }
 
-        /// <summary>Whether RPC was successful.</summary>
-        public bool Successful
+        /// <summary>Get angle in radians, limited to the range [0, 2*PI).</summary>
+        public static double InRadians(this Latitude lat)
         {
-            get => _successful;
-            internal set => _successful = value;
+            return CanonicalModulo.Compute(lat.ToRadians().Value, 2 * Math.PI);
         }
-
-        private bool _successful;
-    }
-
-    /// <inheritdoc cref="RpcResult" />
-    /// <typeparam name="T">Return value of RPC.</typeparam>
-    public class RpcResult<T> : RpcResult
-    {
-        /// <summary>Return value of RPC.</summary>
-        public T Value { get; internal set; } = default(T);
     }
 }

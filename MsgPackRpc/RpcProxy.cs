@@ -2,25 +2,22 @@
 
 // Copyright 2018 Dan Brandt
 //
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-// of the Software, and to permit persons to whom the Software is furnished to do
-// so, subject to the following conditions:
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
 //
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+// NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
+// OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#endregion
+#endregion MIT License (c) 2018 Dan Brandt
 
 using MessagePack;
 using Newtonsoft.Json;
@@ -35,91 +32,18 @@ using System.Threading.Tasks;
 
 namespace MsgPackRpc
 {
-    /// <summary>
-    /// Calls RPCs on a remote RPC server.
-    /// </summary>
+    /// <summary>Calls RPCs on a remote RPC server.</summary>
     public class RpcProxy : IDisposable
     {
-        private readonly Dictionary<uint, TaskCompletionSource<RpcResponse>> _requests = new Dictionary<uint, TaskCompletionSource<RpcResponse>>();
-        private readonly object _lockObject = new object();
-
-        private bool _connecting = false;
-        private bool _disposed = false;
-        private CancellationTokenSource _cancellationTokenSource;
-        private TcpClient _client;
-        private uint _msgIdCounter = 0;
-
         /// <summary>
-        /// Whether this proxy is connected with a server.
-        /// </summary>
-        public bool Connected => _client != null && _client.Connected;
-
-        /// <summary>
-        /// Fired when connection with server is closed (either it failed or was purposefully closed).
+        ///     Fired when connection with server is closed (either it failed or was purposefully closed).
         /// </summary>
         public event EventHandler ConnectionClosed;
 
-        /// <summary>
-        /// Connect with the RPC server.
-        /// </summary>
-        public Task<bool> ConnectAsync(IPEndPoint endpoint)
-        {
-            return ConnectAsync(endpoint, CancellationToken.None);
-        }
+        /// <summary>Whether this proxy is connected with a server.</summary>
+        public bool Connected => _client != null && _client.Connected;
 
-        /// <summary>
-        /// Connect with the RPC server.
-        /// </summary>
-        public Task<bool> ConnectAsync(IPEndPoint endpoint, TimeSpan timeout)
-        {
-            return ConnectAsync(endpoint, new CancellationTokenSource(timeout).Token);
-        }
-
-        /// <summary>
-        /// Connect with the RPC server.
-        /// </summary>
-        public async Task<bool> ConnectAsync(IPEndPoint endpoint, CancellationToken token)
-        {
-            if (!_connecting)
-            {
-                try
-                {
-                    _connecting = true;
-
-                    _cancellationTokenSource?.Cancel();
-                    _client?.Dispose();
-                    _client = new TcpClient()
-                    {
-                        ReceiveTimeout = 1000,
-                        SendTimeout = 1000
-                    };
-
-                    await _client.ConnectAsync(endpoint.Address, endpoint.Port).WaitAsync(token);
-
-                    _cancellationTokenSource = new CancellationTokenSource();
-                    runReceiveLoop(_cancellationTokenSource.Token);
-                }
-                catch (Exception ex) when (ex is ArgumentOutOfRangeException || ex is SocketException || ex is ArgumentNullException)
-                {
-                    _client = null;
-                }
-                catch (OperationCanceledException)
-                {
-                    _client?.Dispose();
-                    _client = null;
-                }
-                finally
-                {
-                    _connecting = false;
-                }
-            }
-
-            return !_connecting && _client != null && _client.Connected;
-        }
-
-        /// <summary>
-        /// Make an RPC call.
-        /// </summary>
+        /// <summary>Make an RPC call.</summary>
         /// <typeparam name="T">RPC return type.</typeparam>
         /// <param name="method">Name of RPC method.</param>
         /// <param name="args">Arguments for method.</param>
@@ -176,9 +100,7 @@ namespace MsgPackRpc
             };
         }
 
-        /// <summary>
-        /// Make an RPC call with no return value.
-        /// </summary>
+        /// <summary>Make an RPC call with no return value.</summary>
         /// <param name="method">Name of RPC method.</param>
         /// <param name="args">Arguments for method.</param>
         /// <returns>Awaitable task with RPC result.</returns>
@@ -233,6 +155,58 @@ namespace MsgPackRpc
             };
         }
 
+        /// <summary>Connect with the RPC server.</summary>
+        public Task<bool> ConnectAsync(IPEndPoint endpoint)
+        {
+            return ConnectAsync(endpoint, CancellationToken.None);
+        }
+
+        /// <summary>Connect with the RPC server.</summary>
+        public Task<bool> ConnectAsync(IPEndPoint endpoint, TimeSpan timeout)
+        {
+            return ConnectAsync(endpoint, new CancellationTokenSource(timeout).Token);
+        }
+
+        /// <summary>Connect with the RPC server.</summary>
+        public async Task<bool> ConnectAsync(IPEndPoint endpoint, CancellationToken token)
+        {
+            if (!_connecting)
+            {
+                try
+                {
+                    _connecting = true;
+
+                    _cancellationTokenSource?.Cancel();
+                    _client?.Dispose();
+                    _client = new TcpClient()
+                    {
+                        ReceiveTimeout = 1000,
+                        SendTimeout = 1000
+                    };
+
+                    await _client.ConnectAsync(endpoint.Address, endpoint.Port).WaitAsync(token);
+
+                    _cancellationTokenSource = new CancellationTokenSource();
+                    runReceiveLoop(_cancellationTokenSource.Token);
+                }
+                catch (Exception ex) when (ex is ArgumentOutOfRangeException || ex is SocketException || ex is ArgumentNullException)
+                {
+                    _client = null;
+                }
+                catch (OperationCanceledException)
+                {
+                    _client?.Dispose();
+                    _client = null;
+                }
+                finally
+                {
+                    _connecting = false;
+                }
+            }
+
+            return !_connecting && _client != null && _client.Connected;
+        }
+
         /// <inheritdoc cref="IDisposable.Dispose" />
         public void Dispose()
         {
@@ -245,19 +219,19 @@ namespace MsgPackRpc
             }
         }
 
+        private readonly object _lockObject = new object();
+        private readonly Dictionary<uint, TaskCompletionSource<RpcResponse>> _requests = new Dictionary<uint, TaskCompletionSource<RpcResponse>>();
+        private CancellationTokenSource _cancellationTokenSource;
+        private TcpClient _client;
+        private bool _connecting = false;
+        private bool _disposed = false;
+        private uint _msgIdCounter = 0;
+
         private void addRequest(uint requestId)
         {
             lock (_lockObject)
             {
                 _requests[requestId] = new TaskCompletionSource<RpcResponse>();
-            }
-        }
-
-        private TaskCompletionSource<RpcResponse> taskForRequest(uint requestId)
-        {
-            lock (_lockObject)
-            {
-                return _requests[requestId];
             }
         }
 
@@ -293,6 +267,14 @@ namespace MsgPackRpc
             finally
             {
                 ConnectionClosed?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private TaskCompletionSource<RpcResponse> taskForRequest(uint requestId)
+        {
+            lock (_lockObject)
+            {
+                return _requests[requestId];
             }
         }
     }

@@ -2,28 +2,25 @@
 
 // Copyright 2018 Dan Brandt
 //
-// Permission is hereby granted, free of charge, to any person obtaining a copy of
-// this software and associated documentation files (the "Software"), to deal in
-// the Software without restriction, including without limitation the rights to
-// use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-// of the Software, and to permit persons to whom the Software is furnished to do
-// so, subject to the following conditions:
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
 //
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+// NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
+// OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#endregion
+#endregion MIT License (c) 2018 Dan Brandt
 
-using AirSimApp.DotSpatialExtensions;
 using AirSimRpc;
+using DotSpatialExtensions;
 using DotSpatial.Positioning;
 using MsgPackRpc;
 using System;
@@ -35,24 +32,17 @@ using System.Threading.Tasks;
 
 namespace AirSimApp.Models
 {
-    /// <summary>
-    /// Model for a multirotor vehicle.
-    /// </summary>
+    /// <summary>Model for a multirotor vehicle.</summary>
     public class MultirotorVehicleModel : PropertyChangedBase, IDisposable
     {
-        private readonly ProxyController _controller;
+        /// <summary>Wire up model.</summary>
+        public MultirotorVehicleModel(ProxyController controller)
+        {
+            _controller = controller;
+            _controller.PropertyChanged += onControllerPropertyChanged;
 
-        private bool _disposed = false;
-        private CancellationTokenSource _cancellationTokenSource;
-
-        private Angle _vehicleYaw = Angle.Invalid;
-        private Angle _vehiclePitch = Angle.Invalid;
-        private Angle _vehicleRoll = Angle.Invalid;
-        private bool _apiEnabled = false;
-        private bool _connected = false;
-        private Position3D _homeLocation = new Position3D(Latitude.Invalid, Longitude.Invalid, Distance.Invalid);
-        private Position3D _vehicleLocation = new Position3D(Latitude.Invalid, Longitude.Invalid, Distance.Invalid);
-        private Position3D _vehicleLocationGps = new Position3D(Latitude.Invalid, Longitude.Invalid, Distance.Invalid);
+            startOrStopStateLoop();
+        }
 
         public bool ApiEnabled
         {
@@ -84,16 +74,16 @@ namespace AirSimApp.Models
             set => SetProperty(ref _vehicleLocationGps, value);
         }
 
-        public Angle VehicleRoll
-        {
-            get => _vehicleRoll;
-            set => SetProperty(ref _vehicleRoll, value);
-        }
-
         public Angle VehiclePitch
         {
             get => _vehiclePitch;
             set => SetProperty(ref _vehiclePitch, value);
+        }
+
+        public Angle VehicleRoll
+        {
+            get => _vehicleRoll;
+            set => SetProperty(ref _vehicleRoll, value);
         }
 
         public Angle VehicleYaw
@@ -102,35 +92,9 @@ namespace AirSimApp.Models
             set => SetProperty(ref _vehicleYaw, value);
         }
 
-        /// <summary>
-        /// Wire up model.
-        /// </summary>
-        public MultirotorVehicleModel(ProxyController controller)
-        {
-            _controller = controller;
-            _controller.PropertyChanged += onControllerPropertyChanged;
-
-            startOrStopStateLoop();
-        }
-
-        public async Task ResetAsync()
-        {
-            await _controller.Proxy?.CmdResetAsync();
-        }
-
-        public async Task SetApiControlAllowedAsync(bool allowedIfTrue)
-        {
-            await _controller.Proxy?.CmdSetApiControlAsync(allowedIfTrue);
-        }
-
         public Task ArmAsync()
         {
             return ArmDisarmAsync(true);
-        }
-
-        public Task DisarmAsync()
-        {
-            return ArmDisarmAsync(false);
         }
 
         public async Task ArmDisarmAsync(bool armIfTrue)
@@ -138,24 +102,30 @@ namespace AirSimApp.Models
             await _controller.Proxy?.CmdArmDisarmAsync(armIfTrue);
         }
 
-        public async Task SetSimulationModeAsync(bool simulateIfTrue)
+        public Task DisarmAsync()
         {
-            await _controller.Proxy?.CmdSimulationModeAsync(simulateIfTrue);
+            return ArmDisarmAsync(false);
         }
 
-        public Task TakeoffAsync()
+        /// <inheritdoc cref="IDisposable.Dispose" />
+        public void Dispose()
         {
-            return TakeoffAsync(TimeSpan.FromSeconds(30));
-        }
-
-        public async Task TakeoffAsync(TimeSpan allowedTimeToTakeoff)
-        {
-            await _controller.Proxy?.CmdTakeoffAsync((float)allowedTimeToTakeoff.TotalSeconds);
+            if (!_disposed)
+            {
+                _controller.PropertyChanged -= onControllerPropertyChanged;
+                _cancellationTokenSource?.Dispose();
+                _cancellationTokenSource = null;
+            }
         }
 
         public async Task GoHomeAsync()
         {
             await _controller.Proxy?.CmdGoHomeAsync();
+        }
+
+        public async Task HoverAsync()
+        {
+            await _controller.Proxy?.CmdHoverInPlaceAsync();
         }
 
         public Task LandAsync()
@@ -168,9 +138,14 @@ namespace AirSimApp.Models
             await _controller.Proxy?.CmdLandAsync((float)allowedTimeToLand.TotalSeconds);
         }
 
-        public async Task HoverAsync()
+        public async Task MoveByAngleThrottleAsync(Angle pitch, Angle roll, float throttle, float yaw_rate, TimeSpan duration)
         {
-            await _controller.Proxy?.CmdHoverInPlaceAsync();
+            await _controller.Proxy?.CmdMoveByAngleThrottleAsync(
+                (float)pitch.DecimalDegrees,
+                (float)roll.DecimalDegrees,
+                throttle,
+                yaw_rate,
+                (float)duration.TotalSeconds);
         }
 
         public async Task MoveByAngleZAsync(Angle pitch, Angle roll, Distance z, Angle yaw, TimeSpan duration)
@@ -180,16 +155,6 @@ namespace AirSimApp.Models
                 (float)roll.DecimalDegrees,
                 (float)z.ToMeters().Value,
                 (float)yaw.DecimalDegrees,
-                (float)duration.TotalSeconds);
-        }
-
-        public async Task MoveByAngleThrottleAsync(Angle pitch, Angle roll, float throttle, float yaw_rate, TimeSpan duration)
-        {
-            await _controller.Proxy?.CmdMoveByAngleThrottleAsync(
-                (float)pitch.DecimalDegrees,
-                (float)roll.DecimalDegrees,
-                throttle,
-                yaw_rate,
                 (float)duration.TotalSeconds);
         }
 
@@ -235,6 +200,18 @@ namespace AirSimApp.Models
                 adaptiveLookahead);
         }
 
+        public Task MoveToAltitudeAsync(
+            Distance altitude,
+            Speed speed,
+            TimeSpan allowedTimeToComplete,
+            DrivetrainType drivetrainType,
+            YawMode yawMode,
+            float lookahead,
+            float adaptiveLookahead)
+        {
+            return MoveToZAsync(altitude - HomeLocation.Altitude, speed, allowedTimeToComplete, drivetrainType, yawMode, lookahead, adaptiveLookahead);
+        }
+
         public async Task MoveToPositionAsync(Vector3R position,
             Speed speed,
             TimeSpan allowedTimeToComplete,
@@ -253,6 +230,17 @@ namespace AirSimApp.Models
                 yawMode,
                 lookahead,
                 adaptiveLookahead);
+        }
+
+        public Task MoveToPositionAsync(Position3D position,
+            Speed speed,
+            TimeSpan allowedTimeToComplete,
+            DrivetrainType drivetrainType,
+            YawMode yawMode,
+            float lookahead,
+            float adaptiveLookahead)
+        {
+            return MoveToPositionAsync(toNedFromPosition(position), speed, allowedTimeToComplete, drivetrainType, yawMode, lookahead, adaptiveLookahead);
         }
 
         public async Task MoveToZAsync(
@@ -274,39 +262,43 @@ namespace AirSimApp.Models
                 adaptiveLookahead);
         }
 
-        public Task MoveToAltitudeAsync(
-            Distance altitude,
-            Speed speed,
-            TimeSpan allowedTimeToComplete,
-            DrivetrainType drivetrainType,
-            YawMode yawMode,
-            float lookahead,
-            float adaptiveLookahead)
+        public async Task ResetAsync()
         {
-            return MoveToZAsync(altitude - HomeLocation.Altitude, speed, allowedTimeToComplete, drivetrainType, yawMode, lookahead, adaptiveLookahead);
+            await _controller.Proxy?.CmdResetAsync();
         }
 
-        public Task MoveToPositionAsync(Position3D position,
-            Speed speed,
-            TimeSpan allowedTimeToComplete,
-            DrivetrainType drivetrainType,
-            YawMode yawMode,
-            float lookahead,
-            float adaptiveLookahead)
+        public async Task SetApiControlAllowedAsync(bool allowedIfTrue)
         {
-            return MoveToPositionAsync(toNedFromPosition(position), speed, allowedTimeToComplete, drivetrainType, yawMode, lookahead, adaptiveLookahead);
+            await _controller.Proxy?.CmdSetApiControlAsync(allowedIfTrue);
         }
 
-        /// <inheritdoc cref="IDisposable.Dispose" />
-        public void Dispose()
+        public async Task SetSimulationModeAsync(bool simulateIfTrue)
         {
-            if (!_disposed)
-            {
-                _controller.PropertyChanged -= onControllerPropertyChanged;
-                _cancellationTokenSource?.Dispose();
-                _cancellationTokenSource = null;
-            }
+            await _controller.Proxy?.CmdSimulationModeAsync(simulateIfTrue);
         }
+
+        public Task TakeoffAsync()
+        {
+            return TakeoffAsync(TimeSpan.FromSeconds(30));
+        }
+
+        public async Task TakeoffAsync(TimeSpan allowedTimeToTakeoff)
+        {
+            await _controller.Proxy?.CmdTakeoffAsync((float)allowedTimeToTakeoff.TotalSeconds);
+        }
+
+        private readonly ProxyController _controller;
+
+        private bool _apiEnabled = false;
+        private CancellationTokenSource _cancellationTokenSource;
+        private bool _connected = false;
+        private bool _disposed = false;
+        private Position3D _homeLocation = new Position3D(Latitude.Invalid, Longitude.Invalid, Distance.Invalid);
+        private Position3D _vehicleLocation = new Position3D(Latitude.Invalid, Longitude.Invalid, Distance.Invalid);
+        private Position3D _vehicleLocationGps = new Position3D(Latitude.Invalid, Longitude.Invalid, Distance.Invalid);
+        private Angle _vehiclePitch = Angle.Invalid;
+        private Angle _vehicleRoll = Angle.Invalid;
+        private Angle _vehicleYaw = Angle.Invalid;
 
         private void onControllerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -328,6 +320,35 @@ namespace AirSimApp.Models
             {
                 _cancellationTokenSource?.Cancel();
                 _cancellationTokenSource = null;
+            }
+        }
+
+        private Vector3R toNedFromPosition(Position3D lla)
+        {
+            if (!HomeLocation.IsInvalid())
+            {
+                // TODO: write all this math out.
+                return new Vector3R();
+            }
+            else
+            {
+                return new Vector3R();
+            }
+        }
+
+        private Position3D toPositionFromNed(Vector3R ned)
+        {
+            if (!HomeLocation.IsInvalid())
+            {
+                NedPoint nedPoint = new NedPoint(
+                    Distance.FromMeters(ned.X),
+                    Distance.FromMeters(ned.Y),
+                    Distance.FromMeters(ned.Z));
+                return nedPoint.ToPosition3D(HomeLocation);
+            }
+            else
+            {
+                return new Position3D(Latitude.Invalid, Longitude.Invalid, Distance.Invalid);
             }
         }
 
@@ -358,7 +379,7 @@ namespace AirSimApp.Models
                     RpcResult<QuaternionR> vehicleOrientation = await _controller.Proxy?.GetOrientationAsync();
                     if (vehicleOrientation != null && vehicleOrientation.Successful)
                     {
-                        toEulerAngles(vehicleOrientation.Value, out double roll, out double pitch, out double yaw);
+                        VectorMath.ToEulerAngles(vehicleOrientation.Value, out double roll, out double pitch, out double yaw);
                         VehicleRoll = Angle.FromRadians(roll);
                         VehiclePitch = Angle.FromRadians(pitch);
                         VehicleYaw = Angle.FromRadians(yaw);
@@ -385,52 +406,6 @@ namespace AirSimApp.Models
                 }
             }
             catch (OperationCanceledException) { }
-        }
-
-        private Position3D toPositionFromNed(Vector3R ned)
-        {
-            if (!HomeLocation.IsInvalid())
-            {
-                // TODO: write all this math out.
-                return new Position3D(Latitude.Invalid, Longitude.Invalid, Distance.Invalid);
-            }
-            else
-            {
-                return new Position3D(Latitude.Invalid, Longitude.Invalid, Distance.Invalid);
-            }
-        }
-
-        private Vector3R toNedFromPosition(Position3D lla)
-        {
-            if (!HomeLocation.IsInvalid())
-            {
-                // TODO: write all this math out.
-                return new Vector3R();
-            }
-            else
-            {
-                return new Vector3R();
-            }
-        }
-
-        private void toEulerAngles(QuaternionR q, out double roll, out double pitch, out double yaw)
-        {
-            // TODO: there's a bug in here w/r/t roll, I think
-            double ysqr = q.Y * q.Y;
-
-            double t0 = 2.0 * (q.W + q.Y * q.Z);
-            double t1 = 1.0 - 2.0 * (q.X * q.X + ysqr);
-            roll = Math.Atan2(t0, t1);
-
-            double t2 = 2.0 * (q.W * q.Y - q.Z * q.X);
-            if (t2 > 1.0) { t2 = 1.0; }
-            if (t2 < -1.0) { t2 = -1.0; }
-
-            pitch = Math.Asin(t2);
-
-            double t3 = 2.0 * (q.W * q.Z + q.X * q.Y);
-            double t4 = 1.0 - 2.0 * (ysqr + q.Z * q.Z);
-            yaw = Math.Atan2(t3, t4);
         }
     }
 }

@@ -2,8 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net461;netstandard1.6</TargetFrameworks>
-    <BaseIntermediateOutputPath>..\output\$(ProjectName)</BaseIntermediateOutputPath>
-    <BaseOutputPath>..\output\$(ProjectName)</BaseOutputPath>
+    <RootNamespace>MsgPackRpc</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

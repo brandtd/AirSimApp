@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
+    <PackageReference Include="DotSpatial.Positioning">
+      <Version>1.9.0</Version>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>

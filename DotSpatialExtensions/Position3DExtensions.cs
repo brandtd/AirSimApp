@@ -19,38 +19,19 @@
 
 #endregion MIT License (c) 2018 Dan Brandt
 
-namespace MsgPackRpc
+using DotSpatial.Positioning;
+
+namespace DotSpatialExtensions
 {
-    /// <summary>
-    ///     Result of RPC, signalling failure through properties instead of throwing exceptions.
-    /// </summary>
-    public class RpcResult
+    /// <summary>Extensions for <see cref="Position3D" />.</summary>
+    public static class Position3DExtensions
     {
-        /// <summary>Error associated with RPC.</summary>
-        public string Error { get; internal set; } = string.Empty;
-
-        /// <summary>Whether RPC failed.</summary>
-        public bool Failed
+        /// <summary>Indicates whether the value is invalid or unspecified.</summary>
+        public static bool IsInvalid(this Position3D position)
         {
-            get => !_successful;
-            internal set => _successful = !value;
+            return position.Latitude.IsInvalid ||
+                   position.Longitude.IsInvalid ||
+                   position.Altitude.IsInvalid;
         }
-
-        /// <summary>Whether RPC was successful.</summary>
-        public bool Successful
-        {
-            get => _successful;
-            internal set => _successful = value;
-        }
-
-        private bool _successful;
-    }
-
-    /// <inheritdoc cref="RpcResult" />
-    /// <typeparam name="T">Return value of RPC.</typeparam>
-    public class RpcResult<T> : RpcResult
-    {
-        /// <summary>Return value of RPC.</summary>
-        public T Value { get; internal set; } = default(T);
     }
 }

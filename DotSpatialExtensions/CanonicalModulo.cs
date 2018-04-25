@@ -19,38 +19,24 @@
 
 #endregion MIT License (c) 2018 Dan Brandt
 
-namespace MsgPackRpc
+namespace DotSpatialExtensions
 {
-    /// <summary>
-    ///     Result of RPC, signalling failure through properties instead of throwing exceptions.
-    /// </summary>
-    public class RpcResult
+    /// <summary>Provides a canonical modulo operator.</summary>
+    public static class CanonicalModulo
     {
-        /// <summary>Error associated with RPC.</summary>
-        public string Error { get; internal set; } = string.Empty;
-
-        /// <summary>Whether RPC failed.</summary>
-        public bool Failed
+        /// <summary>
+        ///     Computes the canonical modulo (the one where -1 % 3 = 2 instead of C#'s version where
+        ///     -1 % 3 = -1).
+        /// </summary>
+        /// <remarks>
+        ///     The canonical modulo operator creates infinitely repeating patterns, while C#'s
+        ///     operator will create a pattern that is mirrored around the origin. That's frustrating
+        ///     for certain things, like angles where -10 degrees is equivalent to 350 degrees.
+        /// </remarks>
+        public static double Compute(double dividend, double divisor)
         {
-            get => !_successful;
-            internal set => _successful = !value;
+            double temp = dividend % divisor;
+            return temp < 0 ? temp + divisor : temp;
         }
-
-        /// <summary>Whether RPC was successful.</summary>
-        public bool Successful
-        {
-            get => _successful;
-            internal set => _successful = value;
-        }
-
-        private bool _successful;
-    }
-
-    /// <inheritdoc cref="RpcResult" />
-    /// <typeparam name="T">Return value of RPC.</typeparam>
-    public class RpcResult<T> : RpcResult
-    {
-        /// <summary>Return value of RPC.</summary>
-        public T Value { get; internal set; } = default(T);
     }
 }
