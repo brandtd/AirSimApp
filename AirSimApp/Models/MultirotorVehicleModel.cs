@@ -130,7 +130,7 @@ namespace AirSimApp.Models
 
         public Task LandAsync()
         {
-            return LandAsync(TimeSpan.FromMinutes(2));
+            return LandAsync(TimeSpan.Zero);
         }
 
         public async Task LandAsync(TimeSpan allowedTimeToLand)
@@ -279,7 +279,7 @@ namespace AirSimApp.Models
 
         public Task TakeoffAsync()
         {
-            return TakeoffAsync(TimeSpan.FromSeconds(30));
+            return TakeoffAsync(TimeSpan.Zero);
         }
 
         public async Task TakeoffAsync(TimeSpan allowedTimeToTakeoff)

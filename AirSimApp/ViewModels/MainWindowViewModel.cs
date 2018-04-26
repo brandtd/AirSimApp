@@ -31,44 +31,6 @@ namespace AirSimApp.ViewModels
 {
     public class MainWindowViewModel : PropertyChangedBase, IDisposable
     {
-        private readonly DisableApiControlCommand _disableApiCommand;
-        private readonly EnableApiControlCommand _enableApiCommand;
-        private readonly GoHomeCommand _goHomeCommand;
-        private readonly HoverInPlaceCommand _hoverInPlaceCommand;
-        private readonly LandNowCommand _landNowCommand;
-        private readonly MultirotorVehicleModel _multirotorVehicle;
-        private readonly ProxyController _controller;
-        private readonly ProxyViewModel _proxyViewModel;
-        private readonly ResetCommand _resetCommand;
-        private readonly VehicleViewModel _vehicleViewModel;
-
-        private bool _disposed = false;
-
-        public ICommand ConnectCommand => _proxyViewModel.Connect;
-        public ICommand GoHomeCommand => _goHomeCommand;
-        public ICommand HoverInPlaceCommand => _hoverInPlaceCommand;
-        public ICommand LandNowCommand => _landNowCommand;
-        public ICommand ResetCommand => _resetCommand;
-        public ICommand EnableApiCommand => _enableApiCommand;
-        public ICommand DisableApiCommand => _disableApiCommand;
-        public IPAddress AddressToUse { get => _proxyViewModel.AddressToUse; set => _proxyViewModel.AddressToUse = value; }
-        public ushort PortToUse { get => _proxyViewModel.PortToUse; set => _proxyViewModel.PortToUse = value; }
-        public IPAddress ConnectedAddress { get => _proxyViewModel.ConnectedAddress; set => _proxyViewModel.ConnectedAddress = value; }
-        public ushort ConnectedPort { get => _proxyViewModel.ConnectedPort; set => _proxyViewModel.ConnectedPort = value; }
-
-        public Latitude GpsLatitude => _vehicleViewModel.GpsLatitude;
-        public Longitude GpsLongitude => _vehicleViewModel.GpsLongitude;
-        public Distance GpsAltitude => _vehicleViewModel.GpsAltitude;
-        public Latitude HomeLatitude => _vehicleViewModel.HomeLatitude;
-        public Longitude HomeLongitude => _vehicleViewModel.HomeLongitude;
-        public Distance HomeAltitude => _vehicleViewModel.HomeAltitude;
-        public Latitude VehicleLatitude => _vehicleViewModel.VehicleLatitude;
-        public Longitude VehicleLongitude => _vehicleViewModel.VehicleLongitude;
-        public Distance VehicleAltitude => _vehicleViewModel.VehicleAltitude;
-        public Angle VehicleRoll => _vehicleViewModel.VehicleRoll;
-        public Angle VehiclePitch => _vehicleViewModel.VehiclePitch;
-        public Angle VehicleYaw => _vehicleViewModel.VehicleYaw;
-
         public MainWindowViewModel()
         {
             _controller = new ProxyController();
@@ -79,6 +41,7 @@ namespace AirSimApp.ViewModels
             _goHomeCommand = new GoHomeCommand(_multirotorVehicle);
             _hoverInPlaceCommand = new HoverInPlaceCommand(_multirotorVehicle);
             _landNowCommand = new LandNowCommand(_multirotorVehicle);
+            _mapViewModel = new MapViewModel(_multirotorVehicle);
             _proxyViewModel = new ProxyViewModel(_controller);
             _resetCommand = new ResetCommand(_multirotorVehicle);
             _vehicleViewModel = new VehicleViewModel(_multirotorVehicle);
@@ -86,6 +49,31 @@ namespace AirSimApp.ViewModels
             _proxyViewModel.PropertyChanged += onProxyViewModelPropertyChanged;
             _vehicleViewModel.PropertyChanged += onVehicleViewModelPropertyChanged;
         }
+
+        public IPAddress AddressToUse { get => _proxyViewModel.AddressToUse; set => _proxyViewModel.AddressToUse = value; }
+        public ICommand ConnectCommand => _proxyViewModel.Connect;
+        public IPAddress ConnectedAddress { get => _proxyViewModel.ConnectedAddress; set => _proxyViewModel.ConnectedAddress = value; }
+        public ushort ConnectedPort { get => _proxyViewModel.ConnectedPort; set => _proxyViewModel.ConnectedPort = value; }
+        public ICommand DisableApiCommand => _disableApiCommand;
+        public ICommand EnableApiCommand => _enableApiCommand;
+        public ICommand GoHomeCommand => _goHomeCommand;
+        public Distance GpsAltitude => _vehicleViewModel.GpsAltitude;
+        public Latitude GpsLatitude => _vehicleViewModel.GpsLatitude;
+        public Longitude GpsLongitude => _vehicleViewModel.GpsLongitude;
+        public Distance HomeAltitude => _vehicleViewModel.HomeAltitude;
+        public Latitude HomeLatitude => _vehicleViewModel.HomeLatitude;
+        public Longitude HomeLongitude => _vehicleViewModel.HomeLongitude;
+        public ICommand HoverInPlaceCommand => _hoverInPlaceCommand;
+        public ICommand LandNowCommand => _landNowCommand;
+        public MapViewModel Map => _mapViewModel;
+        public ushort PortToUse { get => _proxyViewModel.PortToUse; set => _proxyViewModel.PortToUse = value; }
+        public ICommand ResetCommand => _resetCommand;
+        public Distance VehicleAltitude => _vehicleViewModel.VehicleAltitude;
+        public Latitude VehicleLatitude => _vehicleViewModel.VehicleLatitude;
+        public Longitude VehicleLongitude => _vehicleViewModel.VehicleLongitude;
+        public Angle VehiclePitch => _vehicleViewModel.VehiclePitch;
+        public Angle VehicleRoll => _vehicleViewModel.VehicleRoll;
+        public Angle VehicleYaw => _vehicleViewModel.VehicleYaw;
 
         /// <inheritdoc cref="IDisposable.Dispose" />
         public void Dispose()
@@ -101,6 +89,7 @@ namespace AirSimApp.ViewModels
                 _resetCommand.Dispose();
                 _proxyViewModel.Dispose();
                 _landNowCommand.Dispose();
+                _mapViewModel.Dispose();
                 _hoverInPlaceCommand.Dispose();
                 _goHomeCommand.Dispose();
                 _enableApiCommand.Dispose();
@@ -108,6 +97,42 @@ namespace AirSimApp.ViewModels
 
                 _multirotorVehicle.Dispose();
                 _controller.Dispose();
+            }
+        }
+
+        private readonly ProxyController _controller;
+        private readonly DisableApiControlCommand _disableApiCommand;
+        private readonly EnableApiControlCommand _enableApiCommand;
+        private readonly GoHomeCommand _goHomeCommand;
+        private readonly HoverInPlaceCommand _hoverInPlaceCommand;
+        private readonly LandNowCommand _landNowCommand;
+        private readonly MapViewModel _mapViewModel;
+        private readonly MultirotorVehicleModel _multirotorVehicle;
+        private readonly ProxyViewModel _proxyViewModel;
+        private readonly ResetCommand _resetCommand;
+        private readonly VehicleViewModel _vehicleViewModel;
+
+        private bool _disposed = false;
+
+        private void onProxyViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(_proxyViewModel.AddressToUse):
+                    OnPropertyChanged(nameof(AddressToUse));
+                    break;
+
+                case nameof(_proxyViewModel.PortToUse):
+                    OnPropertyChanged(nameof(PortToUse));
+                    break;
+
+                case nameof(_proxyViewModel.ConnectedAddress):
+                    OnPropertyChanged(nameof(ConnectedAddress));
+                    break;
+
+                case nameof(_proxyViewModel.ConnectedPort):
+                    OnPropertyChanged(nameof(ConnectedPort));
+                    break;
             }
         }
 
@@ -161,28 +186,6 @@ namespace AirSimApp.ViewModels
 
                 case nameof(_vehicleViewModel.VehicleYaw):
                     OnPropertyChanged(nameof(VehicleYaw));
-                    break;
-            }
-        }
-
-        private void onProxyViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(_proxyViewModel.AddressToUse):
-                    OnPropertyChanged(nameof(AddressToUse));
-                    break;
-
-                case nameof(_proxyViewModel.PortToUse):
-                    OnPropertyChanged(nameof(PortToUse));
-                    break;
-
-                case nameof(_proxyViewModel.ConnectedAddress):
-                    OnPropertyChanged(nameof(ConnectedAddress));
-                    break;
-
-                case nameof(_proxyViewModel.ConnectedPort):
-                    OnPropertyChanged(nameof(ConnectedPort));
                     break;
             }
         }

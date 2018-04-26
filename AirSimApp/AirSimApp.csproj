@@ -48,6 +48,14 @@
     <ProjectReference Include="..\MsgPackRpc\MsgPackRpc.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="DotSpatial.Controls" Version="1.9.0" />
+    <PackageReference Include="XAML.MapControl" Version="4.7.1" />
+    <Page Update="Controls\MapControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
   <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 
 </Project>

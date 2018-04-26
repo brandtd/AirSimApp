@@ -29,14 +29,12 @@ namespace AirSimApp.Models
     /// <summary>Controls access to an AirSim RPC server.</summary>
     public class ProxyController : PropertyChangedBase, IDisposable
     {
-        private readonly AirSimProxy _proxy;
-
-        private bool _connected;
-        private bool _disposed = false;
-        private IPAddress _addressToUse = IPAddress.Parse("127.0.0.1");
-        private IPAddress _connectedAddress = IPAddress.Parse("127.0.0.1");
-        private ushort _connectedPort = 41451;
-        private ushort _portToUse = 41451;
+        /// <summary />
+        public ProxyController()
+        {
+            _proxy = new AirSimProxy();
+            _proxy.ConnectionClosed += onProxyConnectionClosed;
+        }
 
         /// <summary>Address to use to connect to server.</summary>
         public IPAddress AddressToUse
@@ -52,15 +50,15 @@ namespace AirSimApp.Models
             }
         }
 
-        /// <summary>Port number to use to connect to server.</summary>
-        public ushort PortToUse
+        /// <summary>Whether proxy is connected with server.</summary>
+        public bool Connected
         {
-            get => _portToUse;
+            get => _connected;
             set
             {
-                if (_portToUse != value)
+                if (_connected != value)
                 {
-                    _portToUse = value;
+                    _connected = value;
                     OnPropertyChanged();
                 }
             }
@@ -94,15 +92,15 @@ namespace AirSimApp.Models
             }
         }
 
-        /// <summary>Whether proxy is connected with server.</summary>
-        public bool Connected
+        /// <summary>Port number to use to connect to server.</summary>
+        public ushort PortToUse
         {
-            get => _connected;
+            get => _portToUse;
             set
             {
-                if (_connected != value)
+                if (_portToUse != value)
                 {
-                    _connected = value;
+                    _portToUse = value;
                     OnPropertyChanged();
                 }
             }
@@ -110,13 +108,6 @@ namespace AirSimApp.Models
 
         /// <summary>The RPC proxy, <c>null</c> if not connected.</summary>
         public IAirSimProxy Proxy => Connected ? _proxy : null;
-
-        /// <summary />
-        public ProxyController()
-        {
-            _proxy = new AirSimProxy();
-            _proxy.ConnectionClosed += onProxyConnectionClosed;
-        }
 
         /// <inheritdoc cref="IAirSimProxy.ConnectAsync(IPEndPoint)" />
         public async Task<bool> ConnectAsync(IPEndPoint endpoint)
@@ -145,6 +136,15 @@ namespace AirSimApp.Models
                 _proxy.Dispose();
             }
         }
+
+        private readonly AirSimProxy _proxy;
+
+        private IPAddress _addressToUse = IPAddress.Parse("127.0.0.1");
+        private bool _connected;
+        private IPAddress _connectedAddress = IPAddress.Parse("127.0.0.1");
+        private ushort _connectedPort = 41451;
+        private bool _disposed = false;
+        private ushort _portToUse = 41451;
 
         private void onProxyConnectionClosed(object sender, EventArgs e)
         {

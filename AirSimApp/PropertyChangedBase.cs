@@ -34,6 +34,15 @@ namespace AirSimApp
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
+        ///     Fires property changed event, automatically figuring out the property name if called
+        ///     from within the setter of a property.
+        /// </summary>
+        protected void OnPropertyChanged([CallerMemberName] string name = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        /// <summary>
         ///     Sets the property and fires <see cref="PropertyChanged" /> event if new value is not
         ///     equal to current value.
         /// </summary>
@@ -44,15 +53,6 @@ namespace AirSimApp
                 property = value;
                 OnPropertyChanged(name);
             }
-        }
-
-        /// <summary>
-        ///     Fires property changed event, automatically figuring out the property name if called
-        ///     from within the setter of a property.
-        /// </summary>
-        protected void OnPropertyChanged([CallerMemberName] string name = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }
