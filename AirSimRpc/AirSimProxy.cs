@@ -196,9 +196,9 @@ namespace AirSimRpc
         }
 
         /// <inheritdoc cref="IAirSimProxy.GetCameraInfoAsync" />
-        public Task<RpcResult<CameraInfo>> GetCameraInfoAsync()
+        public Task<RpcResult<CameraInfo>> GetCameraInfoAsync(int cameraId)
         {
-            return _proxy.CallAsync<CameraInfo>("getCameraInfo");
+            return _proxy.CallAsync<CameraInfo>("getCameraInfo", cameraId);
         }
 
         /// <inheritdoc cref="IAirSimProxy.GetCollisionInfoAsync" />

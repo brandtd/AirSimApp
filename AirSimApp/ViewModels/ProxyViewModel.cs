@@ -22,6 +22,7 @@
 using AirSimApp.Commands;
 using AirSimApp.Models;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net;
 using System.Windows.Input;
@@ -32,31 +33,88 @@ namespace AirSimApp
     public class ProxyViewModel : PropertyChangedBase, IDisposable
     {
         /// <summary>Wire up view model.</summary>
-        public ProxyViewModel(ProxyController controller)
+        public ProxyViewModel()
         {
-            _controller = controller;
-            _connectCommand = new ConnectCommand(_controller);
+            _controller = new ProxyController();
+            _cameraProxyController = new ProxyController();
 
+            _connectCommands = new List<ConnectCommand>
+            {
+                new ConnectCommand(_controller),
+                new ConnectCommand(_cameraProxyController),
+            };
+            _connectCommand = new MultiCommand(_connectCommands);
+
+            _cameraProxyController.PropertyChanged += onControllerPropertyChanged;
             _controller.PropertyChanged += onControllerPropertyChanged;
         }
 
         /// <inheritdoc cref="ProxyModel.AddressToUse" />
-        public IPAddress AddressToUse { get => _controller.AddressToUse; set => _controller.AddressToUse = value; }
+        public IPAddress AddressToUse
+        {
+            get => _controller.AddressToUse;
+            set
+            {
+                _cameraProxyController.AddressToUse = value;
+                _controller.AddressToUse = value;
+            }
+        }
+
+        /// <summary>
+        ///     Proxy controller intended for use by camera (because the camera's "get images" really
+        ///     seams to mess with things).
+        /// </summary>
+        public ProxyController CameraController => _cameraProxyController;
 
         /// <summary>Connect to RPC server.</summary>
         public ICommand ConnectCommand => _connectCommand;
 
         /// <inheritdoc cref="ProxyModel.Connected" />
-        public bool Connected { get => _controller.Connected; set => _controller.Connected = value; }
+        public bool Connected
+        {
+            get => _controller.Connected;
+            set
+            {
+                _cameraProxyController.Connected = value;
+                _controller.Connected = value;
+            }
+        }
 
         /// <inheritdoc cref="ProxyModel.ConnectedAddress" />
-        public IPAddress ConnectedAddress { get => _controller.ConnectedAddress; set => _controller.ConnectedAddress = value; }
+        public IPAddress ConnectedAddress
+        {
+            get => _controller.ConnectedAddress;
+            set
+            {
+                _cameraProxyController.ConnectedAddress = value;
+                _controller.ConnectedAddress = value;
+            }
+        }
 
         /// <inheritdoc cref="ProxyModel.ConnectedPort" />
-        public ushort ConnectedPort { get => _controller.ConnectedPort; set => _controller.ConnectedPort = value; }
+        public ushort ConnectedPort
+        {
+            get => _controller.ConnectedPort;
+            set
+            {
+                _cameraProxyController.ConnectedPort = value;
+                _controller.ConnectedPort = value;
+            }
+        }
+
+        /// <summary>The general proxy controller.</summary>
+        public ProxyController Controller => _controller;
 
         /// <inheritdoc cref="ProxyModel.PortToUse" />
-        public ushort PortToUse { get => _controller.PortToUse; set => _controller.PortToUse = value; }
+        public ushort PortToUse
+        {
+            get => _controller.PortToUse;
+            set
+            {
+                _cameraProxyController.PortToUse = value;
+                _controller.PortToUse = value;
+            }
+        }
 
         /// <inheritdoc cref="IDisposable.Dispose" />
         public void Dispose()
@@ -65,13 +123,20 @@ namespace AirSimApp
             {
                 _disposed = true;
 
+                _cameraProxyController.PropertyChanged -= onControllerPropertyChanged;
                 _controller.PropertyChanged -= onControllerPropertyChanged;
 
+                _connectCommands.ForEach(cmd => cmd.Dispose());
                 _connectCommand.Dispose();
+
+                _cameraProxyController.Dispose();
+                _controller.Dispose();
             }
         }
 
-        private readonly ConnectCommand _connectCommand;
+        private readonly ProxyController _cameraProxyController;
+        private readonly MultiCommand _connectCommand;
+        private readonly List<ConnectCommand> _connectCommands;
         private readonly ProxyController _controller;
 
         private bool _disposed = false;

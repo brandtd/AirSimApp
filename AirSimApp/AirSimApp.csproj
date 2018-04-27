@@ -66,6 +66,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\MultiCommand.cs" />
     <Compile Include="Converters\SwitchSourceConverter.cs" />
     <Compile Include="Models\CameraModel.cs" />
     <Compile Include="Models\ProxyModel.cs" />

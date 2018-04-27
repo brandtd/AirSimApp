@@ -81,10 +81,9 @@ namespace AirSimRpc
         /// <returns><c>true&gt;</c> if connection is successful, <c>false</c> othewrise.</returns>
         Task<bool> ConnectAsync(IPEndPoint endpoint);
 
-        // TODO simGetImages TODO simGetImage TODO simSetSegmentationObjectID TODO
         // simGetSegmentationObjectID TODO simPrintLogMessage TODO setSafety TODO setRCData
 
-        Task<RpcResult<CameraInfo>> GetCameraInfoAsync();
+        Task<RpcResult<CameraInfo>> GetCameraInfoAsync(int cameraId);
 
         Task<RpcResult<CollisionInfo>> GetCollisionInfoAsync();
 

@@ -278,7 +278,6 @@ namespace AirSimApp.Models
         /// <inheritdoc cref="ProxyModel.UpdateState(CancellationToken)" />
         protected override async Task UpdateState(CancellationToken token)
         {
-            return;
             token.ThrowIfCancellationRequested();
             RpcResult<GeoPoint> homeLocation = await Controller.Proxy?.GetHomeGeoPointAsync();
             if (homeLocation != null && homeLocation.Successful)

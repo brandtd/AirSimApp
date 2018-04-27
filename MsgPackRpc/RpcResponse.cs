@@ -26,19 +26,19 @@ namespace MsgPackRpc
     [MessagePackObject]
     public class RpcResponse
     {
-        [Key(0)]
-        public int Type { get; set; }
+        [Key(2)]
+        public object Error { get; set; }
 
         [Key(1)]
         public uint MsgId { get; set; }
-
-        [Key(2)]
-        public object Error { get; set; }
 
         [Key(3)]
         public object Result { get; set; }
 
         [IgnoreMember]
         public string ResultAsJson { get; set; }
+
+        [Key(0)]
+        public int Type { get; set; }
     }
 }

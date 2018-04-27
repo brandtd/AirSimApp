@@ -28,14 +28,14 @@ namespace AirSimApp.ViewModels
     {
         public MainWindowViewModel()
         {
-            _controller = new ProxyController();
-            _multirotorVehicle = new MultirotorVehicleModel(_controller);
-            _rc = new RcModel(_controller);
-            _camera = new CameraModel(_controller);
+            Proxy = new ProxyViewModel();
+
+            _multirotorVehicle = new MultirotorVehicleModel(Proxy.Controller);
+            _rc = new RcModel(Proxy.Controller);
+            _camera = new CameraModel(0, Proxy.CameraController);
 
             Camera = new CameraViewModel(_camera);
             Map = new MapViewModel(_multirotorVehicle);
-            Proxy = new ProxyViewModel(_controller);
             Rc = new RcViewModel(_rc);
             Vehicle = new VehicleViewModel(_multirotorVehicle);
         }
@@ -53,21 +53,20 @@ namespace AirSimApp.ViewModels
             {
                 _disposed = true;
 
-                Camera.Dispose();
-                Map.Dispose();
-                Proxy.Dispose();
-                Rc.Dispose();
                 Vehicle.Dispose();
+                Rc.Dispose();
+                Map.Dispose();
+                Camera.Dispose();
 
                 _camera.Dispose();
                 _rc.Dispose();
                 _multirotorVehicle.Dispose();
-                _controller.Dispose();
+
+                Proxy.Dispose();
             }
         }
 
         private readonly CameraModel _camera;
-        private readonly ProxyController _controller;
         private readonly MultirotorVehicleModel _multirotorVehicle;
         private readonly RcModel _rc;
 

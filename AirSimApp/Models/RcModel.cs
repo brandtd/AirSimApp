@@ -100,7 +100,6 @@ namespace AirSimApp.Models
         /// <inheritdoc cref="ProxyModel.UpdateState(CancellationToken)" />
         protected override async Task UpdateState(CancellationToken token)
         {
-            return;
             token.ThrowIfCancellationRequested();
             RpcResult<RcData> rcData = await Controller.Proxy?.GetRcDataAsync();
             if (rcData.Successful)
