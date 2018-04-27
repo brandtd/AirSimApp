@@ -44,6 +44,9 @@ namespace AirSimApp.ViewModels
         /// <summary>Center location of map.</summary>
         public Location Center { get => _center; set => SetProperty(ref _center, value); }
 
+        /// <summary>Whether we have a vehicle to display.</summary>
+        public bool HaveVehicle { get => _haveVehicle; set => SetProperty(ref _haveVehicle, value); }
+
         /// <summary>Vehicle's home location.</summary>
         public Location Home { get => _home; set => SetProperty(ref _home, value); }
 
@@ -74,6 +77,9 @@ namespace AirSimApp.ViewModels
 
         /// <summary>Vehicle location.</summary>
         public Location VehicleLocation { get => _vehicleLocation; set => SetProperty(ref _vehicleLocation, value); }
+
+        /// <summary>Map's zoom level.</summary>
+        public double Zoom { get => _zoom; set => SetProperty(ref _zoom, value); }
 
         /// <inheritdoc cref="IDisposable.Dispose" />
         public void Dispose()
@@ -161,12 +167,14 @@ namespace AirSimApp.ViewModels
         };
 
         private readonly MultirotorVehicleModel _vehicle;
-        private Location _center = new Location(0, 0);
+        private Location _center = new Location(47.639666, -122.128245);
         private bool _disposed = false;
+        private bool _haveVehicle = false;
         private Location _home = new Location(0, 0);
         private string _mapLayerName = "OpenStreetMap";
         private double _vehicleHeading = 0;
         private Location _vehicleLocation = new Location(0, 0);
+        private double _zoom = 15.0;
 
         private void onVehiclePropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -183,6 +191,10 @@ namespace AirSimApp.ViewModels
 
                 case (nameof(_vehicle.VehicleYaw)):
                     VehicleHeading = _vehicle.VehicleYaw.InDegrees();
+                    break;
+
+                case (nameof(_vehicle.Connected)):
+                    HaveVehicle = _vehicle.Connected;
                     break;
             }
         }

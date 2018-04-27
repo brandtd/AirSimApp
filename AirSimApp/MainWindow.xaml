@@ -14,6 +14,19 @@
         Title="MainWindow" Width="525" ResizeMode="NoResize" SizeToContent="Height">
     <Window.Resources>
         <BitmapImage x:Key="IndianHead" UriSource="/Resources/Indian_Head_Test_Image.JPG" />
+
+        <Style x:Key="BlackMapIconStyle" TargetType="Path">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Fill" Value="Black" />
+                    <Setter Property="Stroke" Value="Black" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Fill" Value="Transparent" />
+                    <Setter Property="Stroke" Value="Transparent" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -25,16 +38,17 @@
         </Grid.RowDefinitions>
         <controls:DraggableMap Grid.Row="0"
                                x:Name="map"
+                               ZoomLevel="{Binding Map.Zoom}"
                                Center="{Binding Map.Center}"
                                MapLayer="{Binding Map.Layer}">
             <map:MapGraticule Opacity="0.6" />
             <map:MapScale />
 
             <Path map:MapPanel.Location="{Binding Map.VehicleLocation}"
+                  Style="{StaticResource BlackMapIconStyle}"
+                  IsEnabled="{Binding Map.HaveVehicle}"
                   Width="30"
                   Data="M0,0 40,-10 50,-50 60,-10 100,0 50,-100z"
-                  Fill="Black"
-                  Stroke="Black"
                   Stretch="Uniform"
                   StrokeThickness="2"
                   HorizontalAlignment="Center"
@@ -240,15 +254,27 @@
             </GroupBox>
         </Grid>
         <GroupBox Header="Camera" Grid.Row="4">
-            <Image>
-                <Image.Source>
-                    <MultiBinding Converter="{conv:SwitchSourceConverter}">
-                        <Binding Path="Camera.Image" />
-                        <Binding Source="{StaticResource IndianHead}" />
-                        <Binding Path="Camera.Connected" />
-                    </MultiBinding>
-                </Image.Source>
-            </Image>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Image Grid.Row="0" Height="200">
+                    <Image.Source>
+                        <MultiBinding Converter="{conv:SwitchSourceConverter}">
+                            <Binding Path="Camera.Image" />
+                            <Binding Source="{StaticResource IndianHead}" />
+                            <Binding Path="Camera.Connected" />
+                        </MultiBinding>
+                    </Image.Source>
+                </Image>
+                <StackPanel Grid.Row="1" Orientation="Horizontal">
+                    <Label Content="Image Height:" />
+                    <Label Content="{Binding Camera.Image.Height}" />
+                    <Label Content="Image Width:" />
+                    <Label Content="{Binding Camera.Image.Width}" />
+                </StackPanel>
+            </Grid>
         </GroupBox>
     </Grid>
 </Window>
