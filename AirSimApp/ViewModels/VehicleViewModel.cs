@@ -19,22 +19,43 @@
 
 #endregion MIT License (c) 2018 Dan Brandt
 
+using AirSimApp.Commands;
 using AirSimApp.Models;
 using DotSpatial.Positioning;
 using System;
 using System.ComponentModel;
+using System.Windows.Input;
 
 namespace AirSimApp
 {
     /// <summary>View model for a vehicle.</summary>
     public class VehicleViewModel : PropertyChangedBase, IDisposable
     {
-        private readonly MultirotorVehicleModel _model;
+        /// <summary>Wire up view model.</summary>
+        public VehicleViewModel(MultirotorVehicleModel model)
+        {
+            _model = model;
+            _model.PropertyChanged += onModelPropertyChanged;
 
-        private bool _disposed = false;
+            _disableApiCommand = new DisableApiControlCommand(_model);
+            _enableApiCommand = new EnableApiControlCommand(_model);
+            _goHomeCommand = new GoHomeCommand(_model);
+            _hoverInPlaceCommand = new HoverInPlaceCommand(_model);
+            _landNowCommand = new LandNowCommand(_model);
+            _resetCommand = new ResetCommand(_model);
+        }
 
-        /// <summary>Are we able to control the vehicle via the API?</summary>
-        public bool IsApiControlEnabled => _model.ApiEnabled;
+        /// <summary>Disable RPC API (API must be enabled for any commands to work).</summary>
+        public ICommand DisableApiCommand => _disableApiCommand;
+
+        /// <summary>Enable RPC API (API must be enabled for any commands to work).</summary>
+        public ICommand EnableApiCommand => _enableApiCommand;
+
+        /// <summary>Command vehicle to go home/recover.</summary>
+        public ICommand GoHomeCommand => _goHomeCommand;
+
+        /// <summary>Vehicle's GPS altitude.</summary>
+        public Distance GpsAltitude => _model.VehicleLocationGps.Altitude;
 
         /// <summary>Vehicle's GPS latitude.</summary>
         public Latitude GpsLatitude => _model.VehicleLocationGps.Latitude;
@@ -42,26 +63,8 @@ namespace AirSimApp
         /// <summary>Vehicle's GPS longitude.</summary>
         public Longitude GpsLongitude => _model.VehicleLocationGps.Longitude;
 
-        /// <summary>Vehicle's GPS altitude.</summary>
-        public Distance GpsAltitude => _model.VehicleLocationGps.Altitude;
-
-        /// <summary>Vehicle latitude.</summary>
-        public Latitude VehicleLatitude => _model.VehicleLocation.Latitude;
-
-        /// <summary>Vehicle longitude.</summary>
-        public Longitude VehicleLongitude => _model.VehicleLocation.Longitude;
-
-        /// <summary>Vehicle altitude.</summary>
-        public Distance VehicleAltitude => _model.VehicleLocation.Altitude;
-
-        /// <summary>Vehicle roll.</summary>
-        public Angle VehicleRoll => _model.VehicleRoll;
-
-        /// <summary>Vehicle pitch.</summary>
-        public Angle VehiclePitch => _model.VehiclePitch;
-
-        /// <summary>Vehicle yaw.</summary>
-        public Angle VehicleYaw => _model.VehicleYaw;
+        /// <summary>Home point altitude.</summary>
+        public Distance HomeAltitude => _model.HomeLocation.Altitude;
 
         /// <summary>Home point latitude.</summary>
         public Latitude HomeLatitude => _model.HomeLocation.Latitude;
@@ -69,15 +72,35 @@ namespace AirSimApp
         /// <summary>Home point longitude.</summary>
         public Longitude HomeLongitude => _model.HomeLocation.Longitude;
 
-        /// <summary>Home point altitude.</summary>
-        public Distance HomeAltitude => _model.HomeLocation.Altitude;
+        /// <summary>Command vehicle to hover in place.</summary>
+        public ICommand HoverInPlaceCommand => _hoverInPlaceCommand;
 
-        /// <summary>Wire up view model.</summary>
-        public VehicleViewModel(MultirotorVehicleModel model)
-        {
-            _model = model;
-            _model.PropertyChanged += onModelPropertyChanged;
-        }
+        /// <summary>Are we able to control the vehicle via the API?</summary>
+        public bool IsApiControlEnabled => _model.ApiEnabled;
+
+        /// <summary>Command vehicle to land now.</summary>
+        public ICommand LandNowCommand => _landNowCommand;
+
+        /// <summary>Command simulator to reset.</summary>
+        public ICommand ResetCommand => _resetCommand;
+
+        /// <summary>Vehicle altitude.</summary>
+        public Distance VehicleAltitude => _model.VehicleLocation.Altitude;
+
+        /// <summary>Vehicle latitude.</summary>
+        public Latitude VehicleLatitude => _model.VehicleLocation.Latitude;
+
+        /// <summary>Vehicle longitude.</summary>
+        public Longitude VehicleLongitude => _model.VehicleLocation.Longitude;
+
+        /// <summary>Vehicle pitch.</summary>
+        public Angle VehiclePitch => _model.VehiclePitch;
+
+        /// <summary>Vehicle roll.</summary>
+        public Angle VehicleRoll => _model.VehicleRoll;
+
+        /// <summary>Vehicle yaw.</summary>
+        public Angle VehicleYaw => _model.VehicleYaw;
 
         /// <inheritdoc cref="IDisposable.Dispose" />
         public void Dispose()
@@ -85,9 +108,27 @@ namespace AirSimApp
             if (!_disposed)
             {
                 _disposed = true;
+
                 _model.PropertyChanged -= onModelPropertyChanged;
+
+                _resetCommand.Dispose();
+                _landNowCommand.Dispose();
+                _hoverInPlaceCommand.Dispose();
+                _goHomeCommand.Dispose();
+                _enableApiCommand.Dispose();
+                _disableApiCommand.Dispose();
             }
         }
+
+        private readonly DisableApiControlCommand _disableApiCommand;
+        private readonly EnableApiControlCommand _enableApiCommand;
+        private readonly GoHomeCommand _goHomeCommand;
+        private readonly HoverInPlaceCommand _hoverInPlaceCommand;
+        private readonly LandNowCommand _landNowCommand;
+        private readonly MultirotorVehicleModel _model;
+        private readonly ResetCommand _resetCommand;
+
+        private bool _disposed = false;
 
         private void onModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {

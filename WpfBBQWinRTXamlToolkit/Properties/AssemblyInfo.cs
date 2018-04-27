@@ -1,6 +1,9 @@
-﻿#region MIT License (c) 2018 Dan Brandt
+﻿#region MIT License (c) 2018 Dan Brandt, Filip Skakun
 
-// Copyright 2018 Dan Brandt
+// This code originates from http://github.com/xyzzer/WinRTXamlToolkit, a repository by Filip Skakun
+// with an MIT license.
+//
+// Copyright 2018 Dan Brandt, Filip Skakun
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
 // associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,7 +20,7 @@
 // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
 // OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#endregion MIT License (c) 2018 Dan Brandt
+#endregion MIT License (c) 2018 Dan Brandt, Filip Skakun
 
 using System.Reflection;
 using System.Resources;
@@ -27,11 +30,11 @@ using System.Windows;
 
 // General Information about an assembly is controlled through the following set of attributes.
 // Change these attribute values to modify the information associated with an assembly.
-[assembly: AssemblyTitle("AirSimApp")]
+[assembly: AssemblyTitle("WpfBBQWinRTXamlToolkit")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("AirSimApp")]
+[assembly: AssemblyProduct("WpfBBQWinRTXamlToolkit")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

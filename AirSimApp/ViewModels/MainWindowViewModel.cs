@@ -19,13 +19,8 @@
 
 #endregion MIT License (c) 2018 Dan Brandt
 
-using AirSimApp.Commands;
 using AirSimApp.Models;
-using DotSpatial.Positioning;
 using System;
-using System.ComponentModel;
-using System.Net;
-using System.Windows.Input;
 
 namespace AirSimApp.ViewModels
 {
@@ -35,45 +30,18 @@ namespace AirSimApp.ViewModels
         {
             _controller = new ProxyController();
             _multirotorVehicle = new MultirotorVehicleModel(_controller);
+            _rc = new RcModel(_controller);
 
-            _disableApiCommand = new DisableApiControlCommand(_multirotorVehicle);
-            _enableApiCommand = new EnableApiControlCommand(_multirotorVehicle);
-            _goHomeCommand = new GoHomeCommand(_multirotorVehicle);
-            _hoverInPlaceCommand = new HoverInPlaceCommand(_multirotorVehicle);
-            _landNowCommand = new LandNowCommand(_multirotorVehicle);
-            _mapViewModel = new MapViewModel(_multirotorVehicle);
-            _proxyViewModel = new ProxyViewModel(_controller);
-            _resetCommand = new ResetCommand(_multirotorVehicle);
-            _vehicleViewModel = new VehicleViewModel(_multirotorVehicle);
-
-            _proxyViewModel.PropertyChanged += onProxyViewModelPropertyChanged;
-            _vehicleViewModel.PropertyChanged += onVehicleViewModelPropertyChanged;
+            Map = new MapViewModel(_multirotorVehicle);
+            Proxy = new ProxyViewModel(_controller);
+            Rc = new RcViewModel(_rc);
+            Vehicle = new VehicleViewModel(_multirotorVehicle);
         }
 
-        public IPAddress AddressToUse { get => _proxyViewModel.AddressToUse; set => _proxyViewModel.AddressToUse = value; }
-        public ICommand ConnectCommand => _proxyViewModel.Connect;
-        public IPAddress ConnectedAddress { get => _proxyViewModel.ConnectedAddress; set => _proxyViewModel.ConnectedAddress = value; }
-        public ushort ConnectedPort { get => _proxyViewModel.ConnectedPort; set => _proxyViewModel.ConnectedPort = value; }
-        public ICommand DisableApiCommand => _disableApiCommand;
-        public ICommand EnableApiCommand => _enableApiCommand;
-        public ICommand GoHomeCommand => _goHomeCommand;
-        public Distance GpsAltitude => _vehicleViewModel.GpsAltitude;
-        public Latitude GpsLatitude => _vehicleViewModel.GpsLatitude;
-        public Longitude GpsLongitude => _vehicleViewModel.GpsLongitude;
-        public Distance HomeAltitude => _vehicleViewModel.HomeAltitude;
-        public Latitude HomeLatitude => _vehicleViewModel.HomeLatitude;
-        public Longitude HomeLongitude => _vehicleViewModel.HomeLongitude;
-        public ICommand HoverInPlaceCommand => _hoverInPlaceCommand;
-        public ICommand LandNowCommand => _landNowCommand;
-        public MapViewModel Map => _mapViewModel;
-        public ushort PortToUse { get => _proxyViewModel.PortToUse; set => _proxyViewModel.PortToUse = value; }
-        public ICommand ResetCommand => _resetCommand;
-        public Distance VehicleAltitude => _vehicleViewModel.VehicleAltitude;
-        public Latitude VehicleLatitude => _vehicleViewModel.VehicleLatitude;
-        public Longitude VehicleLongitude => _vehicleViewModel.VehicleLongitude;
-        public Angle VehiclePitch => _vehicleViewModel.VehiclePitch;
-        public Angle VehicleRoll => _vehicleViewModel.VehicleRoll;
-        public Angle VehicleYaw => _vehicleViewModel.VehicleYaw;
+        public MapViewModel Map { get; }
+        public ProxyViewModel Proxy { get; }
+        public RcViewModel Rc { get; }
+        public VehicleViewModel Vehicle { get; }
 
         /// <inheritdoc cref="IDisposable.Dispose" />
         public void Dispose()
@@ -82,112 +50,21 @@ namespace AirSimApp.ViewModels
             {
                 _disposed = true;
 
-                _proxyViewModel.PropertyChanged -= onProxyViewModelPropertyChanged;
-                _vehicleViewModel.PropertyChanged -= onVehicleViewModelPropertyChanged;
+                Map.Dispose();
+                Proxy.Dispose();
+                Rc.Dispose();
+                Vehicle.Dispose();
 
-                _vehicleViewModel.Dispose();
-                _resetCommand.Dispose();
-                _proxyViewModel.Dispose();
-                _landNowCommand.Dispose();
-                _mapViewModel.Dispose();
-                _hoverInPlaceCommand.Dispose();
-                _goHomeCommand.Dispose();
-                _enableApiCommand.Dispose();
-                _disableApiCommand.Dispose();
-
+                _rc.Dispose();
                 _multirotorVehicle.Dispose();
                 _controller.Dispose();
             }
         }
 
         private readonly ProxyController _controller;
-        private readonly DisableApiControlCommand _disableApiCommand;
-        private readonly EnableApiControlCommand _enableApiCommand;
-        private readonly GoHomeCommand _goHomeCommand;
-        private readonly HoverInPlaceCommand _hoverInPlaceCommand;
-        private readonly LandNowCommand _landNowCommand;
-        private readonly MapViewModel _mapViewModel;
         private readonly MultirotorVehicleModel _multirotorVehicle;
-        private readonly ProxyViewModel _proxyViewModel;
-        private readonly ResetCommand _resetCommand;
-        private readonly VehicleViewModel _vehicleViewModel;
+        private readonly RcModel _rc;
 
         private bool _disposed = false;
-
-        private void onProxyViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(_proxyViewModel.AddressToUse):
-                    OnPropertyChanged(nameof(AddressToUse));
-                    break;
-
-                case nameof(_proxyViewModel.PortToUse):
-                    OnPropertyChanged(nameof(PortToUse));
-                    break;
-
-                case nameof(_proxyViewModel.ConnectedAddress):
-                    OnPropertyChanged(nameof(ConnectedAddress));
-                    break;
-
-                case nameof(_proxyViewModel.ConnectedPort):
-                    OnPropertyChanged(nameof(ConnectedPort));
-                    break;
-            }
-        }
-
-        private void onVehicleViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(_vehicleViewModel.GpsLatitude):
-                    OnPropertyChanged(nameof(GpsLatitude));
-                    break;
-
-                case nameof(_vehicleViewModel.GpsLongitude):
-                    OnPropertyChanged(nameof(GpsLongitude));
-                    break;
-
-                case nameof(_vehicleViewModel.GpsAltitude):
-                    OnPropertyChanged(nameof(GpsAltitude));
-                    break;
-
-                case nameof(_vehicleViewModel.HomeLatitude):
-                    OnPropertyChanged(nameof(HomeLatitude));
-                    break;
-
-                case nameof(_vehicleViewModel.HomeLongitude):
-                    OnPropertyChanged(nameof(HomeLongitude));
-                    break;
-
-                case nameof(_vehicleViewModel.HomeAltitude):
-                    OnPropertyChanged(nameof(HomeAltitude));
-                    break;
-
-                case nameof(_vehicleViewModel.VehicleLatitude):
-                    OnPropertyChanged(nameof(VehicleLatitude));
-                    break;
-
-                case nameof(_vehicleViewModel.VehicleLongitude):
-                    OnPropertyChanged(nameof(VehicleLongitude));
-                    break;
-
-                case nameof(_vehicleViewModel.VehicleAltitude):
-                    OnPropertyChanged(nameof(VehicleAltitude));
-                    break;
-
-                case nameof(_vehicleViewModel.VehicleRoll):
-                    OnPropertyChanged(nameof(VehicleRoll));
-                    break;
-
-                case nameof(_vehicleViewModel.VehiclePitch):
-                    OnPropertyChanged(nameof(VehiclePitch));
-                    break;
-
-                case nameof(_vehicleViewModel.VehicleYaw):
-                    OnPropertyChanged(nameof(VehicleYaw));
-                    break;
-            }
-        }
     }
 }

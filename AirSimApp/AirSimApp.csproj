@@ -1,61 +1,156 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <LanguageTargets>$(MSBuildExtensionsPath)\$(VisualStudioVersion)\Bin\Microsoft.CSharp.targets</LanguageTargets> 
-    <TargetFramework>net461</TargetFramework>
-    <RootNamespace>AirSimApp</RootNamespace>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7FD3532B-34B8-47E3-BC42-90BF1AA9AA5C}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>AirSimApp</RootNamespace>
     <AssemblyName>AirSimApp</AssemblyName>
-    <StartupObject />
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
-
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <IntermediateOutputPath>..\output\AirSimApp\obj\Debug\</IntermediateOutputPath>
+    <OutputPath>..\output\AirSimApp\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <IntermediateOutputPath>..\output\AirSimApp\obj\Release\</IntermediateOutputPath>
+    <OutputPath>..\output\AirSimApp\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
   <ItemGroup>
-    <!-- App.xaml -->
-    <ApplicationDefinition Include="App.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </ApplicationDefinition>
-
-    <!-- XAML elements -->
-    <Page Include="**\*.xaml" Exclude="App.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </Page>
-    <Compile Update="**\*.xaml.cs" SubType="Code" DependentUpon="%(Filename)" />
-
-    <!-- Resources -->
-    <EmbeddedResource Update="Properties\Resources.resx" Generator="ResXFileCodeGenerator" LastGenOutput="Resources.Designer.cs" />
-    <Compile Update="Properties\Resources.Designer.cs" AutoGen="True" DependentUpon="Resources.resx" DesignTime="True" />
-
-    <!-- Settings -->
-    <None Update="Properties\Settings.settings" Generator="SettingsSingleFileGenerator" LastGenOutput="Settings.Designer.cs" />
-    <Compile Update="Properties\Settings.Designer.cs" AutoGen="True" DependentUpon="Settings.settings" />
-
-  </ItemGroup>
-
-  <ItemGroup>
+    <Reference Include="DotSpatial.Positioning, Version=1.9.0.0, Culture=neutral, PublicKeyToken=f6f66d1554473068, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotSpatial.Positioning.1.9\lib\net40-Client\DotSpatial.Positioning.dll</HintPath>
+    </Reference>
+    <Reference Include="MapControl.WPF, Version=4.7.1.0, Culture=neutral, PublicKeyToken=f26fcf0059638459, processorArchitecture=MSIL">
+      <HintPath>..\packages\XAML.MapControl.4.7.1\lib\net45\MapControl.WPF.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="System.Net" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
-
   <ItemGroup>
-    <ProjectReference Include="..\AirSimRpc\AirSimRpc.csproj" />
-    <ProjectReference Include="..\DotSpatialExtensions\DotSpatialExtensions.csproj" />
-    <ProjectReference Include="..\MsgPackRpc\MsgPackRpc.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="DotSpatial.Controls" Version="1.9.0" />
-    <PackageReference Include="XAML.MapControl" Version="4.7.1" />
-    <Page Update="Controls\MapControl.xaml">
+    <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="Models\RcModel.cs" />
+    <Compile Include="PropertyChangedBase.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\MapViewModel.cs" />
+    <Compile Include="ViewModels\ProxyViewModel.cs" />
+    <Compile Include="ViewModels\RcViewModel.cs" />
+    <Compile Include="ViewModels\VehicleViewModel.cs" />
+    <Page Include="Controls\DraggableMap.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Commands\ConnectCommand.cs" />
+    <Compile Include="Commands\DisableApiControlCommand.cs" />
+    <Compile Include="Commands\EnableApiControlCommand.cs" />
+    <Compile Include="Commands\GoHomeCommand.cs" />
+    <Compile Include="Commands\HoverInPlaceCommand.cs" />
+    <Compile Include="Commands\LandNowCommand.cs" />
+    <Compile Include="Commands\ResetCommand.cs" />
+    <Compile Include="Controls\DraggableMap.xaml.cs">
+      <DependentUpon>DraggableMap.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converters\AngleToStringConverter.cs" />
+    <Compile Include="Converters\DistanceToStringConverter.cs" />
+    <Compile Include="Converters\IpAddressToStringConverter.cs" />
+    <Compile Include="Converters\LatitudeToStringConverter.cs" />
+    <Compile Include="Converters\LongitudeToStringConverter.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
-
-  <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
-
+  <ItemGroup>
+    <Compile Include="Models\MultirotorVehicleModel.cs" />
+    <Compile Include="Models\ProxyController.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\AirSimRpc\AirSimRpc.csproj">
+      <Project>{d9a2a20d-6337-4bbb-a0e7-a79b85388cd7}</Project>
+      <Name>AirSimRpc</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DotSpatialExtensions\DotSpatialExtensions.csproj">
+      <Project>{56397a07-8ba7-4029-9eda-5dd5a4f0598e}</Project>
+      <Name>DotSpatialExtensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MsgPackRpc\MsgPackRpc.csproj">
+      <Project>{c10f9085-1941-4da6-bcf9-5d16db615249}</Project>
+      <Name>MsgPackRpc</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WpfBBQWinRTXamlToolkit\WpfBBQWinRTXamlToolkit.csproj">
+      <Project>{04c45781-167d-484a-94eb-78418408f7b9}</Project>
+      <Name>WpfBBQWinRTXamlToolkit</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

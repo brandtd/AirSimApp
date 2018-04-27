@@ -27,8 +27,16 @@ namespace AirSimApp
     /// <summary>Interaction logic for App.xaml</summary>
     public partial class App : Application
     {
-        private MainWindow _mainWindow;
-        private MainWindowViewModel _viewModel;
+        protected override void OnExit(ExitEventArgs args)
+        {
+            _mainWindow.Close();
+            _mainWindow = null;
+
+            _viewModel.Dispose();
+            _viewModel = null;
+
+            base.OnExit(args);
+        }
 
         protected override void OnStartup(StartupEventArgs args)
         {
@@ -40,15 +48,7 @@ namespace AirSimApp
             _mainWindow.Show();
         }
 
-        protected override void OnExit(ExitEventArgs args)
-        {
-            _mainWindow.Close();
-            _mainWindow = null;
-
-            _viewModel.Dispose();
-            _viewModel = null;
-
-            base.OnExit(args);
-        }
+        private MainWindow _mainWindow;
+        private MainWindowViewModel _viewModel;
     }
 }

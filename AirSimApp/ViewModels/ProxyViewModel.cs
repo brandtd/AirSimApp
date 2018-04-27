@@ -28,39 +28,10 @@ using System.Windows.Input;
 
 namespace AirSimApp
 {
-    /// <summary>
-    /// View model for an AirSim RPC proxy.
-    /// </summary>
+    /// <summary>View model for an AirSim RPC proxy.</summary>
     public class ProxyViewModel : PropertyChangedBase, IDisposable
     {
-        private readonly ConnectCommand _connectCommand;
-        private readonly ProxyController _controller;
-
-        private bool _disposed = false;
-
-        /// <inheritdoc cref="ProxyModel.AddressToUse" />
-        public IPAddress AddressToUse { get => _controller.AddressToUse; set => _controller.AddressToUse = value; }
-
-        /// <inheritdoc cref="ProxyModel.PortToUse" />
-        public ushort PortToUse { get => _controller.PortToUse; set => _controller.PortToUse = value; }
-
-        /// <inheritdoc cref="ProxyModel.ConnectedAddress" />
-        public IPAddress ConnectedAddress { get => _controller.ConnectedAddress; set => _controller.ConnectedAddress = value; }
-
-        /// <inheritdoc cref="ProxyModel.ConnectedPort" />
-        public ushort ConnectedPort { get => _controller.ConnectedPort; set => _controller.ConnectedPort = value; }
-
-        /// <inheritdoc cref="ProxyModel.Connected" />
-        public bool Connected { get => _controller.Connected; set => _controller.Connected = value; }
-
-        /// <summary>
-        /// Connect to RPC server.
-        /// </summary>
-        public ICommand Connect => _connectCommand;
-
-        /// <summary>
-        /// Wire up view model.
-        /// </summary>
+        /// <summary>Wire up view model.</summary>
         public ProxyViewModel(ProxyController controller)
         {
             _controller = controller;
@@ -68,6 +39,24 @@ namespace AirSimApp
 
             _controller.PropertyChanged += onControllerPropertyChanged;
         }
+
+        /// <inheritdoc cref="ProxyModel.AddressToUse" />
+        public IPAddress AddressToUse { get => _controller.AddressToUse; set => _controller.AddressToUse = value; }
+
+        /// <summary>Connect to RPC server.</summary>
+        public ICommand ConnectCommand => _connectCommand;
+
+        /// <inheritdoc cref="ProxyModel.Connected" />
+        public bool Connected { get => _controller.Connected; set => _controller.Connected = value; }
+
+        /// <inheritdoc cref="ProxyModel.ConnectedAddress" />
+        public IPAddress ConnectedAddress { get => _controller.ConnectedAddress; set => _controller.ConnectedAddress = value; }
+
+        /// <inheritdoc cref="ProxyModel.ConnectedPort" />
+        public ushort ConnectedPort { get => _controller.ConnectedPort; set => _controller.ConnectedPort = value; }
+
+        /// <inheritdoc cref="ProxyModel.PortToUse" />
+        public ushort PortToUse { get => _controller.PortToUse; set => _controller.PortToUse = value; }
 
         /// <inheritdoc cref="IDisposable.Dispose" />
         public void Dispose()
@@ -82,6 +71,11 @@ namespace AirSimApp
             }
         }
 
+        private readonly ConnectCommand _connectCommand;
+        private readonly ProxyController _controller;
+
+        private bool _disposed = false;
+
         private void onControllerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
@@ -89,15 +83,19 @@ namespace AirSimApp
                 case nameof(_controller.AddressToUse):
                     OnPropertyChanged(nameof(AddressToUse));
                     break;
+
                 case nameof(_controller.PortToUse):
                     OnPropertyChanged(nameof(PortToUse));
                     break;
+
                 case nameof(_controller.ConnectedAddress):
                     OnPropertyChanged(nameof(ConnectedAddress));
                     break;
+
                 case nameof(_controller.ConnectedPort):
                     OnPropertyChanged(nameof(ConnectedPort));
                     break;
+
                 case nameof(_controller.Connected):
                     OnPropertyChanged(nameof(Connected));
                     break;

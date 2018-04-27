@@ -8,11 +8,13 @@
         xmlns:vm="clr-namespace:AirSimApp.ViewModels"
         xmlns:controls="clr-namespace:AirSimApp.Controls"
         xmlns:conv="clr-namespace:AirSimApp.Converters"
+        xmlns:wpfbbq="clr-namespace:WpfBBQWinRTXamlToolkit;assembly=WpfBBQWinRTXamlToolkit"
         mc:Ignorable="d"
         Title="MainWindow" Width="525" ResizeMode="NoResize" SizeToContent="Height">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="400" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
@@ -27,7 +29,7 @@
 
             <Path map:MapPanel.Location="{Binding Map.VehicleLocation}"
                   Width="30"
-                  Data="M0,0 100,50 0,100 10,60 50,50 10,40z"
+                  Data="M0,0 40,-10 50,-50 60,-10 100,0 50,-100z"
                   Fill="Black"
                   Stroke="Black"
                   Stretch="Uniform"
@@ -64,93 +66,175 @@
             </StackPanel>
         </Grid>
 
-        <StackPanel Grid.Row="2">
+        <GroupBox Header="Vehicle Status" Grid.Row="2">
+            <StackPanel Grid.Row="2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="50" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" Content="RPC Server:" />
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Proxy.AddressToUse, Converter={conv:IpAddressToStringConverter}}" />
+                    <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding Proxy.PortToUse}" />
 
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="150" />
-                    <ColumnDefinition Width="50" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <Label Grid.Row="0" Grid.Column="0" Content="RPC Server:" />
-                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding AddressToUse, Converter={conv:IpAddressToStringConverter}}" />
-                <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding PortToUse}" />
+                    <Button Grid.Row="0" Grid.Column="4" Command="{Binding Proxy.ConnectCommand}" Content="Connect" />
 
-                <Button Grid.Row="0" Grid.Column="4" Command="{Binding ConnectCommand}" Content="Connect" />
+                    <Label Grid.Row="1" Grid.Column="1" Content="{Binding Proxy.ConnectedAddress, Converter={conv:IpAddressToStringConverter}}" IsEnabled="{Binding Connected}" />
+                    <Label Grid.Row="1" Grid.Column="2" Content="{Binding Proxy.ConnectedPort}" IsEnabled="{Binding Proxy.Connected}" />
+                </Grid>
 
-                <Label Grid.Row="1" Grid.Column="1" Content="{Binding ConnectedAddress, Converter={conv:IpAddressToStringConverter}}" IsEnabled="{Binding Connected}" />
-                <Label Grid.Row="1" Grid.Column="2" Content="{Binding ConnectedPort}" IsEnabled="{Binding Connected}" />
-            </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="120" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="120" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
 
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="120" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="120" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" Content="Home Latitude:" />
+                    <Label Grid.Row="0" Grid.Column="1" Content="{Binding Vehicle.HomeLatitude, Converter={conv:LatitudeToStringConverter}}" />
 
-                <Label Grid.Row="0" Grid.Column="0" Content="Home Latitude:" />
-                <Label Grid.Row="0" Grid.Column="1" Content="{Binding HomeLatitude, Converter={conv:LatitudeToStringConverter}}" />
+                    <Label Grid.Row="1" Grid.Column="0" Content="Home Longitude:" />
+                    <Label Grid.Row="1" Grid.Column="1" Content="{Binding Vehicle.HomeLongitude, Converter={conv:LongitudeToStringConverter}}" />
 
-                <Label Grid.Row="1" Grid.Column="0" Content="Home Longitude:" />
-                <Label Grid.Row="1" Grid.Column="1" Content="{Binding HomeLongitude, Converter={conv:LongitudeToStringConverter}}" />
+                    <Label Grid.Row="2" Grid.Column="0" Content="Home Altitude:" />
+                    <Label Grid.Row="2" Grid.Column="1" Content="{Binding Vehicle.HomeAltitude, Converter={conv:DistanceToStringConverter}}" />
 
-                <Label Grid.Row="2" Grid.Column="0" Content="Home Altitude:" />
-                <Label Grid.Row="2" Grid.Column="1" Content="{Binding HomeAltitude, Converter={conv:DistanceToStringConverter}}" />
+                    <Label Grid.Row="0" Grid.Column="2" Content="Vehicle Latitude:" />
+                    <Label Grid.Row="0" Grid.Column="3" Content="{Binding Vehicle.VehicleLatitude, Converter={conv:LatitudeToStringConverter}}" />
 
-                <Label Grid.Row="0" Grid.Column="2" Content="Vehicle Latitude:" />
-                <Label Grid.Row="0" Grid.Column="3" Content="{Binding VehicleLatitude, Converter={conv:LatitudeToStringConverter}}" />
+                    <Label Grid.Row="1" Grid.Column="2" Content="Vehicle Longitude:" />
+                    <Label Grid.Row="1" Grid.Column="3" Content="{Binding Vehicle.VehicleLongitude, Converter={conv:LongitudeToStringConverter}}" />
 
-                <Label Grid.Row="1" Grid.Column="2" Content="Vehicle Longitude:" />
-                <Label Grid.Row="1" Grid.Column="3" Content="{Binding VehicleLongitude, Converter={conv:LongitudeToStringConverter}}" />
+                    <Label Grid.Row="2" Grid.Column="2" Content="Vehicle Altitude:" />
+                    <Label Grid.Row="2" Grid.Column="3" Content="{Binding Vehicle.VehicleAltitude, Converter={conv:DistanceToStringConverter}}" />
 
-                <Label Grid.Row="2" Grid.Column="2" Content="Vehicle Altitude:" />
-                <Label Grid.Row="2" Grid.Column="3" Content="{Binding VehicleAltitude, Converter={conv:DistanceToStringConverter}}" />
+                    <Label Grid.Row="3" Grid.Column="0" Content="GPS Lat:" />
+                    <Label Grid.Row="3" Grid.Column="1" Content="{Binding Vehicle.GpsLatitude, Converter={conv:LatitudeToStringConverter}}" />
 
-                <Label Grid.Row="3" Grid.Column="0" Content="GPS Lat:" />
-                <Label Grid.Row="3" Grid.Column="1" Content="{Binding GpsLatitude, Converter={conv:LatitudeToStringConverter}}" />
+                    <Label Grid.Row="4" Grid.Column="0" Content="GPS Lon:" />
+                    <Label Grid.Row="4" Grid.Column="1" Content="{Binding Vehicle.GpsLongitude, Converter={conv:LongitudeToStringConverter}}" />
 
-                <Label Grid.Row="4" Grid.Column="0" Content="GPS Lon:" />
-                <Label Grid.Row="4" Grid.Column="1" Content="{Binding GpsLongitude, Converter={conv:LongitudeToStringConverter}}" />
+                    <Label Grid.Row="5" Grid.Column="0" Content="Gps Alt:" />
+                    <Label Grid.Row="5" Grid.Column="1" Content="{Binding Vehicle.GpsAltitude, Converter={conv:DistanceToStringConverter}}" />
 
-                <Label Grid.Row="5" Grid.Column="0" Content="Gps Alt:" />
-                <Label Grid.Row="5" Grid.Column="1" Content="{Binding GpsAltitude, Converter={conv:DistanceToStringConverter}}" />
+                    <Label Grid.Row="3" Grid.Column="2" Content="Vehicle Roll:" />
+                    <Label Grid.Row="3" Grid.Column="3" Content="{Binding Vehicle.VehicleRoll, Converter={conv:AngleToStringConverter}}" />
 
-                <Label Grid.Row="3" Grid.Column="2" Content="Vehicle Roll:" />
-                <Label Grid.Row="3" Grid.Column="3" Content="{Binding VehicleRoll, Converter={conv:AngleToStringConverter}}" />
+                    <Label Grid.Row="4" Grid.Column="2" Content="Vehicle Pitch:" />
+                    <Label Grid.Row="4" Grid.Column="3" Content="{Binding Vehicle.VehiclePitch, Converter={conv:AngleToStringConverter}}" />
 
-                <Label Grid.Row="4" Grid.Column="2" Content="Vehicle Pitch:" />
-                <Label Grid.Row="4" Grid.Column="3" Content="{Binding VehiclePitch, Converter={conv:AngleToStringConverter}}" />
-
-                <Label Grid.Row="5" Grid.Column="2" Content="Vehicle Yaw:" />
-                <Label Grid.Row="5" Grid.Column="3" Content="{Binding VehicleYaw, Converter={conv:AngleToStringConverter}}" />
-            </Grid>
-
-            <Button Content="Hover In Place" Command="{Binding HoverInPlaceCommand}" />
-            <Button Content="Reset" Command="{Binding ResetCommand}" />
-            <Button Content="Land Now" Command="{Binding LandNowCommand}" />
-            <Button Content="Go Home" Command="{Binding GoHomeCommand}" />
-            <Button Content="Enable API" Command="{Binding EnableApiCommand}" />
-            <Button Content="Disable API" Command="{Binding DisableApiCommand}" />
-        </StackPanel>
+                    <Label Grid.Row="5" Grid.Column="2" Content="Vehicle Yaw:" />
+                    <Label Grid.Row="5" Grid.Column="3" Content="{Binding Vehicle.VehicleYaw, Converter={conv:AngleToStringConverter}}" />
+                </Grid>
+            </StackPanel>
+        </GroupBox>
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <GroupBox Header="Remote Controller">
+                <StackPanel Orientation="Horizontal">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <wpfbbq:Gauge Grid.Row="0" Grid.Column="0"
+                              IsEnabled="{Binding Rc.Valid}"
+                              Margin="4"
+                              Height="100"
+                              Minimum="{Binding Rc.ThrottleMin}"
+                              Maximum="{Binding Rc.ThrottleMax}"
+                              TrailBrush="Transparent"
+                              ValueBrush="Transparent"
+                              Unit="Throttle"
+                              Value="{Binding Rc.ThrottleAxis}">
+                        </wpfbbq:Gauge>
+                        <wpfbbq:Gauge Grid.Row="0" Grid.Column="1"
+                              IsEnabled="{Binding Rc.Valid}"
+                              Margin="4"
+                              Height="100"
+                              Minimum="{Binding Rc.RollMin}"
+                              Maximum="{Binding Rc.RollMax}"
+                              TrailBrush="Transparent"
+                              ValueBrush="Transparent"
+                              Unit="Roll"
+                              Value="{Binding Rc.RollAxis}">
+                        </wpfbbq:Gauge>
+                        <wpfbbq:Gauge Grid.Row="1" Grid.Column="0"
+                              IsEnabled="{Binding Rc.Valid}"
+                              Margin="4"
+                              Height="100"
+                              Minimum="{Binding Rc.YawMin}"
+                              Maximum="{Binding Rc.YawMax}"
+                              TrailBrush="Transparent"
+                              ValueBrush="Transparent"
+                              Unit="Yaw"
+                              Value="{Binding Rc.YawAxis}">
+                        </wpfbbq:Gauge>
+                        <wpfbbq:Gauge Grid.Row="1" Grid.Column="1"
+                              IsEnabled="{Binding Rc.Valid}"
+                              Margin="4"
+                              Height="100"
+                              Minimum="{Binding Rc.PitchMin}"
+                              Maximum="{Binding Rc.PitchMax}"
+                              TrailBrush="Transparent"
+                              ValueBrush="Transparent"
+                              Unit="Pitch"
+                              Value="{Binding Rc.PitchAxis}">
+                        </wpfbbq:Gauge>
+                    </Grid>
+                    <StackPanel VerticalAlignment="Center" Margin="8">
+                        <RadioButton Content="1" IsChecked="{Binding Rc.Sw1, Mode=OneWay}" IsEnabled="false" />
+                        <RadioButton Content="2" IsChecked="{Binding Rc.Sw2, Mode=OneWay}" IsEnabled="false" />
+                        <RadioButton Content="3" IsChecked="{Binding Rc.Sw3, Mode=OneWay}" IsEnabled="false" />
+                        <RadioButton Content="4" IsChecked="{Binding Rc.Sw4, Mode=OneWay}" IsEnabled="false" />
+                        <RadioButton Content="5" IsChecked="{Binding Rc.Sw5, Mode=OneWay}" IsEnabled="false" />
+                        <RadioButton Content="6" IsChecked="{Binding Rc.Sw6, Mode=OneWay}" IsEnabled="false" />
+                        <RadioButton Content="7" IsChecked="{Binding Rc.Sw7, Mode=OneWay}" IsEnabled="false" />
+                        <RadioButton Content="8" IsChecked="{Binding Rc.Sw8, Mode=OneWay}" IsEnabled="false" />
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Commands" Grid.Column="1">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button Content="Hover In Place" Command="{Binding Vehicle.HoverInPlaceCommand}" />
+                    <Button Content="Reset" Command="{Binding Vehicle.ResetCommand}" />
+                    <Button Content="Land Now" Command="{Binding Vehicle.LandNowCommand}" />
+                    <Button Content="Go Home" Command="{Binding Vehicle.GoHomeCommand}" />
+                    <Button Content="Enable API" Command="{Binding Vehicle.EnableApiCommand}" />
+                    <Button Content="Disable API" Command="{Binding Vehicle.DisableApiCommand}" />
+                </StackPanel>
+            </GroupBox>
+        </Grid>
     </Grid>
 </Window>
