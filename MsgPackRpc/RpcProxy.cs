@@ -25,6 +25,7 @@ using Nito.AsyncEx;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -235,6 +236,21 @@ namespace MsgPackRpc
             }
         }
 
+        private void failAllTasks(string errorString)
+        {
+            lock (_lockObject)
+            {
+                uint[] keys = _requests.Keys.ToArray();
+                foreach (uint key in keys)
+                {
+                    _requests[key].SetResult(new RpcResponse
+                    {
+                        Error = errorString,
+                    });
+                }
+            }
+        }
+
         private void removeRequest(uint requestId)
         {
             lock (_lockObject)
@@ -247,17 +263,38 @@ namespace MsgPackRpc
         {
             try
             {
-                byte[] buffer = new byte[32 * 1 << 10];
+                byte[] buffer = new byte[32 * 1 << 20];
                 while (!_disposed && _client != null && _client.Connected)
                 {
                     token.ThrowIfCancellationRequested();
 
-                    int numBytes = await _client.GetStream().ReadAsync(buffer, 0, buffer.Length, token);
-                    if (numBytes > 0)
+                    int totalRxed = 0;
+                    int justRxed = 0;
+                    do
                     {
-                        RpcResponse response = MessagePackSerializer.Deserialize<RpcResponse>(buffer);
-                        response.ResultAsJson = JsonConvert.SerializeObject(response.Result);
-                        taskForRequest(response.MsgId).SetResult(response);
+                        if (buffer.Length - totalRxed <= 0)
+                        {
+                            throw new InvalidOperationException("Message too large to receive!");
+                        }
+
+                        justRxed = await _client.GetStream().ReadAsync(buffer, totalRxed, buffer.Length - totalRxed, token);
+                        totalRxed += justRxed;
+                    } while (justRxed == _client.ReceiveBufferSize);
+
+                    if (totalRxed > 0)
+                    {
+                        try
+                        {
+                            RpcResponse response = MessagePackSerializer.Deserialize<RpcResponse>(buffer);
+                            response.ResultAsJson = JsonConvert.SerializeObject(response.Result);
+                            taskForRequest(response.MsgId).SetResult(response);
+                        }
+                        catch (Exception ex) when (ex is InvalidOperationException || ex is OverflowException) // MessagePack failure
+                        {
+                            _client.Dispose();
+                            _client = null;
+                            failAllTasks(ex.Message);
+                        }
                     }
                 }
             }
@@ -266,6 +303,7 @@ namespace MsgPackRpc
             }
             finally
             {
+                failAllTasks("Client closed");
                 ConnectionClosed?.Invoke(this, EventArgs.Empty);
             }
         }

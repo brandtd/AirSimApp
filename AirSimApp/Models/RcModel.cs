@@ -22,21 +22,16 @@
 using AirSimRpc;
 using MsgPackRpc;
 using System;
-using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace AirSimApp.Models
 {
     /// <summary>Model for a remote controller.</summary>
-    public class RcModel : PropertyChangedBase, IDisposable
+    public class RcModel : ProxyModel, IDisposable
     {
-        public RcModel(ProxyController controller)
+        public RcModel(ProxyController controller) : base(controller)
         {
-            _controller = controller;
-            _controller.PropertyChanged += onControllerPropertyChanged;
-
-            startOrStopStateLoop();
         }
 
         [Flags]
@@ -50,19 +45,6 @@ namespace AirSimApp.Models
             Sw6 = 1 << 5,
             Sw7 = 1 << 6,
             Sw8 = 1 << 7,
-        }
-
-        /// <summary>Whether model is connected with underlying data source.</summary>
-        public bool Connected
-        {
-            get => _connected; set
-            {
-                SetProperty(ref _connected, value);
-                if (!_connected)
-                {
-                    Valid = false;
-                }
-            }
         }
 
         public float Pitch { get => _pitch; set => SetProperty(ref _pitch, value); }
@@ -106,22 +88,42 @@ namespace AirSimApp.Models
         public float YawMin => -1.0f;
 
         /// <inheritdoc cref="IDisposable.Dispose" />
-        public void Dispose()
+        public override void Dispose()
         {
             if (!_disposed)
             {
                 _disposed = true;
-
-                _controller.PropertyChanged -= onControllerPropertyChanged;
-                _cancellationTokenSource?.Dispose();
-                _cancellationTokenSource = null;
+                base.Dispose();
             }
         }
 
-        private readonly ProxyController _controller;
+        /// <inheritdoc cref="ProxyModel.UpdateState(CancellationToken)" />
+        protected override async Task UpdateState(CancellationToken token)
+        {
+            return;
+            token.ThrowIfCancellationRequested();
+            RpcResult<RcData> rcData = await Controller.Proxy?.GetRcDataAsync();
+            if (rcData.Successful)
+            {
+                Throttle = rcData.Value.Throttle;
+                Roll = rcData.Value.Roll;
+                Pitch = rcData.Value.Pitch;
+                Yaw = rcData.Value.Yaw;
 
-        private CancellationTokenSource _cancellationTokenSource;
-        private bool _connected = false;
+                SwitchesPressed =
+                    (rcData.Value.Switch1 > 0 ? Switches.Sw1 : 0) |
+                    (rcData.Value.Switch2 > 0 ? Switches.Sw2 : 0) |
+                    (rcData.Value.Switch3 > 0 ? Switches.Sw3 : 0) |
+                    (rcData.Value.Switch4 > 0 ? Switches.Sw4 : 0) |
+                    (rcData.Value.Switch5 > 0 ? Switches.Sw5 : 0) |
+                    (rcData.Value.Switch6 > 0 ? Switches.Sw6 : 0) |
+                    (rcData.Value.Switch7 > 0 ? Switches.Sw7 : 0) |
+                    (rcData.Value.Switch8 > 0 ? Switches.Sw8 : 0);
+
+                Valid = rcData.Value.IsValid;
+            }
+        }
+
         private bool _disposed = false;
         private float _pitch = float.NaN;
         private float _roll = float.NaN;
@@ -129,62 +131,5 @@ namespace AirSimApp.Models
         private float _throttle = float.NaN;
         private bool _valid = false;
         private float _yaw = float.NaN;
-
-        private void onControllerPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(_controller.Connected))
-            {
-                startOrStopStateLoop();
-            }
-        }
-
-        private void startOrStopStateLoop()
-        {
-            Connected = _controller.Connected;
-            if (_controller.Connected)
-            {
-                _cancellationTokenSource = new CancellationTokenSource();
-                updateStateLoop(_cancellationTokenSource.Token);
-            }
-            else
-            {
-                _cancellationTokenSource?.Cancel();
-                _cancellationTokenSource = null;
-            }
-        }
-
-        private async void updateStateLoop(CancellationToken token)
-        {
-            try
-            {
-                while (true)
-                {
-                    token.ThrowIfCancellationRequested();
-                    RpcResult<RcData> rcData = await _controller.Proxy?.GetRcDataAsync();
-                    if (rcData.Successful)
-                    {
-                        Throttle = rcData.Value.Throttle;
-                        Roll = rcData.Value.Roll;
-                        Pitch = rcData.Value.Pitch;
-                        Yaw = rcData.Value.Yaw;
-
-                        SwitchesPressed =
-                            (rcData.Value.Switch1 > 0 ? Switches.Sw1 : 0) |
-                            (rcData.Value.Switch2 > 0 ? Switches.Sw2 : 0) |
-                            (rcData.Value.Switch3 > 0 ? Switches.Sw3 : 0) |
-                            (rcData.Value.Switch4 > 0 ? Switches.Sw4 : 0) |
-                            (rcData.Value.Switch5 > 0 ? Switches.Sw5 : 0) |
-                            (rcData.Value.Switch6 > 0 ? Switches.Sw6 : 0) |
-                            (rcData.Value.Switch7 > 0 ? Switches.Sw7 : 0) |
-                            (rcData.Value.Switch8 > 0 ? Switches.Sw8 : 0);
-
-                        Valid = rcData.Value.IsValid;
-                    }
-
-                    await Task.Delay(100);
-                }
-            }
-            catch (OperationCanceledException) { }
-        }
     }
 }

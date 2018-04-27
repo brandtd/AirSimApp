@@ -38,10 +38,19 @@ namespace AirSimRpc
         public int Height { get; set; }
 
         [JsonProperty]
+        public float[] ImageDataFloat { get; set; }
+
+        [JsonProperty]
+        public byte[] ImageDataUint8 { get; set; }
+
+        [JsonProperty]
         public ImageType ImageType { get; set; }
 
         [JsonProperty]
         public string Message { get; set; }
+
+        [JsonProperty]
+        public bool PixelsAsFloat { get; set; }
 
         [JsonProperty]
         public long TimeStamp { get; set; }

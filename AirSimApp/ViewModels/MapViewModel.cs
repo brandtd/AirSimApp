@@ -67,9 +67,6 @@ namespace AirSimApp.ViewModels
         /// <summary>All map layer names.</summary>
         public IEnumerable<string> LayerNames => _mapLayers.Keys;
 
-        /// <summary>Max allowed zoom level.</summary>
-        public int MaxZoomLevel { get => _maxZoomLevel; set => SetProperty(ref _maxZoomLevel, value); }
-
         /// <summary>Projection type to use.</summary>
         public MapProjection Projection { get; } = new WebMercatorProjection();
 
@@ -77,9 +74,6 @@ namespace AirSimApp.ViewModels
 
         /// <summary>Vehicle location.</summary>
         public Location VehicleLocation { get => _vehicleLocation; set => SetProperty(ref _vehicleLocation, value); }
-
-        /// <summary>Current zoom level.</summary>
-        public int ZoomLevel { get => _zoomLevel; set => SetProperty(ref _zoomLevel, value); }
 
         /// <inheritdoc cref="IDisposable.Dispose" />
         public void Dispose()
@@ -171,10 +165,8 @@ namespace AirSimApp.ViewModels
         private bool _disposed = false;
         private Location _home = new Location(0, 0);
         private string _mapLayerName = "OpenStreetMap";
-        private int _maxZoomLevel = 20;
         private double _vehicleHeading = 0;
         private Location _vehicleLocation = new Location(0, 0);
-        private int _zoomLevel = 1;
 
         private void onVehiclePropertyChanged(object sender, PropertyChangedEventArgs e)
         {

@@ -30,12 +30,6 @@ namespace AirSimApp.Converters
     [ValueConversion(typeof(Angle), typeof(string))]
     public class AngleToStringConverter : MarkupExtension, IValueConverter
     {
-        /// <inheritdoc cref="MarkupExtension.ProvideValue(IServiceProvider)" />
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
-        }
-
         /// <inheritdoc cref="IValueConverter.Convert(object, Type, object, CultureInfo)" />
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -63,6 +57,12 @@ namespace AirSimApp.Converters
             {
                 return null;
             }
+        }
+
+        /// <inheritdoc cref="MarkupExtension.ProvideValue(IServiceProvider)" />
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return this;
         }
     }
 }

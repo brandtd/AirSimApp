@@ -8,20 +8,23 @@
         xmlns:vm="clr-namespace:AirSimApp.ViewModels"
         xmlns:controls="clr-namespace:AirSimApp.Controls"
         xmlns:conv="clr-namespace:AirSimApp.Converters"
+        xmlns:res="clr-namespace:AirSimApp.Properties"
         xmlns:wpfbbq="clr-namespace:WpfBBQWinRTXamlToolkit;assembly=WpfBBQWinRTXamlToolkit"
         mc:Ignorable="d"
         Title="MainWindow" Width="525" ResizeMode="NoResize" SizeToContent="Height">
+    <Window.Resources>
+        <BitmapImage x:Key="IndianHead" UriSource="/Resources/Indian_Head_Test_Image.JPG" />
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="400" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <controls:DraggableMap Grid.Row="0"
                                x:Name="map"
-                               ZoomLevel="{Binding Map.ZoomLevel}"
-                               MaxZoomLevel="{Binding Map.MaxZoomLevel}"
                                Center="{Binding Map.Center}"
                                MapLayer="{Binding Map.Layer}">
             <map:MapGraticule Opacity="0.6" />
@@ -236,5 +239,16 @@
                 </StackPanel>
             </GroupBox>
         </Grid>
+        <GroupBox Header="Camera" Grid.Row="4">
+            <Image>
+                <Image.Source>
+                    <MultiBinding Converter="{conv:SwitchSourceConverter}">
+                        <Binding Path="Camera.Image" />
+                        <Binding Source="{StaticResource IndianHead}" />
+                        <Binding Path="Camera.Connected" />
+                    </MultiBinding>
+                </Image.Source>
+            </Image>
+        </GroupBox>
     </Grid>
 </Window>

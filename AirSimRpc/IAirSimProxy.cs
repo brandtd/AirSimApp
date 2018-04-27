@@ -30,63 +30,25 @@ namespace AirSimRpc
     /// <summary>Interface for an AirSim RPC proxy.</summary>
     public interface IAirSimProxy
     {
-        /// <inheritdoc cref="RpcProxy.Connected" />
-        bool Connected { get; }
-
         /// <inheritdoc cref="RpcProxy.ConnectionClosed" />
         event EventHandler ConnectionClosed;
 
-        /// <summary>Connect to the AirSim RPC server.</summary>
-        /// <param name="endpoint">Server location.</param>
-        /// <returns><c>true&gt;</c> if connection is successful, <c>false</c> othewrise.</returns>
-        Task<bool> ConnectAsync(IPEndPoint endpoint);
-
-        // TODO simGetImages TODO simGetImage TODO simSetSegmentationObjectID TODO
-        // simGetSegmentationObjectID TODO simPrintLogMessage TODO setSafety TODO setRCData
-
-        Task<RpcResult<MultirotorState>> GetMultirotorStateAsync();
-
-        Task<RpcResult<Vector3R>> GetPositionAsync();
-
-        Task<RpcResult<Vector3R>> GetVelocityAsync();
-
-        Task<RpcResult<QuaternionR>> GetOrientationAsync();
-
-        Task<RpcResult<LandedState>> GetLandedStateAsync();
-
-        Task<RpcResult<CameraInfo>> GetCameraInfoAsync();
-
-        Task<RpcResult<RcData>> GetRcDataAsync();
-
-        Task<RpcResult<GeoPoint>> GetGpsLocationAsync();
-
-        Task<RpcResult<bool>> GetIsSimulationMode();
-
-        Task<RpcResult<Pose>> GetSimPoseAsync();
-
-        Task<RpcResult<Pose>> GetSimObjectPoseAsync(string objectName);
-
-        Task<RpcResult<CollisionInfo>> GetCollisionInfoAsync();
-
-        Task<RpcResult<GeoPoint>> GetHomeGeoPointAsync();
-
-        Task<RpcResult<bool>> GetIsApiControlEnabledAsync();
-
-        Task<RpcResult<bool>> CmdSetPoseAsync(Pose pose, bool ignoreCollision);
+        /// <inheritdoc cref="RpcProxy.Connected" />
+        bool Connected { get; }
 
         Task<RpcResult<bool>> CmdArmDisarmAsync(bool armVehicle);
 
-        Task<RpcResult<bool>> CmdSimulationModeAsync(bool simulate);
+        Task<RpcResult<bool>> CmdGoHomeAsync();
 
-        Task<RpcResult<bool>> CmdTakeoffAsync(float maxWaitSeconds);
+        Task<RpcResult<bool>> CmdHoverInPlaceAsync();
 
         Task<RpcResult<bool>> CmdLandAsync(float maxWaitSeconds);
 
-        Task<RpcResult<bool>> CmdGoHomeAsync();
+        Task<RpcResult<bool>> CmdMoveByAngleThrottleAsync(float pitch, float roll, float throttle, float yaw_rate, float duration);
 
         Task<RpcResult<bool>> CmdMoveByAngleZAsync(float pitch, float roll, float z, float yaw, float duration);
 
-        Task<RpcResult<bool>> CmdMoveByAngleThrottleAsync(float pitch, float roll, float throttle, float yaw_rate, float duration);
+        Task<RpcResult<bool>> CmdMoveByManualAsync(float vx_max, float vy_max, float z_min, float duration, DrivetrainType drivetrain, YawMode yawMode, float lookahead, float adaptiveLookahead);
 
         Task<RpcResult<bool>> CmdMoveByVelocityAsync(float vx, float vy, float vz, float duration, DrivetrainType drivetrain, YawMode yawMode);
 
@@ -98,18 +60,60 @@ namespace AirSimRpc
 
         Task<RpcResult<bool>> CmdMoveToZAsync(float z, float velocity, float maxWaitSeconds, DrivetrainType drivetrain, YawMode yawMode, float lookahead, float adaptiveLookahead);
 
-        Task<RpcResult<bool>> CmdMoveByManualAsync(float vx_max, float vy_max, float z_min, float duration, DrivetrainType drivetrain, YawMode yawMode, float lookahead, float adaptiveLookahead);
-
-        Task<RpcResult<bool>> CmdRotateToYawAsync(float yaw, float maxWaitSeconds, float margin);
+        Task<RpcResult> CmdResetAsync();
 
         Task<RpcResult<bool>> CmdRotateByYawRateAsync(float yaw_rate, float duration);
 
-        Task<RpcResult<bool>> CmdHoverInPlaceAsync();
+        Task<RpcResult<bool>> CmdRotateToYawAsync(float yaw, float maxWaitSeconds, float margin);
 
-        Task<RpcResult> CmdResetAsync();
+        Task<RpcResult> CmdSetApiControlAsync(bool enable);
 
         Task<RpcResult<bool>> CmdSetCameraOrientationAsync(int cameraId, QuaternionR orientation);
 
-        Task<RpcResult> CmdSetApiControlAsync(bool enable);
+        Task<RpcResult<bool>> CmdSetPoseAsync(Pose pose, bool ignoreCollision);
+
+        Task<RpcResult<bool>> CmdSimulationModeAsync(bool simulate);
+
+        Task<RpcResult<bool>> CmdTakeoffAsync(float maxWaitSeconds);
+
+        /// <summary>Connect to the AirSim RPC server.</summary>
+        /// <param name="endpoint">Server location.</param>
+        /// <returns><c>true&gt;</c> if connection is successful, <c>false</c> othewrise.</returns>
+        Task<bool> ConnectAsync(IPEndPoint endpoint);
+
+        // TODO simGetImages TODO simGetImage TODO simSetSegmentationObjectID TODO
+        // simGetSegmentationObjectID TODO simPrintLogMessage TODO setSafety TODO setRCData
+
+        Task<RpcResult<CameraInfo>> GetCameraInfoAsync();
+
+        Task<RpcResult<CollisionInfo>> GetCollisionInfoAsync();
+
+        Task<RpcResult<GeoPoint>> GetGpsLocationAsync();
+
+        Task<RpcResult<GeoPoint>> GetHomeGeoPointAsync();
+
+        Task<RpcResult<byte[]>> GetImageAsync(int cameraId, ImageType imageType);
+
+        Task<RpcResult<IEnumerable<ImageResponse>>> GetImagesAsync(IEnumerable<ImageRequest> requests);
+
+        Task<RpcResult<bool>> GetIsApiControlEnabledAsync();
+
+        Task<RpcResult<bool>> GetIsSimulationMode();
+
+        Task<RpcResult<LandedState>> GetLandedStateAsync();
+
+        Task<RpcResult<MultirotorState>> GetMultirotorStateAsync();
+
+        Task<RpcResult<QuaternionR>> GetOrientationAsync();
+
+        Task<RpcResult<Vector3R>> GetPositionAsync();
+
+        Task<RpcResult<RcData>> GetRcDataAsync();
+
+        Task<RpcResult<Pose>> GetSimObjectPoseAsync(string objectName);
+
+        Task<RpcResult<Pose>> GetSimPoseAsync();
+
+        Task<RpcResult<Vector3R>> GetVelocityAsync();
     }
 }
