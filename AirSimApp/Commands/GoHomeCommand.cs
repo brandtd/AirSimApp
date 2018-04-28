@@ -29,13 +29,6 @@ namespace AirSimApp.Commands
     /// <summary>Command for telling vehicle to go home.</summary>
     public class GoHomeCommand : ICommand, IDisposable
     {
-        private readonly MultirotorVehicleModel _vehicle;
-
-        private bool _canExecute;
-
-        /// <inheritdoc cref="ICommand.CanExecuteChanged" />
-        public event EventHandler CanExecuteChanged;
-
         /// <summary>Wire up command.</summary>
         public GoHomeCommand(MultirotorVehicleModel vehicle)
         {
@@ -46,10 +39,19 @@ namespace AirSimApp.Commands
             _canExecute = CanExecute(null);
         }
 
+        /// <inheritdoc cref="ICommand.CanExecuteChanged" />
+        public event EventHandler CanExecuteChanged;
+
         /// <inheritdoc cref="ICommand.CanExecute" />
         public bool CanExecute(object parameter)
         {
-            return _vehicle.Connected && _vehicle.ApiEnabled;
+            return _vehicle.Connected && _vehicle.ApiEnabled && _vehicle.IsFlying;
+        }
+
+        /// <inheritdoc cref="IDisposable.Dispose" />
+        public void Dispose()
+        {
+            _vehicle.PropertyChanged -= onControllerPropertyChanged;
         }
 
         /// <inheritdoc cref="ICommand.Execute" />
@@ -61,11 +63,9 @@ namespace AirSimApp.Commands
             }
         }
 
-        /// <inheritdoc cref="IDisposable.Dispose" />
-        public void Dispose()
-        {
-            _vehicle.PropertyChanged -= onControllerPropertyChanged;
-        }
+        private readonly MultirotorVehicleModel _vehicle;
+
+        private bool _canExecute;
 
         private void onControllerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {

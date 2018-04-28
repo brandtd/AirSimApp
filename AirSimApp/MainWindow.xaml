@@ -242,6 +242,9 @@
             </GroupBox>
             <GroupBox Header="Commands" Grid.Column="1">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button Content="Arm Motors" Command="{Binding Vehicle.ArmCommand}" />
+                    <Button Content="Disarm Motors" Command="{Binding Vehicle.DisarmCommand}" />
+                    <Button Content="Takeoff" Command="{Binding Vehicle.TakeoffCommand}" />
                     <Button Content="Hover In Place" Command="{Binding Vehicle.HoverInPlaceCommand}" />
                     <Button Content="Reset" Command="{Binding Vehicle.ResetCommand}" />
                     <Button Content="Land Now" Command="{Binding Vehicle.LandNowCommand}" />

@@ -51,6 +51,28 @@ namespace AirSimApp.Models
             set => SetProperty(ref _homeLocation, value);
         }
 
+        /// <summary>Whether vehicle is flying.</summary>
+        public bool IsFlying
+        {
+            get => !_isLanded;
+            set => IsLanded = !value;
+        }
+
+        /// <summary>Whether vehicle is landed.</summary>
+        public bool IsLanded
+        {
+            get => _isLanded;
+            set
+            {
+                if (_isLanded != value)
+                {
+                    _isLanded = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsFlying));
+                }
+            }
+        }
+
         public Position3D VehicleLocation
         {
             get => _vehicleLocation;
@@ -321,11 +343,19 @@ namespace AirSimApp.Models
             {
                 ApiEnabled = isApiControlEnabled.Value;
             }
+
+            token.ThrowIfCancellationRequested();
+            RpcResult<LandedState> landedState = await Controller.Proxy?.GetLandedStateAsync();
+            if (landedState != null && landedState.Successful)
+            {
+                IsLanded = landedState.Value == LandedState.Landed;
+            }
         }
 
         private bool _apiEnabled = false;
         private bool _disposed = false;
         private Position3D _homeLocation = new Position3D(Latitude.Invalid, Longitude.Invalid, Distance.Invalid);
+        private bool _isLanded;
         private Position3D _vehicleLocation = new Position3D(Latitude.Invalid, Longitude.Invalid, Distance.Invalid);
         private Position3D _vehicleLocationGps = new Position3D(Latitude.Invalid, Longitude.Invalid, Distance.Invalid);
         private Angle _vehiclePitch = Angle.Invalid;

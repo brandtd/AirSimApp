@@ -37,16 +37,25 @@ namespace AirSimApp
             _model = model;
             _model.PropertyChanged += onModelPropertyChanged;
 
+            _armCommand = new ArmCommand(_model);
             _disableApiCommand = new DisableApiControlCommand(_model);
+            _disarmCommand = new DisarmCommand(_model);
             _enableApiCommand = new EnableApiControlCommand(_model);
             _goHomeCommand = new GoHomeCommand(_model);
             _hoverInPlaceCommand = new HoverInPlaceCommand(_model);
             _landNowCommand = new LandNowCommand(_model);
             _resetCommand = new ResetCommand(_model);
+            _takeoffCommand = new TakeoffCommand(_model);
         }
+
+        /// <summary>Arm motors.</summary>
+        public ICommand ArmCommand => _armCommand;
 
         /// <summary>Disable RPC API (API must be enabled for any commands to work).</summary>
         public ICommand DisableApiCommand => _disableApiCommand;
+
+        /// <summary>Disarm motors.</summary>
+        public ICommand DisarmCommand => _disarmCommand;
 
         /// <summary>Enable RPC API (API must be enabled for any commands to work).</summary>
         public ICommand EnableApiCommand => _enableApiCommand;
@@ -84,6 +93,9 @@ namespace AirSimApp
         /// <summary>Command simulator to reset.</summary>
         public ICommand ResetCommand => _resetCommand;
 
+        /// <summary>Takeoff and hover.</summary>
+        public ICommand TakeoffCommand => _takeoffCommand;
+
         /// <summary>Vehicle altitude.</summary>
         public Distance VehicleAltitude => _model.VehicleLocation.Altitude;
 
@@ -111,23 +123,28 @@ namespace AirSimApp
 
                 _model.PropertyChanged -= onModelPropertyChanged;
 
+                _takeoffCommand.Dispose();
                 _resetCommand.Dispose();
                 _landNowCommand.Dispose();
                 _hoverInPlaceCommand.Dispose();
                 _goHomeCommand.Dispose();
                 _enableApiCommand.Dispose();
+                _disarmCommand.Dispose();
                 _disableApiCommand.Dispose();
+                _armCommand.Dispose();
             }
         }
 
+        private readonly ArmCommand _armCommand;
         private readonly DisableApiControlCommand _disableApiCommand;
+        private readonly DisarmCommand _disarmCommand;
         private readonly EnableApiControlCommand _enableApiCommand;
         private readonly GoHomeCommand _goHomeCommand;
         private readonly HoverInPlaceCommand _hoverInPlaceCommand;
         private readonly LandNowCommand _landNowCommand;
         private readonly MultirotorVehicleModel _model;
         private readonly ResetCommand _resetCommand;
-
+        private readonly TakeoffCommand _takeoffCommand;
         private bool _disposed = false;
 
         private void onModelPropertyChanged(object sender, PropertyChangedEventArgs e)

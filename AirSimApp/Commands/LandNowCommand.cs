@@ -45,7 +45,7 @@ namespace AirSimApp.Commands
         /// <inheritdoc cref="ICommand.CanExecute" />
         public bool CanExecute(object parameter)
         {
-            return _vehicle.Connected && _vehicle.ApiEnabled;
+            return _vehicle.Connected && _vehicle.ApiEnabled && _vehicle.IsFlying;
         }
 
         /// <inheritdoc cref="IDisposable.Dispose" />
