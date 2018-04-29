@@ -30,23 +30,28 @@ namespace DotSpatialExtensions
         /// <summary>Converts an ECEF point to a NED point, relative to given reference point.</summary>
         public static NedPoint ToNedPoint(this CartesianPoint ecef, Position3D reference)
         {
-            CartesianPoint refEcef = reference.ToCartesianPoint();
+            return ecef.ToNedPoint(reference, Ellipsoid.Wgs1984);
+        }
 
-            double phi = Math.Atan2(refEcef.Z.Value, Math.Sqrt(refEcef.X.Value * refEcef.X.Value + refEcef.Y.Value + refEcef.Y.Value));
-            double sPhi = Math.Sin(phi);
+        /// <summary>Converts an ECEF point to a NED point, relative to given reference point.</summary>
+        public static NedPoint ToNedPoint(this CartesianPoint ecef, Position3D reference, Ellipsoid ellipsoid)
+        {
+            CartesianPoint refEcef = reference.ToCartesianPoint(ellipsoid);
+
+            double sLat = Math.Sin(reference.Latitude.ToRadians().Value);
             double sLon = Math.Sin(reference.Longitude.ToRadians().Value);
-            double cPhi = Math.Cos(phi);
+            double cLat = Math.Cos(reference.Latitude.ToRadians().Value);
             double cLon = Math.Cos(reference.Longitude.ToRadians().Value);
 
-            double r11 = -sPhi * cLon;
-            double r12 = -sPhi * sLon;
-            double r13 = cPhi;
+            double r11 = -sLat * cLon;
+            double r12 = -sLat * sLon;
+            double r13 = cLat;
             double r21 = -sLon;
             double r22 = cLon;
             double r23 = 0.0;
-            double r31 = cPhi * cLon;
-            double r32 = cPhi * sLon;
-            double r33 = sPhi;
+            double r31 = -cLat * cLon;
+            double r32 = -cLat * sLon;
+            double r33 = -sLat;
 
             double v1 = ecef.X.Value - refEcef.X.Value;
             double v2 = ecef.Y.Value - refEcef.Y.Value;
@@ -58,7 +63,7 @@ namespace DotSpatialExtensions
 
             Distance n = new Distance(n1, refEcef.X.Units);
             Distance e = new Distance(n2, refEcef.Y.Units);
-            Distance d = new Distance(-n3, refEcef.Z.Units);
+            Distance d = new Distance(n3, refEcef.Z.Units);
 
             return new NedPoint(n, e, d);
         }

@@ -26,6 +26,12 @@ namespace DotSpatialExtensions
     /// <summary>Extensions for <see cref="Distance" />.</summary>
     public static class DistanceExtensions
     {
+        /// <summary>Get distance in given unit.</summary>
+        public static double In(this Distance distance, DistanceUnit unit)
+        {
+            return distance.ToUnitType(unit).Value;
+        }
+
         /// <summary>Get distance in centimeters.</summary>
         public static double InCentimeters(this Distance distance)
         {

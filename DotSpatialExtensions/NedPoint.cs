@@ -42,11 +42,11 @@ namespace DotSpatialExtensions
         /// <param name="n">North component.</param>
         /// <param name="e">East component.</param>
         /// <param name="d">Down component.</param>
-        public NedPoint(Distance x, Distance y, Distance z)
+        public NedPoint(Distance n, Distance e, Distance d)
         {
-            _n = x.ToMeters();
-            _e = y.ToMeters();
-            _d = z.ToMeters();
+            _n = n.ToMeters();
+            _e = e.ToMeters();
+            _d = d.ToMeters();
         }
 
         #endregion Constructors
@@ -66,6 +66,12 @@ namespace DotSpatialExtensions
 
         #region Public Properties
 
+        /// <summary>Returns the down component of the NED vector.</summary>
+        public Distance D => _d;
+
+        /// <summary>Returns the east component of the NED vector.</summary>
+        public Distance E => _e;
+
         /// <summary>Indicates whether the current instance has no value.</summary>
         public bool IsEmpty => _n.IsEmpty && _e.IsEmpty && _d.IsEmpty;
 
@@ -74,12 +80,6 @@ namespace DotSpatialExtensions
 
         /// <summary>Returns the north component of the NED vector.</summary>
         public Distance N => _n;
-
-        /// <summary>Returns the east component of the NED vector.</summary>
-        public Distance E => _e;
-
-        /// <summary>Returns the down component of the NED vector.</summary>
-        public Distance D => _d;
 
         #endregion Public Properties
 
@@ -138,13 +138,13 @@ namespace DotSpatialExtensions
             double r12 = -sLon;
             double r22 = cLon;
             double r32 = 0.0;
-            double r13 = cLat * cLon;
-            double r23 = cLat * sLon;
-            double r33 = sLat;
+            double r13 = -cLat * cLon;
+            double r23 = -cLat * sLon;
+            double r33 = -sLat;
 
             double n1 = _n.Value;
             double n2 = _e.Value;
-            double n3 = -_d.Value;
+            double n3 = _d.Value;
 
             double v1 = r11 * n1 + r12 * n2 + r13 * n3;
             double v2 = r21 * n1 + r22 * n2 + r23 * n3;

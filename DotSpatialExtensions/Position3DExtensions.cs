@@ -37,7 +37,13 @@ namespace DotSpatialExtensions
         /// <summary>Converts a 3D position to a NED point, relative to given reference point.</summary>
         public static NedPoint ToNedPoint(this Position3D position, Position3D reference)
         {
-            CartesianPoint ecef = position.ToCartesianPoint();
+            return ToNedPoint(position, reference, Ellipsoid.Wgs1984);
+        }
+
+        /// <summary>Converts a 3D position to a NED point, relative to given reference point.</summary>
+        public static NedPoint ToNedPoint(this Position3D position, Position3D reference, Ellipsoid ellipsoid)
+        {
+            CartesianPoint ecef = position.ToCartesianPoint(ellipsoid);
             return ecef.ToNedPoint(reference);
         }
     }

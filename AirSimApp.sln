@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AirSimApp", "AirSimApp\AirS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfBBQWinRTXamlToolkit", "WpfBBQWinRTXamlToolkit\WpfBBQWinRTXamlToolkit.csproj", "{04C45781-167D-484A-94EB-78418408F7B9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotSpatialExtensions.Tests", "DotSpatialExtensions.Tests\DotSpatialExtensions.Tests.csproj", "{605F7D65-C0D0-47E2-BDEE-85F51B04F3B6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,6 +107,22 @@ Global
 		{04C45781-167D-484A-94EB-78418408F7B9}.Release|x64.Build.0 = Release|Any CPU
 		{04C45781-167D-484A-94EB-78418408F7B9}.Release|x86.ActiveCfg = Release|Any CPU
 		{04C45781-167D-484A-94EB-78418408F7B9}.Release|x86.Build.0 = Release|Any CPU
+		{605F7D65-C0D0-47E2-BDEE-85F51B04F3B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{605F7D65-C0D0-47E2-BDEE-85F51B04F3B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{605F7D65-C0D0-47E2-BDEE-85F51B04F3B6}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{605F7D65-C0D0-47E2-BDEE-85F51B04F3B6}.Debug|ARM.Build.0 = Debug|Any CPU
+		{605F7D65-C0D0-47E2-BDEE-85F51B04F3B6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{605F7D65-C0D0-47E2-BDEE-85F51B04F3B6}.Debug|x64.Build.0 = Debug|Any CPU
+		{605F7D65-C0D0-47E2-BDEE-85F51B04F3B6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{605F7D65-C0D0-47E2-BDEE-85F51B04F3B6}.Debug|x86.Build.0 = Debug|Any CPU
+		{605F7D65-C0D0-47E2-BDEE-85F51B04F3B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{605F7D65-C0D0-47E2-BDEE-85F51B04F3B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{605F7D65-C0D0-47E2-BDEE-85F51B04F3B6}.Release|ARM.ActiveCfg = Release|Any CPU
+		{605F7D65-C0D0-47E2-BDEE-85F51B04F3B6}.Release|ARM.Build.0 = Release|Any CPU
+		{605F7D65-C0D0-47E2-BDEE-85F51B04F3B6}.Release|x64.ActiveCfg = Release|Any CPU
+		{605F7D65-C0D0-47E2-BDEE-85F51B04F3B6}.Release|x64.Build.0 = Release|Any CPU
+		{605F7D65-C0D0-47E2-BDEE-85F51B04F3B6}.Release|x86.ActiveCfg = Release|Any CPU
+		{605F7D65-C0D0-47E2-BDEE-85F51B04F3B6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
