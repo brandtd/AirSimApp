@@ -33,5 +33,12 @@ namespace DotSpatialExtensions
                    position.Longitude.IsInvalid ||
                    position.Altitude.IsInvalid;
         }
+
+        /// <summary>Converts a 3D position to a NED point, relative to given reference point.</summary>
+        public static NedPoint ToNedPoint(this Position3D position, Position3D reference)
+        {
+            CartesianPoint ecef = position.ToCartesianPoint();
+            return ecef.ToNedPoint(reference);
+        }
     }
 }

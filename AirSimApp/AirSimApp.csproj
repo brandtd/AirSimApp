@@ -71,6 +71,7 @@
     </ApplicationDefinition>
     <Compile Include="Commands\ArmCommand.cs" />
     <Compile Include="Commands\DisarmCommand.cs" />
+    <Compile Include="Commands\GoToCommand.cs" />
     <Compile Include="Commands\MultiCommand.cs" />
     <Compile Include="Commands\TakeoffCommand.cs" />
     <Compile Include="Controls\CameraControl.xaml.cs">
@@ -91,8 +92,11 @@
     <Compile Include="Controls\VehicleStatusControl.xaml.cs">
       <DependentUpon>VehicleStatusControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\AngleToDecimalDegreesConverter.cs" />
     <Compile Include="Converters\BooleanToCollapsedVisibilityConverter.cs" />
+    <Compile Include="Converters\LocationToPositionConverter.cs" />
     <Compile Include="Converters\PositionToDegreeMinutesStringConverter.cs" />
+    <Compile Include="Converters\PositionToLocationConverter.cs" />
     <Compile Include="Converters\SwitchSourceConverter.cs" />
     <Compile Include="Models\CameraModel.cs" />
     <Compile Include="Models\ProxyModel.cs" />
@@ -104,6 +108,9 @@
     <Compile Include="ViewModels\ProxyViewModel.cs" />
     <Compile Include="ViewModels\RcViewModel.cs" />
     <Compile Include="ViewModels\VehicleViewModel.cs" />
+    <Compile Include="Views\MapView.xaml.cs">
+      <DependentUpon>MapView.xaml</DependentUpon>
+    </Compile>
     <Page Include="Controls\CameraControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -152,6 +159,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\MapView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\MultirotorVehicleModel.cs" />

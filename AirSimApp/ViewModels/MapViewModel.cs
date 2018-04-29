@@ -19,6 +19,7 @@
 
 #endregion MIT License (c) 2018 Dan Brandt
 
+using AirSimApp.Commands;
 using AirSimApp.Models;
 using DotSpatial.Positioning;
 using DotSpatialExtensions;
@@ -27,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Input;
 
 namespace AirSimApp.ViewModels
 {
@@ -37,24 +39,28 @@ namespace AirSimApp.ViewModels
         public MapViewModel(MultirotorVehicleModel vehicle)
         {
             _vehicle = vehicle;
-
             _vehicle.PropertyChanged += onVehiclePropertyChanged;
+
+            _gotoCommand = new GoToCommand(_vehicle);
         }
 
-        /// <summary>Center location of map.</summary>
-        public Location Center { get => _center; set => SetProperty(ref _center, value); }
+        /// <summary>Commands vehicle to a location.</summary>
+        public ICommand GoToCommand => _gotoCommand;
 
         /// <summary>Whether we have a vehicle to display.</summary>
         public bool HaveVehicle { get => _haveVehicle; set => SetProperty(ref _haveVehicle, value); }
 
         /// <summary>Vehicle's home location.</summary>
-        public Location Home { get => _home; set => SetProperty(ref _home, value); }
+        public Position Home { get => _home; set => SetProperty(ref _home, value); }
+
+        /// <summary>Center location of map.</summary>
+        public Position MapCenter { get => _center; set => SetProperty(ref _center, value); }
 
         /// <summary>The underlaying map layer.</summary>
-        public UIElement Layer => _mapLayers[_mapLayerName];
+        public UIElement MapLayer => _mapLayers[_mapLayerName];
 
         /// <summary>Underlaying map layer.</summary>
-        public string LayerName
+        public string MapLayerName
         {
             get => _mapLayerName; set
             {
@@ -62,21 +68,21 @@ namespace AirSimApp.ViewModels
                 {
                     _mapLayerName = value;
                     OnPropertyChanged();
-                    OnPropertyChanged(nameof(Layer));
+                    OnPropertyChanged(nameof(MapLayer));
                 }
             }
         }
 
         /// <summary>All map layer names.</summary>
-        public IEnumerable<string> LayerNames => _mapLayers.Keys;
+        public IEnumerable<string> MapLayerNames => _mapLayers.Keys;
 
         /// <summary>Projection type to use.</summary>
         public MapProjection Projection { get; } = new WebMercatorProjection();
 
-        public double VehicleHeading { get => _vehicleHeading; set => SetProperty(ref _vehicleHeading, value); }
+        public Angle VehicleHeading { get => _vehicleHeading; set => SetProperty(ref _vehicleHeading, value); }
 
         /// <summary>Vehicle location.</summary>
-        public Location VehicleLocation { get => _vehicleLocation; set => SetProperty(ref _vehicleLocation, value); }
+        public Position VehicleLocation { get => _vehicleLocation; set => SetProperty(ref _vehicleLocation, value); }
 
         /// <summary>Map's zoom level.</summary>
         public double Zoom { get => _zoom; set => SetProperty(ref _zoom, value); }
@@ -87,8 +93,11 @@ namespace AirSimApp.ViewModels
             if (!_disposed)
             {
                 _vehicle.PropertyChanged -= onVehiclePropertyChanged;
+                _gotoCommand.Dispose();
             }
         }
+
+        private readonly GoToCommand _gotoCommand;
 
         private readonly Dictionary<string, UIElement> _mapLayers = new Dictionary<string, UIElement>
         {
@@ -167,13 +176,13 @@ namespace AirSimApp.ViewModels
         };
 
         private readonly MultirotorVehicleModel _vehicle;
-        private Location _center = new Location(47.639666, -122.128245);
+        private Position _center = new Position(new Latitude(47.639666), new Longitude(-122.128245));
         private bool _disposed = false;
         private bool _haveVehicle = false;
-        private Location _home = new Location(0, 0);
+        private Position _home = Position.Invalid;
         private string _mapLayerName = "OpenStreetMap";
-        private double _vehicleHeading = 0;
-        private Location _vehicleLocation = new Location(0, 0);
+        private Angle _vehicleHeading = Angle.Invalid;
+        private Position _vehicleLocation = Position.Invalid;
         private double _zoom = 15.0;
 
         private void onVehiclePropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -181,16 +190,16 @@ namespace AirSimApp.ViewModels
             switch (e.PropertyName)
             {
                 case (nameof(_vehicle.HomeLocation)):
-                    Home = new Location(_vehicle.HomeLocation.Latitude.InDegrees(), _vehicle.HomeLocation.Longitude.InDegrees());
+                    Home = new Position(_vehicle.HomeLocation.Latitude, _vehicle.HomeLocation.Longitude);
                     break;
 
                 case (nameof(_vehicle.VehicleLocation)):
-                    Center = new Location(_vehicle.VehicleLocation.Latitude.InDegrees(), _vehicle.VehicleLocation.Longitude.InDegrees());
-                    VehicleLocation = new Location(_vehicle.VehicleLocation.Latitude.InDegrees(), _vehicle.VehicleLocation.Longitude.InDegrees());
+                    MapCenter = new Position(_vehicle.VehicleLocation.Latitude, _vehicle.VehicleLocation.Longitude);
+                    VehicleLocation = new Position(_vehicle.VehicleLocation.Latitude, _vehicle.VehicleLocation.Longitude);
                     break;
 
                 case (nameof(_vehicle.VehicleYaw)):
-                    VehicleHeading = _vehicle.VehicleYaw.InDegrees();
+                    VehicleHeading = _vehicle.VehicleYaw;
                     break;
 
                 case (nameof(_vehicle.Connected)):

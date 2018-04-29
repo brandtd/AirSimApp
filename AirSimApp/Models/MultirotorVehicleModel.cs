@@ -222,35 +222,45 @@ namespace AirSimApp.Models
             return MoveToZAsync(altitude - HomeLocation.Altitude, speed, allowedTimeToComplete, drivetrainType, yawMode, lookahead, adaptiveLookahead);
         }
 
-        public async Task MoveToPositionAsync(Vector3R position,
-            Speed speed,
-            TimeSpan allowedTimeToComplete,
-            DrivetrainType drivetrainType,
-            YawMode yawMode,
-            float lookahead,
-            float adaptiveLookahead)
+        public Task MoveToAsync(Position position, Speed approachSpeed)
         {
-            await Controller.Proxy?.CmdMoveToPositionAsync(
-                position.X,
-                position.Y,
-                position.Z,
-                (float)speed.ToMetersPerSecond().Value,
-                (float)allowedTimeToComplete.TotalSeconds,
-                drivetrainType,
-                yawMode,
-                lookahead,
-                adaptiveLookahead);
+            return MoveToAsync(position, approachSpeed, TimeSpan.Zero);
         }
 
-        public Task MoveToPositionAsync(Position3D position,
-            Speed speed,
-            TimeSpan allowedTimeToComplete,
-            DrivetrainType drivetrainType,
-            YawMode yawMode,
-            float lookahead,
-            float adaptiveLookahead)
+        public Task MoveToAsync(Position position, Speed approachSpeed, TimeSpan allowedTime)
         {
-            return MoveToPositionAsync(toNedFromPosition(position), speed, allowedTimeToComplete, drivetrainType, yawMode, lookahead, adaptiveLookahead);
+            Position3D desiredPosition = new Position3D(VehicleLocation.Altitude, position);
+            Vector3R ned = toNedFromPosition(desiredPosition);
+            return Controller.Proxy?.CmdMoveToPositionAsync(
+                ned.X,
+                ned.Y,
+                ned.Z,
+                (float)approachSpeed.InMetersPerSecond(),
+                (float)allowedTime.TotalSeconds,
+                DrivetrainType.ForwardOnly,
+                new YawMode { IsRate = false, YawOrRate = 0 },
+                -1.0f,
+                0.0f);
+        }
+
+        public Task MoveToAsync(Position3D position, Speed approachSpeed)
+        {
+            return MoveToAsync(position, approachSpeed, TimeSpan.Zero);
+        }
+
+        public Task MoveToAsync(Position3D position, Speed approachSpeed, TimeSpan allowedTime)
+        {
+            Vector3R ned = toNedFromPosition(position);
+            return Controller.Proxy?.CmdMoveToPositionAsync(
+                ned.X,
+                ned.Y,
+                ned.Z,
+                (float)approachSpeed.InMetersPerSecond(),
+                (float)allowedTime.TotalSeconds,
+                DrivetrainType.ForwardOnly,
+                new YawMode { IsRate = false, YawOrRate = 0 },
+                -1.0f,
+                0.0f);
         }
 
         public async Task MoveToZAsync(
@@ -314,6 +324,7 @@ namespace AirSimApp.Models
             RpcResult<Vector3R> vehicleNedFromHome = await Controller.Proxy?.GetPositionAsync();
             if (vehicleNedFromHome != null && vehicleNedFromHome.Successful && !HomeLocation.IsInvalid())
             {
+                _vehicleDown = vehicleNedFromHome.Value.Z;
                 VehicleLocation = toPositionFromNed(vehicleNedFromHome.Value);
             }
 
@@ -356,6 +367,7 @@ namespace AirSimApp.Models
         private bool _disposed = false;
         private Position3D _homeLocation = new Position3D(Latitude.Invalid, Longitude.Invalid, Distance.Invalid);
         private bool _isLanded;
+        private float _vehicleDown = 0;
         private Position3D _vehicleLocation = new Position3D(Latitude.Invalid, Longitude.Invalid, Distance.Invalid);
         private Position3D _vehicleLocationGps = new Position3D(Latitude.Invalid, Longitude.Invalid, Distance.Invalid);
         private Angle _vehiclePitch = Angle.Invalid;
@@ -366,8 +378,8 @@ namespace AirSimApp.Models
         {
             if (!HomeLocation.IsInvalid())
             {
-                // TODO: write all this math out.
-                return new Vector3R();
+                NedPoint ned = lla.ToNedPoint(HomeLocation);
+                return new Vector3R { X = (float)ned.N.InMeters(), Y = (float)ned.E.InMeters(), Z = (float)ned.D.InMeters() };
             }
             else
             {

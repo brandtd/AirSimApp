@@ -19,74 +19,35 @@
 
 #endregion MIT License (c) 2018 Dan Brandt
 
-using DotSpatialExtensions;
 using DotSpatial.Positioning;
+using MapControl;
 using System;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
+using DotSpatialExtensions;
 
 namespace AirSimApp.Converters
 {
-    /// <summary>Converts a <see cref="Position" /> to decimal degree, minutes.</summary>
-    [ValueConversion(typeof(Position), typeof(string))]
-    public class PositionToDegreeMinutesStringConverter : MarkupExtension, IValueConverter
+    /// <summary>Converts from a boolean to a UIElement visibility.</summary>
+    [ValueConversion(typeof(Location), typeof(Position))]
+    public class LocationToPositionConverter : MarkupExtension, IValueConverter
     {
         /// <inheritdoc cref="IValueConverter.Convert(object, Type, object, CultureInfo)" />
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string format = parameter as string;
-            if (value is Position position)
-            {
-                string text = null;
-                if (position.IsInvalid)
-                {
-                    text = "---\n---";
-                }
-                else
-                {
-                    int latitude = (int)Math.Round((((position.Latitude.InDegrees() + 180) % 360) - 180) * 60000d);
-                    int longitude = (int)Math.Round((((position.Longitude.InDegrees() + 180) % 360) - 180) * 60000d);
-                    char latHemisphere = 'N';
-                    char lonHemisphere = 'E';
-
-                    if (latitude < 0)
-                    {
-                        latitude = -latitude;
-                        latHemisphere = 'S';
-                    }
-
-                    if (longitude < 0)
-                    {
-                        longitude = -longitude;
-                        lonHemisphere = 'W';
-                    }
-
-                    text = string.Format(culture,
-                        "{0}  {1:00}° {2:00.000}'\n{3} {4:000}° {5:00.000}'",
-                        latHemisphere, latitude / 60000, (latitude % 60000) / 1000d,
-                        lonHemisphere, longitude / 60000, (longitude % 60000) / 1000d);
-                }
-
-                if (!string.IsNullOrEmpty(format))
-                {
-                    return string.Format(culture, format, text);
-                }
-                else
-                {
-                    return text;
-                }
-            }
-            else
-            {
-                return $"{value}";
-            }
+            Location location = (Location)value;
+            return new Position(new Latitude(location.Latitude), new Longitude(location.Longitude));
         }
 
         /// <inheritdoc cref="IValueConverter.ConvertBack(object, Type, object, CultureInfo)" />
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            Position position = (Position)value;
+            return new Location(
+                ((position.Latitude.InDegrees() + 180) % 360) - 180,
+                ((position.Longitude.InDegrees() + 180) % 360) - 180);
         }
 
         /// <inheritdoc cref="MarkupExtension.ProvideValue(IServiceProvider)" />

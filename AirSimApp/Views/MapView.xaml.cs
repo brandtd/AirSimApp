@@ -1,4 +1,4 @@
-#region MIT License (c) 2018 Dan Brandt
+﻿#region MIT License (c) 2018 Dan Brandt
 
 // Copyright 2018 Dan Brandt
 //
@@ -19,20 +19,29 @@
 
 #endregion MIT License (c) 2018 Dan Brandt
 
-using MessagePack;
-using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
-namespace AirSimRpc
+namespace AirSimApp.Views
 {
-    [MessagePackObject]
-    public class YawMode
+    /// <summary>Interaction logic for MapView.xaml</summary>
+    public partial class MapView : UserControl
     {
-        [JsonProperty]
-        [Key("is_rate")]
-        public bool IsRate { get; set; }
-
-        [JsonProperty]
-        [Key("yaw_or_rate")]
-        public float YawOrRate { get; set; }
+        public MapView()
+        {
+            InitializeComponent();
+        }
     }
 }

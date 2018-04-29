@@ -289,7 +289,7 @@ namespace MsgPackRpc
                             response.ResultAsJson = JsonConvert.SerializeObject(response.Result);
                             taskForRequest(response.MsgId).SetResult(response);
                         }
-                        catch (Exception ex) when (ex is InvalidOperationException || ex is OverflowException) // MessagePack failure
+                        catch (Exception ex) when (!(ex is OperationCanceledException) || !(ex is ObjectDisposedException) || !(ex is IOException)) // MessagePack failure
                         {
                             _client.Dispose();
                             _client = null;

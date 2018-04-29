@@ -4,6 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:controls="clr-namespace:AirSimApp.Controls"
+        xmlns:views="clr-namespace:AirSimApp.Views"
         mc:Ignorable="d"
         Title="MainWindow" Width="525" ResizeMode="NoResize" SizeToContent="Height">
     <Grid>
@@ -15,7 +16,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <GroupBox Header="Vehicle Map" Grid.Row="0">
-            <controls:DraggableMapControl
+            <views:MapView
                 Height="420"
                 DataContext="{Binding Map}" />
         </GroupBox>
