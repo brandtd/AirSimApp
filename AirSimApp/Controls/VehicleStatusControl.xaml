@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="AirSimApp.Controls.VehicleStatusControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:conv="clr-namespace:AirSimApp.Converters"
+             xmlns:local="clr-namespace:AirSimApp.Controls"
+             mc:Ignorable="d"
+             d:DesignWidth="500">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="120" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="120" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0" Content="Home Latitude:" />
+        <Label Grid.Row="0" Grid.Column="1" Content="{Binding HomeLatitude, Converter={conv:LatitudeToStringConverter}}" />
+
+        <Label Grid.Row="1" Grid.Column="0" Content="Home Longitude:" />
+        <Label Grid.Row="1" Grid.Column="1" Content="{Binding HomeLongitude, Converter={conv:LongitudeToStringConverter}}" />
+
+        <Label Grid.Row="2" Grid.Column="0" Content="Home Altitude:" />
+        <Label Grid.Row="2" Grid.Column="1" Content="{Binding HomeAltitude, Converter={conv:DistanceToStringConverter}}" />
+
+        <Label Grid.Row="0" Grid.Column="2" Content="Vehicle Latitude:" />
+        <Label Grid.Row="0" Grid.Column="3" Content="{Binding VehicleLatitude, Converter={conv:LatitudeToStringConverter}}" />
+
+        <Label Grid.Row="1" Grid.Column="2" Content="Vehicle Longitude:" />
+        <Label Grid.Row="1" Grid.Column="3" Content="{Binding VehicleLongitude, Converter={conv:LongitudeToStringConverter}}" />
+
+        <Label Grid.Row="2" Grid.Column="2" Content="Vehicle Altitude:" />
+        <Label Grid.Row="2" Grid.Column="3" Content="{Binding VehicleAltitude, Converter={conv:DistanceToStringConverter}}" />
+
+        <Label Grid.Row="3" Grid.Column="0" Content="GPS Lat:" />
+        <Label Grid.Row="3" Grid.Column="1" Content="{Binding GpsLatitude, Converter={conv:LatitudeToStringConverter}}" />
+
+        <Label Grid.Row="4" Grid.Column="0" Content="GPS Lon:" />
+        <Label Grid.Row="4" Grid.Column="1" Content="{Binding GpsLongitude, Converter={conv:LongitudeToStringConverter}}" />
+
+        <Label Grid.Row="5" Grid.Column="0" Content="Gps Alt:" />
+        <Label Grid.Row="5" Grid.Column="1" Content="{Binding GpsAltitude, Converter={conv:DistanceToStringConverter}}" />
+
+        <Label Grid.Row="3" Grid.Column="2" Content="Vehicle Roll:" />
+        <Label Grid.Row="3" Grid.Column="3" Content="{Binding VehicleRoll, Converter={conv:AngleToStringConverter}}" />
+
+        <Label Grid.Row="4" Grid.Column="2" Content="Vehicle Pitch:" />
+        <Label Grid.Row="4" Grid.Column="3" Content="{Binding VehiclePitch, Converter={conv:AngleToStringConverter}}" />
+
+        <Label Grid.Row="5" Grid.Column="2" Content="Vehicle Yaw:" />
+        <Label Grid.Row="5" Grid.Column="3" Content="{Binding VehicleYaw, Converter={conv:AngleToStringConverter}}" />
+    </Grid>
+</UserControl>

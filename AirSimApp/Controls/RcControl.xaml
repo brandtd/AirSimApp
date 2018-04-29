@@ -1,0 +1,76 @@
+﻿<UserControl x:Class="AirSimApp.Controls.RcControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:wpfbbq="clr-namespace:WpfBBQWinRTXamlToolkit;assembly=WpfBBQWinRTXamlToolkit"
+             xmlns:local="clr-namespace:AirSimApp.Controls"
+             mc:Ignorable="d"
+             d:DesignWidth="500">
+    <StackPanel Orientation="Horizontal">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <wpfbbq:Gauge Grid.Row="0" Grid.Column="0"
+                              IsEnabled="{Binding Valid}"
+                              Margin="4"
+                              Height="100"
+                              Minimum="{Binding ThrottleMin}"
+                              Maximum="{Binding ThrottleMax}"
+                              TrailBrush="Transparent"
+                              ValueBrush="Transparent"
+                              Unit="Throttle"
+                              Value="{Binding ThrottleAxis}">
+            </wpfbbq:Gauge>
+            <wpfbbq:Gauge Grid.Row="0" Grid.Column="1"
+                              IsEnabled="{Binding Valid}"
+                              Margin="4"
+                              Height="100"
+                              Minimum="{Binding RollMin}"
+                              Maximum="{Binding RollMax}"
+                              TrailBrush="Transparent"
+                              ValueBrush="Transparent"
+                              Unit="Roll"
+                              Value="{Binding RollAxis}">
+            </wpfbbq:Gauge>
+            <wpfbbq:Gauge Grid.Row="1" Grid.Column="0"
+                              IsEnabled="{Binding Valid}"
+                              Margin="4"
+                              Height="100"
+                              Minimum="{Binding YawMin}"
+                              Maximum="{Binding YawMax}"
+                              TrailBrush="Transparent"
+                              ValueBrush="Transparent"
+                              Unit="Yaw"
+                              Value="{Binding YawAxis}">
+            </wpfbbq:Gauge>
+            <wpfbbq:Gauge Grid.Row="1" Grid.Column="1"
+                              IsEnabled="{Binding Valid}"
+                              Margin="4"
+                              Height="100"
+                              Minimum="{Binding PitchMin}"
+                              Maximum="{Binding PitchMax}"
+                              TrailBrush="Transparent"
+                              ValueBrush="Transparent"
+                              Unit="Pitch"
+                              Value="{Binding PitchAxis}">
+            </wpfbbq:Gauge>
+        </Grid>
+        <StackPanel VerticalAlignment="Center" Margin="8">
+            <RadioButton Content="1" IsChecked="{Binding Sw1, Mode=OneWay}" IsEnabled="false" />
+            <RadioButton Content="2" IsChecked="{Binding Sw2, Mode=OneWay}" IsEnabled="false" />
+            <RadioButton Content="3" IsChecked="{Binding Sw3, Mode=OneWay}" IsEnabled="false" />
+            <RadioButton Content="4" IsChecked="{Binding Sw4, Mode=OneWay}" IsEnabled="false" />
+            <RadioButton Content="5" IsChecked="{Binding Sw5, Mode=OneWay}" IsEnabled="false" />
+            <RadioButton Content="6" IsChecked="{Binding Sw6, Mode=OneWay}" IsEnabled="false" />
+            <RadioButton Content="7" IsChecked="{Binding Sw7, Mode=OneWay}" IsEnabled="false" />
+            <RadioButton Content="8" IsChecked="{Binding Sw8, Mode=OneWay}" IsEnabled="false" />
+        </StackPanel>
+    </StackPanel>
+</UserControl>

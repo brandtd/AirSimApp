@@ -70,6 +70,26 @@
     <Compile Include="Commands\DisarmCommand.cs" />
     <Compile Include="Commands\MultiCommand.cs" />
     <Compile Include="Commands\TakeoffCommand.cs" />
+    <Compile Include="Controls\CameraControl.xaml.cs">
+      <DependentUpon>CameraControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DraggableMapControl.xaml.cs">
+      <DependentUpon>DraggableMapControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ProxyControl.xaml.cs">
+      <DependentUpon>ProxyControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\RcControl.xaml.cs">
+      <DependentUpon>RcControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\VehicleCommandsControl.xaml.cs">
+      <DependentUpon>VehicleCommandsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\VehicleStatusControl.xaml.cs">
+      <DependentUpon>VehicleStatusControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Converters\BooleanToCollapsedVisibilityConverter.cs" />
+    <Compile Include="Converters\PositionToDegreeMinutesStringConverter.cs" />
     <Compile Include="Converters\SwitchSourceConverter.cs" />
     <Compile Include="Models\CameraModel.cs" />
     <Compile Include="Models\ProxyModel.cs" />
@@ -81,9 +101,29 @@
     <Compile Include="ViewModels\ProxyViewModel.cs" />
     <Compile Include="ViewModels\RcViewModel.cs" />
     <Compile Include="ViewModels\VehicleViewModel.cs" />
-    <Page Include="Controls\DraggableMap.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="Controls\CameraControl.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\DraggableMapControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ProxyControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\RcControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\VehicleCommandsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\VehicleStatusControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -100,9 +140,6 @@
     <Compile Include="Commands\HoverInPlaceCommand.cs" />
     <Compile Include="Commands\LandNowCommand.cs" />
     <Compile Include="Commands\ResetCommand.cs" />
-    <Compile Include="Controls\DraggableMap.xaml.cs">
-      <DependentUpon>DraggableMap.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Converters\AngleToStringConverter.cs" />
     <Compile Include="Converters\DistanceToStringConverter.cs" />
     <Compile Include="Converters\IpAddressToStringConverter.cs" />
