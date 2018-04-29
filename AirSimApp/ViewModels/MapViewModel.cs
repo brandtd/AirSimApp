@@ -51,7 +51,7 @@ namespace AirSimApp.ViewModels
         public Location Home { get => _home; set => SetProperty(ref _home, value); }
 
         /// <summary>The underlaying map layer.</summary>
-        public UIElement Layer { get => _mapLayers[_mapLayerName]; }
+        public UIElement Layer => _mapLayers[_mapLayerName];
 
         /// <summary>Underlaying map layer.</summary>
         public string LayerName

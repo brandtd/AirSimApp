@@ -44,8 +44,8 @@ namespace AirSimApp.Controls
 
         public Position MouseLocation
         {
-            get { return (Position)GetValue(MouseLocationProperty); }
-            set { SetValue(MouseLocationProperty, value); }
+            get => (Position)GetValue(MouseLocationProperty);
+            set => SetValue(MouseLocationProperty, value);
         }
 
         private void mapItemTouchDown(object sender, TouchEventArgs e)
