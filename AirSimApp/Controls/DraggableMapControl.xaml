@@ -29,7 +29,29 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Slider Grid.Row="0" Grid.Column="0"
+                    x:Name="altimeter"
+                    ToolTip="Altitude"
+                    Orientation="Vertical"
+                    HorizontalAlignment="Center"
+                    Ticks="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:DraggableMapControl}}, Path=AltitudeTicks, Converter={conv:EnumerableDistanceToDoubleCollectionConverter}}"
+                    TickPlacement="Both"
+                    IsEnabled="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:DraggableMapControl}}, Path=HaveVehicle}"
+                    Minimum="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:DraggableMapControl}}, Path=MinAltitude, Converter={conv:DistanceToDoubleConverter}}"
+                    Maximum="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:DraggableMapControl}}, Path=MaxAltitude, Converter={conv:DistanceToDoubleConverter}}"
+                    Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:DraggableMapControl}}, Path=VehicleAltitude, Converter={conv:DistanceToDoubleConverter}, Mode=OneWay}" />
+            <StackPanel Grid.Row="1" Grid.Column="0">
+                <Label Content="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:DraggableMapControl}}, Path=VehicleAltitude, Converter={conv:DistanceToStringConverter}}" />
+                <TextBox
+                     Width="40"
+                     Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:DraggableMapControl}}, Path=CommandedAltitude, Converter={conv:DistanceToStringConverter}}" />
+            </StackPanel>
             <map:Map Grid.Row="0"
+                     Grid.Column="1"
                      x:Name="map"
                      ZoomLevel="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:DraggableMapControl}}, Path=ZoomLevel}"
                      Center="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:DraggableMapControl}}, Path=MapCenter, Converter={conv:PositionToLocationConverter}}"
@@ -59,15 +81,18 @@
                     </Path.RenderTransform>
                 </Path>
             </map:Map>
-            <Border HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="#7FFFFFFF" Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:DraggableMapControl}}, Path=ShowDescription, Converter={conv:BooleanToCollapsedVisibilityConverter}, FallbackValue=Visible}">
+            <Border HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="#7FFFFFFF"
+                    Grid.Column="1"
+                    Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:DraggableMapControl}}, Path=ShowDescription, Converter={conv:BooleanToCollapsedVisibilityConverter}, FallbackValue=Visible}">
                 <TextBlock Margin="2" FontSize="10" map:HyperlinkText.InlinesSource="{Binding Layer.Description}" />
             </Border>
-            <Grid Grid.Row="1" Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:DraggableMapControl}}, Path=ShowExtras, Converter={conv:BooleanToCollapsedVisibilityConverter}, FallbackValue=Visible}">
+            <Grid Grid.Row="1" Grid.Column="1"
+                  Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:DraggableMapControl}}, Path=ShowExtras, Converter={conv:BooleanToCollapsedVisibilityConverter}, FallbackValue=Visible}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBlock VerticalAlignment="Center" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:DraggableMapControl}}, Path=MouseLocation, Converter={conv:PositionToDegreeMinutesStringConverter}}" />
+                <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:DraggableMapControl}}, Path=MouseLocation, Converter={conv:PositionToDegreeMinutesStringConverter}}" />
                 <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                     <StackPanel Margin="5">
                         <TextBlock Text="Zoom Level" Margin="0,0,0,2" HorizontalAlignment="Center" Foreground="Gray" FontSize="10" />

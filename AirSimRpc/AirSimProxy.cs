@@ -114,9 +114,9 @@ namespace AirSimRpc
         }
 
         /// <inheritdoc cref="IAirSimProxy.CmdMoveToZAsync" />
-        public Task<RpcResult<bool>> CmdMoveToZAsync(float z, float velocity, float maxWaitSeconds, DrivetrainType drivetrain, YawMode yawMode, float lookahead, float adaptiveLookahead)
+        public Task<RpcResult<bool>> CmdMoveToZAsync(float z, float velocity, float maxWaitSeconds, YawMode yawMode, float lookahead, float adaptiveLookahead)
         {
-            return _proxy.CallAsync<bool>("moveToZ", z, velocity, maxWaitSeconds, drivetrain, yawMode, lookahead, adaptiveLookahead);
+            return _proxy.CallAsync<bool>("moveToZ", z, velocity, maxWaitSeconds, yawMode, lookahead, adaptiveLookahead);
         }
 
         /// <inheritdoc cref="IAirSimProxy.CmdResetAsync" />

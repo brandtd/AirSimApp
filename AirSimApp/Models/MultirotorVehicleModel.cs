@@ -212,14 +212,34 @@ namespace AirSimApp.Models
 
         public Task MoveToAltitudeAsync(
             Distance altitude,
+            Speed speed)
+        {
+            return MoveToAltitudeAsync(altitude, speed, TimeSpan.Zero);
+        }
+
+        public Task MoveToAltitudeAsync(
+            Distance altitude,
+            Speed speed,
+            TimeSpan allowedTimeToComplete)
+        {
+            return MoveToAltitudeAsync(
+                altitude,
+                speed,
+                allowedTimeToComplete,
+                new YawMode { IsRate = false, YawOrRate = 0 },
+                -1.0f,
+                0.0f);
+        }
+
+        public Task MoveToAltitudeAsync(
+            Distance altitude,
             Speed speed,
             TimeSpan allowedTimeToComplete,
-            DrivetrainType drivetrainType,
             YawMode yawMode,
             float lookahead,
             float adaptiveLookahead)
         {
-            return MoveToZAsync(altitude - HomeLocation.Altitude, speed, allowedTimeToComplete, drivetrainType, yawMode, lookahead, adaptiveLookahead);
+            return MoveToZAsync(HomeLocation.Altitude - altitude, speed, allowedTimeToComplete, yawMode, lookahead, adaptiveLookahead);
         }
 
         public Task MoveToAsync(Position position, Speed approachSpeed)
@@ -230,17 +250,7 @@ namespace AirSimApp.Models
         public Task MoveToAsync(Position position, Speed approachSpeed, TimeSpan allowedTime)
         {
             Position3D desiredPosition = new Position3D(VehicleLocation.Altitude, position);
-            Vector3R ned = toNedFromPosition(desiredPosition);
-            return Controller.Proxy?.CmdMoveToPositionAsync(
-                ned.X,
-                ned.Y,
-                ned.Z,
-                (float)approachSpeed.InMetersPerSecond(),
-                (float)allowedTime.TotalSeconds,
-                DrivetrainType.ForwardOnly,
-                new YawMode { IsRate = false, YawOrRate = 0 },
-                -1.0f,
-                0.0f);
+            return MoveToAsync(desiredPosition, approachSpeed, allowedTime);
         }
 
         public Task MoveToAsync(Position3D position, Speed approachSpeed)
@@ -267,7 +277,6 @@ namespace AirSimApp.Models
             Distance z,
             Speed speed,
             TimeSpan allowedTimeToComplete,
-            DrivetrainType drivetrainType,
             YawMode yawMode,
             float lookahead,
             float adaptiveLookahead)
@@ -276,7 +285,6 @@ namespace AirSimApp.Models
                 (float)z.ToMeters().Value,
                 (float)speed.ToMetersPerSecond().Value,
                 (float)allowedTimeToComplete.TotalSeconds,
-                drivetrainType,
                 yawMode,
                 lookahead,
                 adaptiveLookahead);

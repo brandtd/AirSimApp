@@ -69,6 +69,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\AltitudeCommand.cs" />
     <Compile Include="Commands\ArmCommand.cs" />
     <Compile Include="Commands\DisarmCommand.cs" />
     <Compile Include="Commands\GoToCommand.cs" />
@@ -94,6 +95,8 @@
     </Compile>
     <Compile Include="Converters\AngleToDecimalDegreesConverter.cs" />
     <Compile Include="Converters\BooleanToCollapsedVisibilityConverter.cs" />
+    <Compile Include="Converters\DistanceToDoubleConverter.cs" />
+    <Compile Include="Converters\EnumerableDistanceToDoubleCollectionConverter.cs" />
     <Compile Include="Converters\LocationToPositionConverter.cs" />
     <Compile Include="Converters\PositionToDegreeMinutesStringConverter.cs" />
     <Compile Include="Converters\PositionToLocationConverter.cs" />

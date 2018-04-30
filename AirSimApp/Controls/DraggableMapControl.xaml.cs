@@ -22,8 +22,10 @@
 using DotSpatial.Positioning;
 using MapControl;
 using System.Collections;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
 namespace AirSimApp.Controls
@@ -31,6 +33,20 @@ namespace AirSimApp.Controls
     /// <summary>Interaction logic for DraggableMapControl.xaml</summary>
     public partial class DraggableMapControl : UserControl
     {
+        public static readonly DependencyProperty AltimeterCommandProperty =
+            DependencyProperty.Register(
+                nameof(AltimeterCommand),
+                typeof(ICommand),
+                typeof(DraggableMapControl),
+                new PropertyMetadata(null));
+
+        public static readonly DependencyProperty AltitudeTicksProperty =
+                    DependencyProperty.Register(
+                nameof(AltitudeTicks),
+                typeof(IEnumerable<Distance>),
+                typeof(DraggableMapControl),
+                new PropertyMetadata(null));
+
         public static readonly DependencyProperty ClickCommandProperty =
             DependencyProperty.Register(
                 nameof(ClickCommand),
@@ -38,8 +54,23 @@ namespace AirSimApp.Controls
                 typeof(DraggableMapControl),
                 new PropertyMetadata(null));
 
-        public static readonly DependencyProperty HaveVehicleProperty =
+        public static readonly DependencyProperty CommandedAltitudeProperty =
             DependencyProperty.Register(
+                nameof(CommandedAltitude),
+                typeof(Distance),
+                typeof(DraggableMapControl),
+                new PropertyMetadata(Distance.Invalid,
+                    (o, e) =>
+                    {
+                        ICommand command = ((DraggableMapControl)o).AltimeterCommand;
+                        if (command != null && command.CanExecute(e.NewValue))
+                        {
+                            command.Execute(e.NewValue);
+                        }
+                    }));
+
+        public static readonly DependencyProperty HaveVehicleProperty =
+                    DependencyProperty.Register(
                 nameof(HaveVehicle),
                 typeof(bool),
                 typeof(DraggableMapControl),
@@ -60,7 +91,7 @@ namespace AirSimApp.Controls
                 new PropertyMetadata(null));
 
         public static readonly DependencyProperty MapCenterProperty =
-                                            DependencyProperty.Register(
+            DependencyProperty.Register(
                 nameof(MapCenter),
                 typeof(Position),
                 typeof(DraggableMapControl),
@@ -72,6 +103,20 @@ namespace AirSimApp.Controls
                 typeof(UIElement),
                 typeof(DraggableMapControl),
                 new PropertyMetadata(null));
+
+        public static readonly DependencyProperty MaxAltitudeProperty =
+            DependencyProperty.Register(
+                nameof(MaxAltitude),
+                typeof(Distance),
+                typeof(DraggableMapControl),
+                new PropertyMetadata(Distance.FromMeters(100)));
+
+        public static readonly DependencyProperty MinAltitudeProperty =
+            DependencyProperty.Register(
+                nameof(MinAltitude),
+                typeof(Distance),
+                typeof(DraggableMapControl),
+                new PropertyMetadata(Distance.FromMeters(0)));
 
         public static readonly DependencyProperty MouseLocationProperty =
             DependencyProperty.Register(
@@ -93,6 +138,13 @@ namespace AirSimApp.Controls
                 typeof(bool),
                 typeof(DraggableMapControl),
                 new PropertyMetadata(false));
+
+        public static readonly DependencyProperty VehicleAltitudeProperty =
+            DependencyProperty.Register(
+                nameof(VehicleAltitude),
+                typeof(Distance),
+                typeof(DraggableMapControl),
+                new PropertyMetadata(Distance.Invalid));
 
         public static readonly DependencyProperty VehicleHeadingProperty =
             DependencyProperty.Register(
@@ -120,10 +172,28 @@ namespace AirSimApp.Controls
             InitializeComponent();
         }
 
+        public ICommand AltimeterCommand
+        {
+            get => (ICommand)GetValue(AltimeterCommandProperty);
+            set => SetValue(AltimeterCommandProperty, value);
+        }
+
+        public IEnumerable<Distance> AltitudeTicks
+        {
+            get => (IEnumerable<Distance>)GetValue(AltitudeTicksProperty);
+            set => SetValue(AltitudeTicksProperty, value);
+        }
+
         public ICommand ClickCommand
         {
             get => (ICommand)GetValue(ClickCommandProperty);
             set => SetValue(ClickCommandProperty, value);
+        }
+
+        public Distance CommandedAltitude
+        {
+            get => (Distance)GetValue(CommandedAltitudeProperty);
+            set => SetValue(CommandedAltitudeProperty, value);
         }
 
         public bool HaveVehicle
@@ -156,6 +226,18 @@ namespace AirSimApp.Controls
             set => SetValue(MapLayerProperty, value);
         }
 
+        public Distance MaxAltitude
+        {
+            get => (Distance)GetValue(MaxAltitudeProperty);
+            set => SetValue(MaxAltitudeProperty, value);
+        }
+
+        public Distance MinAltitude
+        {
+            get => (Distance)GetValue(MinAltitudeProperty);
+            set => SetValue(MinAltitudeProperty, value);
+        }
+
         public Position MouseLocation
         {
             get => (Position)GetValue(MouseLocationProperty);
@@ -172,6 +254,12 @@ namespace AirSimApp.Controls
         {
             get => (bool)GetValue(ShowExtrasProperty);
             set => SetValue(ShowExtrasProperty, value);
+        }
+
+        public Distance VehicleAltitude
+        {
+            get => (Distance)GetValue(VehicleAltitudeProperty);
+            set => SetValue(VehicleAltitudeProperty, value);
         }
 
         public Angle VehicleHeading
@@ -221,7 +309,7 @@ namespace AirSimApp.Controls
 
         private void mapMouseMove(object sender, MouseEventArgs e)
         {
-            Location location = map.ViewportPointToLocation(e.GetPosition(this));
+            Location location = map.ViewportPointToLocation(e.GetPosition(map));
             MouseLocation = new Position(new Latitude(location.Latitude), new Longitude(location.Longitude));
         }
 

@@ -58,7 +58,7 @@ namespace AirSimRpc
 
         Task<RpcResult<bool>> CmdMoveToPositionAsync(float x, float y, float z, float velocity, float maxWaitSeconds, DrivetrainType drivetrain, YawMode yawMode, float lookahead, float adaptiveLookahead);
 
-        Task<RpcResult<bool>> CmdMoveToZAsync(float z, float velocity, float maxWaitSeconds, DrivetrainType drivetrain, YawMode yawMode, float lookahead, float adaptiveLookahead);
+        Task<RpcResult<bool>> CmdMoveToZAsync(float z, float velocity, float maxWaitSeconds, YawMode yawMode, float lookahead, float adaptiveLookahead);
 
         Task<RpcResult> CmdResetAsync();
 

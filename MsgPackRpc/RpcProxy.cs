@@ -243,6 +243,8 @@ namespace MsgPackRpc
                 uint[] keys = _requests.Keys.ToArray();
                 foreach (uint key in keys)
                 {
+                    // TODO: got an invalid operation here once about transitioning a task that'd
+                    //       already completed (happened on the connection getting killed)
                     _requests[key].SetResult(new RpcResponse
                     {
                         Error = errorString,

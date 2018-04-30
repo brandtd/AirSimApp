@@ -22,7 +22,6 @@
 using AirSimApp.Commands;
 using AirSimApp.Models;
 using DotSpatial.Positioning;
-using DotSpatialExtensions;
 using MapControl;
 using System;
 using System.Collections.Generic;
@@ -41,8 +40,27 @@ namespace AirSimApp.ViewModels
             _vehicle = vehicle;
             _vehicle.PropertyChanged += onVehiclePropertyChanged;
 
+            _altitudeCommand = new AltitudeCommand(_vehicle);
             _gotoCommand = new GoToCommand(_vehicle);
         }
+
+        /// <summary>Commands vehicle to an altitude.</summary>
+        public ICommand AltitudeCommand => _altitudeCommand;
+
+        /// <summary>Altitude ticks to show on altitude slider.</summary>
+        public IEnumerable<Distance> AltitudeTicks { get; } = new Distance[] {
+            Distance.FromMeters(0),
+            Distance.FromMeters(100),
+            Distance.FromMeters(200),
+            Distance.FromMeters(300),
+            Distance.FromMeters(400),
+            Distance.FromMeters(500),
+            Distance.FromMeters(600),
+            Distance.FromMeters(700),
+            Distance.FromMeters(800),
+            Distance.FromMeters(900),
+            Distance.FromMeters(1000)
+        };
 
         /// <summary>Commands vehicle to a location.</summary>
         public ICommand GoToCommand => _gotoCommand;
@@ -76,8 +94,17 @@ namespace AirSimApp.ViewModels
         /// <summary>All map layer names.</summary>
         public IEnumerable<string> MapLayerNames => _mapLayers.Keys;
 
+        /// <summary>Max altitude to show on altitude slider.</summary>
+        public Distance MaxAltitude { get; } = Distance.FromMeters(1000);
+
+        /// <summary>Min altitude to show on altitude slider.</summary>
+        public Distance MinAltitude { get; } = Distance.FromMeters(0);
+
         /// <summary>Projection type to use.</summary>
         public MapProjection Projection { get; } = new WebMercatorProjection();
+
+        /// <summary>Vehicle's altitude.</summary>
+        public Distance VehicleAltitude { get => _vehicleAltitude; set => SetProperty(ref _vehicleAltitude, value); }
 
         public Angle VehicleHeading { get => _vehicleHeading; set => SetProperty(ref _vehicleHeading, value); }
 
@@ -93,11 +120,10 @@ namespace AirSimApp.ViewModels
             if (!_disposed)
             {
                 _vehicle.PropertyChanged -= onVehiclePropertyChanged;
+                _altitudeCommand.Dispose();
                 _gotoCommand.Dispose();
             }
         }
-
-        private readonly GoToCommand _gotoCommand;
 
         private readonly Dictionary<string, UIElement> _mapLayers = new Dictionary<string, UIElement>
         {
@@ -176,11 +202,14 @@ namespace AirSimApp.ViewModels
         };
 
         private readonly MultirotorVehicleModel _vehicle;
+        private AltitudeCommand _altitudeCommand;
         private Position _center = new Position(new Latitude(47.639666), new Longitude(-122.128245));
         private bool _disposed = false;
+        private GoToCommand _gotoCommand;
         private bool _haveVehicle = false;
         private Position _home = Position.Invalid;
         private string _mapLayerName = "OpenStreetMap";
+        private Distance _vehicleAltitude = Distance.Invalid;
         private Angle _vehicleHeading = Angle.Invalid;
         private Position _vehicleLocation = Position.Invalid;
         private double _zoom = 15.0;
@@ -196,6 +225,7 @@ namespace AirSimApp.ViewModels
                 case (nameof(_vehicle.VehicleLocation)):
                     MapCenter = new Position(_vehicle.VehicleLocation.Latitude, _vehicle.VehicleLocation.Longitude);
                     VehicleLocation = new Position(_vehicle.VehicleLocation.Latitude, _vehicle.VehicleLocation.Longitude);
+                    VehicleAltitude = _vehicle.VehicleLocation.Altitude;
                     break;
 
                 case (nameof(_vehicle.VehicleYaw)):

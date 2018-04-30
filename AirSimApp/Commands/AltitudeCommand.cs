@@ -20,17 +20,18 @@
 #endregion MIT License (c) 2018 Dan Brandt
 
 using AirSimApp.Models;
+using DotSpatial.Positioning;
 using System;
 using System.ComponentModel;
 using System.Windows.Input;
 
 namespace AirSimApp.Commands
 {
-    /// <summary>Command for taking off.</summary>
-    public class TakeoffCommand : ICommand, IDisposable
+    /// <summary>Commands vehicle to an altitude.</summary>
+    public class AltitudeCommand : ICommand, IDisposable
     {
         /// <summary>Wire up command.</summary>
-        public TakeoffCommand(MultirotorVehicleModel vehicle)
+        public AltitudeCommand(MultirotorVehicleModel vehicle)
         {
             _vehicle = vehicle;
 
@@ -43,9 +44,22 @@ namespace AirSimApp.Commands
         public event EventHandler CanExecuteChanged;
 
         /// <inheritdoc cref="ICommand.CanExecute" />
+        /// <param name="parameter">
+        ///     <see cref="Position" /> object describing location to command vehicle to.
+        /// </param>
         public bool CanExecute(object parameter)
         {
-            return _vehicle.Connected && _vehicle.ApiEnabled && _vehicle.IsLanded;
+            if (parameter is Distance altitude)
+            {
+                return _vehicle.Connected &&
+                       _vehicle.ApiEnabled &&
+                       !altitude.IsInvalid &&
+                       _vehicle.IsFlying;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <inheritdoc cref="IDisposable.Dispose" />
@@ -55,11 +69,14 @@ namespace AirSimApp.Commands
         }
 
         /// <inheritdoc cref="ICommand.Execute" />
+        /// <param name="parameter">
+        ///     <see cref="Position" /> object describing location to command vehicle to.
+        /// </param>
         public async void Execute(object parameter)
         {
             if (CanExecute(parameter))
             {
-                await _vehicle.TakeoffAsync(TimeSpan.FromSeconds(5));
+                await _vehicle.MoveToAltitudeAsync((Distance)parameter, Speed.FromMetersPerSecond(1), TimeSpan.FromSeconds(30));
             }
         }
 

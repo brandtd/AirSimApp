@@ -20,51 +20,53 @@
 #endregion MIT License (c) 2018 Dan Brandt
 
 using DotSpatial.Positioning;
+using DotSpatialExtensions;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Markup;
+using System.Windows.Media;
 
 namespace AirSimApp.Converters
 {
-    [ValueConversion(typeof(Distance), typeof(string))]
-    public class DistanceToStringConverter : MarkupExtension, IValueConverter
+    [ValueConversion(typeof(IEnumerable<Distance>), typeof(DoubleCollection))]
+    public class EnumerableDistanceToDoubleCollectionConverter : MarkupExtension, IValueConverter
     {
         /// <inheritdoc cref="IValueConverter.Convert(object, Type, object, CultureInfo)" />
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string format = parameter as string;
-            if (!string.IsNullOrEmpty(format))
+            IEnumerable<Distance> distances = (IEnumerable<Distance>)value;
+
+            if (distances != null)
             {
-                return string.Format(culture, format, value);
+                DoubleCollection collection = new DoubleCollection();
+                foreach (Distance d in distances)
+                {
+                    collection.Add(d.InMeters());
+                }
+                return collection;
             }
-            else
-            {
-                return $"{value}";
-            }
+
+            return null;
         }
 
         /// <inheritdoc cref="IValueConverter.ConvertBack(object, Type, object, CultureInfo)" />
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string valAsString = value as string;
-            if (!string.IsNullOrEmpty(valAsString))
+            DoubleCollection collection = (DoubleCollection)value;
+
+            if (collection != null)
             {
-                try
+                List<Distance> distances = new List<Distance>();
+                foreach (double d in collection)
                 {
-                    Distance distance = Distance.Parse(valAsString);
-                    return distance;
+                    distances.Add(Distance.FromMeters(d));
                 }
-                catch (Exception)
-                {
-                    Distance distance = Distance.FromMeters(double.Parse(valAsString));
-                    return distance;
-                }
+                return distances;
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
         /// <inheritdoc cref="MarkupExtension.ProvideValue(IServiceProvider)" />
