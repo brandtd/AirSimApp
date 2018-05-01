@@ -1,9 +1,11 @@
 
 # AirSimApp
 
+Demonstration WPF app for connecting to a [Microsoft AirSim](https://github.com/Microsoft/AirSim) RPC server and displaying vehicle information.
+
 ## AirSimApp
 
-Demonstration WPF app for connecting to a [Microsoft AirSim](https://github.com/Microsoft/AirSim) RPC server and displaying vehicle information.
+Project containing the actual WPF app. The app demos some command & control of a vehicle, intending to help test out the AirSimRpc library and see what the airsim library is capable of through the interfaces that it exposes.
 
 ## AirSimRpc
 
@@ -30,6 +32,10 @@ The methods do what you'd expect, and are intended to interact well with C#'s Ta
 ## DotSpatialExtensions
 
 Extension methods for the [DotSpatial](https://github.com/DotSpatial/DotSpatial) library, filling in some gaps that I think it has and that are useful for these projects.
+
+## DotSpatialExtensions.Tests
+
+Unit tests for the DotSpatialExtensions project to give some confidence that the math shakes out.
 
 ## WpfBBQWinRTXamlToolkit
 
