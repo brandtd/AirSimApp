@@ -27,7 +27,7 @@ using System.Windows.Input;
 namespace AirSimApp.Commands
 {
     /// <summary>Combines multiple commands into a single command object.</summary>
-    public class MultiCommand : ICommand, IDisposable
+    public class MultiCommand : CommandWithIndeterminateProgress, IDisposable
     {
         public MultiCommand(IEnumerable<ICommand> commands)
         {
@@ -40,12 +40,14 @@ namespace AirSimApp.Commands
         }
 
         /// <inheritdoc cref="ICommand.CanExecuteChanged" />
-        public event EventHandler CanExecuteChanged;
+        public override event EventHandler CanExecuteChanged;
+
+        public override bool InProgress => _commands.Any(c => ((ICommandWithIndeterminateProgress)c)?.InProgress == true);
 
         /// <inheritdoc cref="ICommand.CanExecute" />
-        public bool CanExecute(object parameter)
+        public override bool CanExecute(object parameter)
         {
-            return _commands.Any(cmd => cmd.CanExecute(parameter));
+            return _commands.Any(cmd => cmd.CanExecute(parameter)) && !InProgress;
         }
 
         /// <inheritdoc cref="IDisposable.Dispose" />
@@ -58,7 +60,7 @@ namespace AirSimApp.Commands
         }
 
         /// <inheritdoc cref="ICommand.Execute" />
-        public void Execute(object parameter)
+        public override void Execute(object parameter)
         {
             foreach (ICommand command in _commands)
             {

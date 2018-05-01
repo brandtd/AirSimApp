@@ -28,7 +28,7 @@ using System.Windows.Input;
 namespace AirSimApp.Commands
 {
     /// <summary>Commands vehicle to a location.</summary>
-    public class GoToCommand : ICommand, IDisposable
+    public class GoToCommand : CommandWithIndeterminateProgress, IDisposable
     {
         /// <summary>Wire up command.</summary>
         public GoToCommand(MultirotorVehicleModel vehicle)
@@ -41,13 +41,13 @@ namespace AirSimApp.Commands
         }
 
         /// <inheritdoc cref="ICommand.CanExecuteChanged" />
-        public event EventHandler CanExecuteChanged;
+        public override event EventHandler CanExecuteChanged;
 
         /// <inheritdoc cref="ICommand.CanExecute" />
         /// <param name="parameter">
         ///     <see cref="Position" /> object describing location to command vehicle to.
         /// </param>
-        public bool CanExecute(object parameter)
+        public override bool CanExecute(object parameter)
         {
             if (parameter is Position position)
             {
@@ -72,11 +72,13 @@ namespace AirSimApp.Commands
         /// <param name="parameter">
         ///     <see cref="Position" /> object describing location to command vehicle to.
         /// </param>
-        public async void Execute(object parameter)
+        public override async void Execute(object parameter)
         {
             if (CanExecute(parameter))
             {
+                StartingExecution();
                 await _vehicle.MoveToAsync((Position)parameter, Speed.FromMetersPerSecond(5), TimeSpan.FromSeconds(30));
+                ExecutionCompleted();
             }
         }
 

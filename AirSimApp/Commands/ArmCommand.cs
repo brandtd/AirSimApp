@@ -22,12 +22,11 @@
 using AirSimApp.Models;
 using System;
 using System.ComponentModel;
-using System.Windows.Input;
 
 namespace AirSimApp.Commands
 {
     /// <summary>Command for arming vehicle.</summary>
-    public class ArmCommand : ICommand, IDisposable
+    public class ArmCommand : CommandWithIndeterminateProgress, IDisposable
     {
         /// <summary>Wire up command.</summary>
         public ArmCommand(MultirotorVehicleModel vehicle)
@@ -40,12 +39,12 @@ namespace AirSimApp.Commands
         }
 
         /// <inheritdoc cref="ICommand.CanExecuteChanged" />
-        public event EventHandler CanExecuteChanged;
+        public override event EventHandler CanExecuteChanged;
 
         /// <inheritdoc cref="ICommand.CanExecute" />
-        public bool CanExecute(object parameter)
+        public override bool CanExecute(object parameter)
         {
-            return _vehicle.Connected && _vehicle.ApiEnabled;
+            return _vehicle.Connected && _vehicle.ApiEnabled && !InProgress;
         }
 
         /// <inheritdoc cref="IDisposable.Dispose" />
@@ -55,11 +54,13 @@ namespace AirSimApp.Commands
         }
 
         /// <inheritdoc cref="ICommand.Execute" />
-        public async void Execute(object parameter)
+        public override async void Execute(object parameter)
         {
             if (CanExecute(parameter))
             {
+                StartingExecution();
                 await _vehicle.ArmAsync();
+                ExecutionCompleted();
             }
         }
 

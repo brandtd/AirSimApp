@@ -28,16 +28,8 @@ using System.Windows.Input;
 namespace AirSimApp.Commands
 {
     /// <summary>Command for connecting with AirSim RPC server.</summary>
-    public class ConnectCommand : ICommand, IDisposable
+    public class ConnectCommand : CommandWithIndeterminateProgress, IDisposable
     {
-        private readonly ProxyController _controller;
-
-        private bool _canExecute;
-        private bool _connecting = false;
-
-        /// <inheritdoc cref="ICommand.CanExecuteChanged" />
-        public event EventHandler CanExecuteChanged;
-
         /// <summary>Wire up command.</summary>
         public ConnectCommand(ProxyController controller)
         {
@@ -48,27 +40,18 @@ namespace AirSimApp.Commands
             _canExecute = CanExecute(null);
         }
 
+        /// <inheritdoc cref="ICommand.CanExecuteChanged" />
+        public override event EventHandler CanExecuteChanged;
+
         /// <inheritdoc cref="ICommand.CanExecute" />
-        public bool CanExecute(object parameter)
+        public override bool CanExecute(object parameter)
         {
-            bool notConnecting = !_connecting;
             bool notConnected = !_controller.Connected;
             bool addressOrPortChanged =
                 _controller.AddressToUse != _controller.ConnectedAddress ||
                 _controller.PortToUse != _controller.ConnectedPort;
 
-            return notConnecting && (notConnected || addressOrPortChanged);
-        }
-
-        /// <inheritdoc cref="ICommand.Execute" />
-        public async void Execute(object parameter)
-        {
-            if (CanExecute(parameter))
-            {
-                setConnecting(true);
-                await _controller.ConnectAsync(new IPEndPoint(_controller.AddressToUse, _controller.PortToUse));
-                setConnecting(false);
-            }
+            return !InProgress && (notConnected || addressOrPortChanged);
         }
 
         /// <inheritdoc cref="IDisposable.Dispose" />
@@ -77,16 +60,20 @@ namespace AirSimApp.Commands
             _controller.PropertyChanged -= onControllerPropertyChanged;
         }
 
-        private void onControllerPropertyChanged(object sender, PropertyChangedEventArgs e)
+        /// <inheritdoc cref="ICommand.Execute" />
+        public override async void Execute(object parameter)
         {
-            checkForCanExecuteChanged();
+            if (CanExecute(parameter))
+            {
+                StartingExecution();
+                await _controller.ConnectAsync(new IPEndPoint(_controller.AddressToUse, _controller.PortToUse));
+                ExecutionCompleted();
+            }
         }
 
-        private void setConnecting(bool connecting)
-        {
-            _connecting = connecting;
-            checkForCanExecuteChanged();
-        }
+        private readonly ProxyController _controller;
+
+        private bool _canExecute;
 
         private void checkForCanExecuteChanged()
         {
@@ -96,6 +83,11 @@ namespace AirSimApp.Commands
                 _canExecute = newCanExecute;
                 CanExecuteChanged?.Invoke(this, EventArgs.Empty);
             }
+        }
+
+        private void onControllerPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            checkForCanExecuteChanged();
         }
     }
 }

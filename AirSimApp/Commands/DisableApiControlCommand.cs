@@ -27,15 +27,8 @@ using System.Windows.Input;
 namespace AirSimApp.Commands
 {
     /// <summary>Command for disabling API control.</summary>
-    public class DisableApiControlCommand : ICommand, IDisposable
+    public class DisableApiControlCommand : CommandWithIndeterminateProgress, IDisposable
     {
-        private readonly MultirotorVehicleModel _vehicle;
-
-        private bool _canExecute;
-
-        /// <inheritdoc cref="ICommand.CanExecuteChanged" />
-        public event EventHandler CanExecuteChanged;
-
         /// <summary>Wire up command.</summary>
         public DisableApiControlCommand(MultirotorVehicleModel vehicle)
         {
@@ -46,19 +39,13 @@ namespace AirSimApp.Commands
             _canExecute = CanExecute(null);
         }
 
-        /// <inheritdoc cref="ICommand.CanExecute" />
-        public bool CanExecute(object parameter)
-        {
-            return _vehicle.Connected && _vehicle.ApiEnabled;
-        }
+        /// <inheritdoc cref="ICommand.CanExecuteChanged" />
+        public override event EventHandler CanExecuteChanged;
 
-        /// <inheritdoc cref="ICommand.Execute" />
-        public async void Execute(object parameter)
+        /// <inheritdoc cref="ICommand.CanExecute" />
+        public override bool CanExecute(object parameter)
         {
-            if (CanExecute(parameter))
-            {
-                await _vehicle.SetApiControlAllowedAsync(false);
-            }
+            return _vehicle.Connected && _vehicle.ApiEnabled && !InProgress;
         }
 
         /// <inheritdoc cref="IDisposable.Dispose" />
@@ -66,6 +53,21 @@ namespace AirSimApp.Commands
         {
             _vehicle.PropertyChanged -= onControllerPropertyChanged;
         }
+
+        /// <inheritdoc cref="ICommand.Execute" />
+        public override async void Execute(object parameter)
+        {
+            if (CanExecute(parameter))
+            {
+                StartingExecution();
+                await _vehicle.SetApiControlAllowedAsync(false);
+                ExecutionCompleted();
+            }
+        }
+
+        private readonly MultirotorVehicleModel _vehicle;
+
+        private bool _canExecute;
 
         private void onControllerPropertyChanged(object sender, PropertyChangedEventArgs e)
         {

@@ -90,6 +90,9 @@ namespace AirSimApp
         /// <summary>Command vehicle to land now.</summary>
         public ICommand LandNowCommand => _landNowCommand;
 
+        /// <summary>Vehicle's current operating mode.</summary>
+        public VehicleMode Mode => _model.Mode;
+
         /// <summary>Command simulator to reset.</summary>
         public ICommand ResetCommand => _resetCommand;
 
@@ -183,6 +186,10 @@ namespace AirSimApp
 
                 case nameof(_model.VehicleYaw):
                     OnPropertyChanged(nameof(VehicleYaw));
+                    break;
+
+                case nameof(_model.Mode):
+                    OnPropertyChanged(nameof(Mode));
                     break;
             }
         }

@@ -27,7 +27,7 @@ using System.Windows.Input;
 namespace AirSimApp.Commands
 {
     /// <summary>Command for telling vehicle to go home.</summary>
-    public class GoHomeCommand : ICommand, IDisposable
+    public class GoHomeCommand : CommandWithIndeterminateProgress, IDisposable
     {
         /// <summary>Wire up command.</summary>
         public GoHomeCommand(MultirotorVehicleModel vehicle)
@@ -40,12 +40,12 @@ namespace AirSimApp.Commands
         }
 
         /// <inheritdoc cref="ICommand.CanExecuteChanged" />
-        public event EventHandler CanExecuteChanged;
+        public override event EventHandler CanExecuteChanged;
 
         /// <inheritdoc cref="ICommand.CanExecute" />
-        public bool CanExecute(object parameter)
+        public override bool CanExecute(object parameter)
         {
-            return _vehicle.Connected && _vehicle.ApiEnabled && _vehicle.IsFlying;
+            return _vehicle.Connected && _vehicle.ApiEnabled && _vehicle.IsFlying && !InProgress;
         }
 
         /// <inheritdoc cref="IDisposable.Dispose" />
@@ -55,11 +55,13 @@ namespace AirSimApp.Commands
         }
 
         /// <inheritdoc cref="ICommand.Execute" />
-        public async void Execute(object parameter)
+        public override async void Execute(object parameter)
         {
             if (CanExecute(parameter))
             {
+                StartingExecution();
                 await _vehicle.GoHomeAsync();
+                ExecutionCompleted();
             }
         }
 
