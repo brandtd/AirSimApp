@@ -128,7 +128,7 @@ namespace AirSimApp.Models
 
         public async Task ArmDisarmAsync(bool armIfTrue)
         {
-            await Controller.Proxy?.CmdArmDisarmAsync(armIfTrue);
+            await Controller.Proxy?.ArmDisarmAsync(armIfTrue);
         }
 
         public Task DisarmAsync()
@@ -149,12 +149,12 @@ namespace AirSimApp.Models
         public async Task GoHomeAsync()
         {
             Mode = VehicleMode.Recovering;
-            await Controller.Proxy?.CmdGoHomeAsync();
+            await Controller.Proxy?.GoHomeAsync();
         }
 
         public async Task HoverAsync()
         {
-            await Controller.Proxy?.CmdHoverInPlaceAsync();
+            await Controller.Proxy?.HoverAsync();
         }
 
         public Task LandAsync() => LandAsync(TimeSpan.FromSeconds(60));
@@ -162,13 +162,13 @@ namespace AirSimApp.Models
         public async Task LandAsync(TimeSpan allowedTimeToLand)
         {
             Mode = VehicleMode.Landing;
-            await Controller.Proxy?.CmdLandAsync((float)allowedTimeToLand.TotalSeconds);
+            await Controller.Proxy?.LandAsync((float)allowedTimeToLand.TotalSeconds);
         }
 
         public async Task MoveByAngleThrottleAsync(Angle pitch, Angle roll, float throttle, float yaw_rate, TimeSpan duration)
         {
             Mode = VehicleMode.Moving;
-            await Controller.Proxy?.CmdMoveByAngleThrottleAsync(
+            await Controller.Proxy?.MoveByAngleThrottleAsync(
                 (float)pitch.DecimalDegrees,
                 (float)roll.DecimalDegrees,
                 throttle,
@@ -180,7 +180,7 @@ namespace AirSimApp.Models
         public async Task MoveByAngleZAsync(Angle pitch, Angle roll, Distance z, Angle yaw, TimeSpan duration)
         {
             Mode = VehicleMode.Moving;
-            await Controller.Proxy?.CmdMoveByAngleZAsync(
+            await Controller.Proxy?.MoveByAngleZAsync(
                 (float)pitch.DecimalDegrees,
                 (float)roll.DecimalDegrees,
                 (float)z.ToMeters().Value,
@@ -192,7 +192,7 @@ namespace AirSimApp.Models
         public async Task MoveByVelocityAsync(Speed vx, Speed vy, Speed vz, TimeSpan duration, DrivetrainType drivetrainType, YawMode yawMode)
         {
             Mode = VehicleMode.Moving;
-            await Controller.Proxy?.CmdMoveByVelocityAsync(
+            await Controller.Proxy?.MoveByVelocityAsync(
                 (float)vx.ToMetersPerSecond().Value,
                 (float)vy.ToMetersPerSecond().Value,
                 (float)vz.ToMetersPerSecond().Value,
@@ -205,7 +205,7 @@ namespace AirSimApp.Models
         public async Task MoveByVelocityZAsync(Speed vx, Speed vy, Distance z, TimeSpan duration, DrivetrainType drivetrainType, YawMode yawMode)
         {
             Mode = VehicleMode.Moving;
-            await Controller.Proxy?.CmdMoveByVelocityZAsync(
+            await Controller.Proxy?.MoveByVelocityZAsync(
                 (float)vx.ToMetersPerSecond().Value,
                 (float)vy.ToMetersPerSecond().Value,
                 (float)z.ToMeters().Value,
@@ -226,7 +226,7 @@ namespace AirSimApp.Models
         {
             Mode = VehicleMode.Moving;
             IEnumerable<Vector3R> nedPositions = positions.Select(pos => toNedFromPosition(pos));
-            await Controller.Proxy?.CmdMoveOnPathAsync(
+            await Controller.Proxy?.MoveOnPathAsync(
                 nedPositions,
                 (float)speed.ToMetersPerSecond().Value,
                 (float)allowedTimeToComplete.TotalSeconds,
@@ -255,7 +255,7 @@ namespace AirSimApp.Models
         {
             Mode = VehicleMode.Moving;
             Vector3R ned = toNedFromPosition(position);
-            await Controller.Proxy?.CmdMoveToPositionAsync(
+            await Controller.Proxy?.MoveToPositionAsync(
                 ned.X,
                 ned.Y,
                 ned.Z,
@@ -277,7 +277,7 @@ namespace AirSimApp.Models
             float adaptiveLookahead)
         {
             Mode = VehicleMode.Moving;
-            await Controller.Proxy?.CmdMoveToZAsync(
+            await Controller.Proxy?.MoveToZAsync(
                 (float)z.ToMeters().Value,
                 (float)speed.ToMetersPerSecond().Value,
                 (float)allowedTimeToComplete.TotalSeconds,
@@ -289,17 +289,17 @@ namespace AirSimApp.Models
 
         public async Task ResetAsync()
         {
-            await Controller.Proxy?.CmdResetAsync();
+            await Controller.Proxy?.ResetAsync();
         }
 
         public async Task SetApiControlAllowedAsync(bool allowedIfTrue)
         {
-            await Controller.Proxy?.CmdSetApiControlAsync(allowedIfTrue);
+            await Controller.Proxy?.EnableApiControlAsync(allowedIfTrue);
         }
 
         public async Task SetSimulationModeAsync(bool simulateIfTrue)
         {
-            await Controller.Proxy?.CmdSimulationModeAsync(simulateIfTrue);
+            await Controller.Proxy?.SetSimulationModeAsync(simulateIfTrue);
         }
 
         public Task TakeoffAsync() => TakeoffAsync(TimeSpan.FromSeconds(5));
@@ -307,7 +307,7 @@ namespace AirSimApp.Models
         public async Task TakeoffAsync(TimeSpan allowedTimeToTakeoff)
         {
             Mode = VehicleMode.Launching;
-            await Controller.Proxy?.CmdTakeoffAsync((float)allowedTimeToTakeoff.TotalSeconds);
+            await Controller.Proxy?.TakeoffAsync((float)allowedTimeToTakeoff.TotalSeconds);
             Mode = VehicleMode.Hovering;
         }
 
@@ -353,7 +353,7 @@ namespace AirSimApp.Models
             }
 
             token.ThrowIfCancellationRequested();
-            RpcResult<bool> isApiControlEnabled = await Controller.Proxy?.GetIsApiControlEnabledAsync();
+            RpcResult<bool> isApiControlEnabled = await Controller.Proxy?.IsApiControlEnabledAsync();
             if (isApiControlEnabled != null && isApiControlEnabled.Successful)
             {
                 ApiEnabled = isApiControlEnabled.Value;

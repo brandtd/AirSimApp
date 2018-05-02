@@ -47,122 +47,122 @@ namespace AirSimRpc
         /// <inheritdoc cref="IAirSimProxy.Connected" />
         public bool Connected => _proxy.Connected;
 
-        /// <inheritdoc cref="IAirSimProxy.CmdArmDisarmAsync" />
-        public Task<RpcResult<bool>> CmdArmDisarmAsync(bool armVehicle)
+        /// <inheritdoc cref="IAirSimProxy.ArmDisarmAsync" />
+        public Task<RpcResult<bool>> ArmDisarmAsync(bool armVehicle)
         {
             return _proxy.CallAsync<bool>("armDisarm", armVehicle);
         }
 
-        /// <inheritdoc cref="IAirSimProxy.CmdGoHomeAsync" />
-        public Task<RpcResult<bool>> CmdGoHomeAsync()
+        /// <inheritdoc cref="IAirSimProxy.GoHomeAsync" />
+        public Task<RpcResult<bool>> GoHomeAsync()
         {
             return _proxy.CallAsync<bool>("goHome");
         }
 
-        /// <inheritdoc cref="IAirSimProxy.CmdHoverInPlaceAsync" />
-        public Task<RpcResult<bool>> CmdHoverInPlaceAsync()
+        /// <inheritdoc cref="IAirSimProxy.HoverAsync" />
+        public Task<RpcResult<bool>> HoverAsync()
         {
             return _proxy.CallAsync<bool>("hover");
         }
 
-        /// <inheritdoc cref="IAirSimProxy.CmdLandAsync" />
-        public Task<RpcResult<bool>> CmdLandAsync(float maxWaitSeconds)
+        /// <inheritdoc cref="IAirSimProxy.LandAsync" />
+        public Task<RpcResult<bool>> LandAsync(float maxWaitSeconds)
         {
             return _proxy.CallAsync<bool>("land", maxWaitSeconds);
         }
 
-        /// <inheritdoc cref="IAirSimProxy.CmdMoveByAngleThrottleAsync" />
-        public Task<RpcResult<bool>> CmdMoveByAngleThrottleAsync(float pitch, float roll, float throttle, float yaw_rate, float duration)
+        /// <inheritdoc cref="IAirSimProxy.MoveByAngleThrottleAsync" />
+        public Task<RpcResult<bool>> MoveByAngleThrottleAsync(float pitch, float roll, float throttle, float yaw_rate, float duration)
         {
             return _proxy.CallAsync<bool>("moveByAngleThrottle", pitch, roll, throttle, yaw_rate, duration);
         }
 
-        /// <inheritdoc cref="IAirSimProxy.CmdMoveByAngleZAsync" />
-        public Task<RpcResult<bool>> CmdMoveByAngleZAsync(float pitch, float roll, float z, float yaw, float duration)
+        /// <inheritdoc cref="IAirSimProxy.MoveByAngleZAsync" />
+        public Task<RpcResult<bool>> MoveByAngleZAsync(float pitch, float roll, float z, float yaw, float duration)
         {
             return _proxy.CallAsync<bool>("moveByAngleZ", pitch, roll, z, yaw, duration);
         }
 
-        /// <inheritdoc cref="IAirSimProxy.CmdMoveByManualAsync" />
-        public Task<RpcResult<bool>> CmdMoveByManualAsync(float vx_max, float vy_max, float z_min, float duration, DrivetrainType drivetrain, YawMode yawMode, float lookahead, float adaptiveLookahead)
+        /// <inheritdoc cref="IAirSimProxy.MoveByManualAsync" />
+        public Task<RpcResult<bool>> MoveByManualAsync(float vx_max, float vy_max, float z_min, float duration, DrivetrainType drivetrain, YawMode yawMode, float lookahead, float adaptiveLookahead)
         {
             return _proxy.CallAsync<bool>("moveByManual", vx_max, vy_max, z_min, duration, drivetrain, yawMode, lookahead, adaptiveLookahead);
         }
 
-        /// <inheritdoc cref="IAirSimProxy.CmdMoveByVelocityAsync" />
-        public Task<RpcResult<bool>> CmdMoveByVelocityAsync(float vx, float vy, float vz, float duration, DrivetrainType drivetrain, YawMode yawMode)
+        /// <inheritdoc cref="IAirSimProxy.MoveByVelocityAsync" />
+        public Task<RpcResult<bool>> MoveByVelocityAsync(float vx, float vy, float vz, float duration, DrivetrainType drivetrain, YawMode yawMode)
         {
             return _proxy.CallAsync<bool>("moveByVelocity", vx, vy, vz, duration, drivetrain, yawMode);
         }
 
-        /// <inheritdoc cref="IAirSimProxy.CmdMoveByVelocityZAsync" />
-        public Task<RpcResult<bool>> CmdMoveByVelocityZAsync(float vx, float vy, float z, float duration, DrivetrainType drivetrain, YawMode yawMode)
+        /// <inheritdoc cref="IAirSimProxy.MoveByVelocityZAsync" />
+        public Task<RpcResult<bool>> MoveByVelocityZAsync(float vx, float vy, float z, float duration, DrivetrainType drivetrain, YawMode yawMode)
         {
             return _proxy.CallAsync<bool>("moveByVelocityZ", vx, vy, z, duration, drivetrain, yawMode);
         }
 
-        /// <inheritdoc cref="IAirSimProxy.CmdMoveOnPathAsync" />
-        public Task<RpcResult<bool>> CmdMoveOnPathAsync(IEnumerable<Vector3R> path, float velocity, float maxWaitSeconds, DrivetrainType drivetrain, YawMode yawMode, float lookahead, float adaptiveLookahead)
+        /// <inheritdoc cref="IAirSimProxy.MoveOnPathAsync" />
+        public Task<RpcResult<bool>> MoveOnPathAsync(IEnumerable<Vector3R> path, float velocity, float maxWaitSeconds, DrivetrainType drivetrain, YawMode yawMode, float lookahead, float adaptiveLookahead)
         {
             return _proxy.CallAsync<bool>("moveOnPath", path, velocity, maxWaitSeconds, drivetrain, yawMode, lookahead, adaptiveLookahead);
         }
 
-        /// <inheritdoc cref="IAirSimProxy.CmdMoveToPositionAsync" />
-        public Task<RpcResult<bool>> CmdMoveToPositionAsync(float x, float y, float z, float velocity, float maxWaitSeconds, DrivetrainType drivetrain, YawMode yawMode, float lookahead, float adaptiveLookahead)
+        /// <inheritdoc cref="IAirSimProxy.MoveToPositionAsync" />
+        public Task<RpcResult<bool>> MoveToPositionAsync(float x, float y, float z, float velocity, float maxWaitSeconds, DrivetrainType drivetrain, YawMode yawMode, float lookahead, float adaptiveLookahead)
         {
             return _proxy.CallAsync<bool>("moveToPosition", x, y, z, velocity, maxWaitSeconds, drivetrain, yawMode, lookahead, adaptiveLookahead);
         }
 
-        /// <inheritdoc cref="IAirSimProxy.CmdMoveToZAsync" />
-        public Task<RpcResult<bool>> CmdMoveToZAsync(float z, float velocity, float maxWaitSeconds, YawMode yawMode, float lookahead, float adaptiveLookahead)
+        /// <inheritdoc cref="IAirSimProxy.MoveToZAsync" />
+        public Task<RpcResult<bool>> MoveToZAsync(float z, float velocity, float maxWaitSeconds, YawMode yawMode, float lookahead, float adaptiveLookahead)
         {
             return _proxy.CallAsync<bool>("moveToZ", z, velocity, maxWaitSeconds, yawMode, lookahead, adaptiveLookahead);
         }
 
-        /// <inheritdoc cref="IAirSimProxy.CmdResetAsync" />
-        public Task<RpcResult> CmdResetAsync()
+        /// <inheritdoc cref="IAirSimProxy.ResetAsync" />
+        public Task<RpcResult> ResetAsync()
         {
             return _proxy.CallAsync("reset");
         }
 
-        /// <inheritdoc cref="IAirSimProxy.CmdRotateByYawRateAsync" />
-        public Task<RpcResult<bool>> CmdRotateByYawRateAsync(float yaw_rate, float duration)
+        /// <inheritdoc cref="IAirSimProxy.RotateByYawRateAsync" />
+        public Task<RpcResult<bool>> RotateByYawRateAsync(float yaw_rate, float duration)
         {
             return _proxy.CallAsync<bool>("rotateByYawRate", yaw_rate, duration);
         }
 
-        /// <inheritdoc cref="IAirSimProxy.CmdRotateToYawAsync" />
-        public Task<RpcResult<bool>> CmdRotateToYawAsync(float yaw, float maxWaitSeconds, float margin)
+        /// <inheritdoc cref="IAirSimProxy.RotateToYawAsync" />
+        public Task<RpcResult<bool>> RotateToYawAsync(float yaw, float maxWaitSeconds, float margin)
         {
             return _proxy.CallAsync<bool>("rotateToYaw", yaw, maxWaitSeconds, margin);
         }
 
-        /// <inheritdoc cref="IAirSimProxy.CmdSetApiControlAsync" />
-        public Task<RpcResult> CmdSetApiControlAsync(bool enable)
+        /// <inheritdoc cref="IAirSimProxy.EnableApiControlAsync" />
+        public Task<RpcResult> EnableApiControlAsync(bool enable)
         {
             return _proxy.CallAsync("enableApiControl", enable);
         }
 
-        /// <inheritdoc cref="IAirSimProxy.CmdSetCameraOrientationAsync" />
-        public Task<RpcResult<bool>> CmdSetCameraOrientationAsync(int cameraId, QuaternionR orientation)
+        /// <inheritdoc cref="IAirSimProxy.SetCameraOrientationAsync" />
+        public Task<RpcResult<bool>> SetCameraOrientationAsync(int cameraId, QuaternionR orientation)
         {
             return _proxy.CallAsync<bool>("setCameraOrientation", cameraId, orientation);
         }
 
-        /// <inheritdoc cref="IAirSimProxy.CmdSetPoseAsync" />
-        public Task<RpcResult<bool>> CmdSetPoseAsync(Pose pose, bool ignoreCollision)
+        /// <inheritdoc cref="IAirSimProxy.SimSetPoseAsync" />
+        public Task<RpcResult<bool>> SimSetPoseAsync(Pose pose, bool ignoreCollision)
         {
             return _proxy.CallAsync<bool>("simSetPose", pose, ignoreCollision);
         }
 
-        /// <inheritdoc cref="IAirSimProxy.CmdSimulationModeAsync" />
-        public Task<RpcResult<bool>> CmdSimulationModeAsync(bool simulate)
+        /// <inheritdoc cref="IAirSimProxy.SetSimulationModeAsync" />
+        public Task<RpcResult<bool>> SetSimulationModeAsync(bool simulate)
         {
             return _proxy.CallAsync<bool>("setSimulationMode", simulate);
         }
 
-        /// <inheritdoc cref="IAirSimProxy.CmdTakeoffAsync" />
-        public Task<RpcResult<bool>> CmdTakeoffAsync(float maxWaitSeconds)
+        /// <inheritdoc cref="IAirSimProxy.TakeoffAsync" />
+        public Task<RpcResult<bool>> TakeoffAsync(float maxWaitSeconds)
         {
             return _proxy.CallAsync<bool>("takeoff", maxWaitSeconds);
         }
@@ -219,26 +219,26 @@ namespace AirSimRpc
             return _proxy.CallAsync<GeoPoint>("getHomeGeoPoint");
         }
 
-        /// <inheritdoc cref="IAirSimProxy.GetImageAsync" />
-        public Task<RpcResult<byte[]>> GetImageAsync(int cameraId, ImageType imageType)
+        /// <inheritdoc cref="IAirSimProxy.SimGetImageAsync" />
+        public Task<RpcResult<byte[]>> SimGetImageAsync(int cameraId, ImageType imageType)
         {
             return _proxy.CallAsync<byte[]>("simGetImage", cameraId, imageType);
         }
 
-        /// <inheritdoc cref="IAirSimProxy.GetImagesAsync" />
-        public Task<RpcResult<IEnumerable<ImageResponse>>> GetImagesAsync(IEnumerable<ImageRequest> requests)
+        /// <inheritdoc cref="IAirSimProxy.SimGetImagesAsync" />
+        public Task<RpcResult<IEnumerable<ImageResponse>>> SimGetImagesAsync(IEnumerable<ImageRequest> requests)
         {
             return _proxy.CallAsync<IEnumerable<ImageResponse>>("simGetImages", requests);
         }
 
-        /// <inheritdoc cref="IAirSimProxy.GetIsApiControlEnabledAsync" />
-        public Task<RpcResult<bool>> GetIsApiControlEnabledAsync()
+        /// <inheritdoc cref="IAirSimProxy.IsApiControlEnabledAsync" />
+        public Task<RpcResult<bool>> IsApiControlEnabledAsync()
         {
             return _proxy.CallAsync<bool>("isApiControlEnabled");
         }
 
-        /// <inheritdoc cref="IAirSimProxy.GetIsSimulationMode" />
-        public Task<RpcResult<bool>> GetIsSimulationMode()
+        /// <inheritdoc cref="IAirSimProxy.IsSimulationMode" />
+        public Task<RpcResult<bool>> IsSimulationMode()
         {
             return _proxy.CallAsync<bool>("isSimulationMode");
         }
@@ -273,14 +273,14 @@ namespace AirSimRpc
             return _proxy.CallAsync<RcData>("getRCData");
         }
 
-        /// <inheritdoc cref="IAirSimProxy.GetSimObjectPoseAsync" />
-        public Task<RpcResult<Pose>> GetSimObjectPoseAsync(string objectName)
+        /// <inheritdoc cref="IAirSimProxy.SimGetObjectPoseAsync" />
+        public Task<RpcResult<Pose>> SimGetObjectPoseAsync(string objectName)
         {
             return _proxy.CallAsync<Pose>("simGetObjectPose", objectName);
         }
 
-        /// <inheritdoc cref="IAirSimProxy.GetSimPoseAsync" />
-        public Task<RpcResult<Pose>> GetSimPoseAsync()
+        /// <inheritdoc cref="IAirSimProxy.SimGetPoseAsync" />
+        public Task<RpcResult<Pose>> SimGetPoseAsync()
         {
             return _proxy.CallAsync<Pose>("simGetPose");
         }

@@ -66,7 +66,7 @@ namespace AirSimApp.Models
         protected override async Task UpdateState(CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            RpcResult<byte[]> image = await Controller.Proxy?.GetImageAsync(_cameraId, ImageType.Scene);
+            RpcResult<byte[]> image = await Controller.Proxy?.SimGetImageAsync(_cameraId, ImageType.Scene);
             if (image != null && image.Successful)
             {
                 _stream?.Dispose();
