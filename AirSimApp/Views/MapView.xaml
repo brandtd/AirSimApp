@@ -8,9 +8,10 @@
              xmlns:local="clr-namespace:AirSimApp.Views"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
-    <controls:DraggableMapControl
-        AltimeterCommand="{Binding AltitudeCommand}"
-        AltitudeTicks="{Binding AltitudeTicks}"
+    <StackPanel Orientation="Horizontal">
+        <controls:Altimeter ActualAltitude="{Binding VehicleAltitude}" />
+        <controls:DraggableMapControl AltimeterCommand="{Binding AltitudeCommand}"
+                                      AltitudeTicks="{Binding AltitudeTicks}"
         MaxAltitude="{Binding MaxAltitude}"
         MinAltitude="{Binding MinAltitude}"
         MapCenter="{Binding MapCenter}"
@@ -26,4 +27,5 @@
         VehicleHeading="{Binding VehicleHeading}"
         VehicleLocation="{Binding VehicleLocation}"
         ZoomLevel="{Binding Zoom}" />
+    </StackPanel>
 </UserControl>

@@ -34,7 +34,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace AirSimApp.Controls
+namespace AirSimApp.Views
 {
     /// <summary>Interaction logic for VehicleStatusView.xaml</summary>
     public partial class VehicleStatusView : UserControl

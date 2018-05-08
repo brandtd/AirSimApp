@@ -77,6 +77,11 @@
     <Compile Include="Commands\ICommandWithIndeterminateProgress.cs" />
     <Compile Include="Commands\MultiCommand.cs" />
     <Compile Include="Commands\TakeoffCommand.cs" />
+    <Compile Include="Controls\Altimeter.xaml.cs">
+      <DependentUpon>Altimeter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AltimeterResources\ActualMarker.cs" />
+    <Compile Include="Controls\AltimeterResources\CommandMarker.cs" />
     <Compile Include="Controls\DraggableMapControl.xaml.cs">
       <DependentUpon>DraggableMapControl.xaml</DependentUpon>
     </Compile>
@@ -117,6 +122,10 @@
     <Compile Include="Views\VehicleStatusView.xaml.cs">
       <DependentUpon>VehicleStatusView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Controls\Altimeter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\DraggableMapControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -223,6 +232,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\airsimapp.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Themes\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
