@@ -77,23 +77,8 @@
     <Compile Include="Commands\ICommandWithIndeterminateProgress.cs" />
     <Compile Include="Commands\MultiCommand.cs" />
     <Compile Include="Commands\TakeoffCommand.cs" />
-    <Compile Include="Controls\CameraControl.xaml.cs">
-      <DependentUpon>CameraControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\DraggableMapControl.xaml.cs">
       <DependentUpon>DraggableMapControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ProxyControl.xaml.cs">
-      <DependentUpon>ProxyControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\RcControl.xaml.cs">
-      <DependentUpon>RcControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\VehicleCommandsControl.xaml.cs">
-      <DependentUpon>VehicleCommandsControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\VehicleStatusControl.xaml.cs">
-      <DependentUpon>VehicleStatusControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\AngleToDecimalDegreesConverter.cs" />
     <Compile Include="Converters\BooleanToCollapsedVisibilityConverter.cs" />
@@ -114,30 +99,25 @@
     <Compile Include="ViewModels\ProxyViewModel.cs" />
     <Compile Include="ViewModels\RcViewModel.cs" />
     <Compile Include="ViewModels\VehicleViewModel.cs" />
+    <Compile Include="Views\CameraView.xaml.cs">
+      <DependentUpon>CameraView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MapView.xaml.cs">
       <DependentUpon>MapView.xaml</DependentUpon>
     </Compile>
-    <Page Include="Controls\CameraControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <Compile Include="Views\ProxyView.xaml.cs">
+      <DependentUpon>ProxyView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\RcView.xaml.cs">
+      <DependentUpon>RcView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\VehicleCommandsView.xaml.cs">
+      <DependentUpon>VehicleCommandsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\VehicleStatusView.xaml.cs">
+      <DependentUpon>VehicleStatusView.xaml</DependentUpon>
+    </Compile>
     <Page Include="Controls\DraggableMapControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\ProxyControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\RcControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\VehicleCommandsControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\VehicleStatusControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -165,9 +145,29 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\CameraView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\MapView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ProxyView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\RcView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\VehicleCommandsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\VehicleStatusView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>

@@ -34,12 +34,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace AirSimApp.Controls
+namespace AirSimApp.Views
 {
-    /// <summary>Interaction logic for ProxyControl.xaml</summary>
-    public partial class ProxyControl : UserControl
+    /// <summary>Interaction logic for ProxyView.xaml</summary>
+    public partial class ProxyView : UserControl
     {
-        public ProxyControl()
+        public ProxyView()
         {
             InitializeComponent();
         }

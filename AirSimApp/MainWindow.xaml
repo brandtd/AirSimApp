@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:controls="clr-namespace:AirSimApp.Controls"
         xmlns:views="clr-namespace:AirSimApp.Views"
         mc:Ignorable="d"
         Title="MainWindow" Width="525" ResizeMode="NoResize" SizeToContent="Height">
@@ -23,12 +22,12 @@
 
         <GroupBox Header="RPC Proxy" Grid.Row="1">
             <StackPanel>
-                <controls:ProxyControl DataContext="{Binding Proxy}" />
+                <views:ProxyView DataContext="{Binding Proxy}" />
             </StackPanel>
         </GroupBox>
         <GroupBox Header="Vehicle Status" Grid.Row="2">
             <StackPanel>
-                <controls:VehicleStatusControl DataContext="{Binding Vehicle}" />
+                <views:VehicleStatusView DataContext="{Binding Vehicle}" />
             </StackPanel>
         </GroupBox>
         <Grid Grid.Row="3">
@@ -41,14 +40,14 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
             <GroupBox Header="Remote Controller">
-                <controls:RcControl DataContext="{Binding Rc}" />
+                <views:RcView DataContext="{Binding Rc}" />
             </GroupBox>
             <GroupBox Header="Commands" Grid.Column="1">
-                <controls:VehicleCommandsControl DataContext="{Binding Vehicle}" />
+                <views:VehicleCommandsView DataContext="{Binding Vehicle}" />
             </GroupBox>
         </Grid>
         <GroupBox Header="Camera" Grid.Row="4">
-            <controls:CameraControl DataContext="{Binding Camera}" />
+            <views:CameraView DataContext="{Binding Camera}" />
         </GroupBox>
     </Grid>
 </Window>

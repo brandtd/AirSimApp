@@ -36,10 +36,10 @@ using System.Windows.Shapes;
 
 namespace AirSimApp.Controls
 {
-    /// <summary>Interaction logic for CameraControl.xaml</summary>
-    public partial class CameraControl : UserControl
+    /// <summary>Interaction logic for VehicleStatusView.xaml</summary>
+    public partial class VehicleStatusView : UserControl
     {
-        public CameraControl()
+        public VehicleStatusView()
         {
             InitializeComponent();
         }

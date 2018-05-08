@@ -32,7 +32,7 @@ namespace AirSimApp.Models
         /// <summary />
         public ProxyController()
         {
-            _proxy = new AirSimProxy();
+            _proxy = new MultirotorProxy();
             _proxy.ConnectionClosed += onProxyConnectionClosed;
         }
 
@@ -107,7 +107,7 @@ namespace AirSimApp.Models
         }
 
         /// <summary>The RPC proxy, <c>null</c> if not connected.</summary>
-        public IAirSimProxy Proxy => Connected ? _proxy : null;
+        public IAirSimMultirotorProxy Proxy => Connected ? _proxy : null;
 
         /// <inheritdoc cref="IAirSimProxy.ConnectAsync(IPEndPoint)" />
         public async Task<bool> ConnectAsync(IPEndPoint endpoint)
@@ -137,7 +137,7 @@ namespace AirSimApp.Models
             }
         }
 
-        private readonly AirSimProxy _proxy;
+        private readonly MultirotorProxy _proxy;
 
         private IPAddress _addressToUse = IPAddress.Parse("127.0.0.1");
         private bool _connected;

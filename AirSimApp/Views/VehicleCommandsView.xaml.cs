@@ -36,10 +36,10 @@ using System.Windows.Shapes;
 
 namespace AirSimApp.Controls
 {
-    /// <summary>Interaction logic for VehicleCommandsControl.xaml</summary>
-    public partial class VehicleCommandsControl : UserControl
+    /// <summary>Interaction logic for VehicleCommandsView.xaml</summary>
+    public partial class VehicleCommandsView : UserControl
     {
-        public VehicleCommandsControl()
+        public VehicleCommandsView()
         {
             InitializeComponent();
         }

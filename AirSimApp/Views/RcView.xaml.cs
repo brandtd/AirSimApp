@@ -36,10 +36,10 @@ using System.Windows.Shapes;
 
 namespace AirSimApp.Controls
 {
-    /// <summary>Interaction logic for RcControl.xaml</summary>
-    public partial class RcControl : UserControl
+    /// <summary>Interaction logic for RcView.xaml</summary>
+    public partial class RcView : UserControl
     {
-        public RcControl()
+        public RcView()
         {
             InitializeComponent();
         }

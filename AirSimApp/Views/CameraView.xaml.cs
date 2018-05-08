@@ -34,12 +34,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace AirSimApp.Controls
+namespace AirSimApp.Views
 {
-    /// <summary>Interaction logic for VehicleStatusControl.xaml</summary>
-    public partial class VehicleStatusControl : UserControl
+    /// <summary>Interaction logic for CameraView.xaml</summary>
+    public partial class CameraView : UserControl
     {
-        public VehicleStatusControl()
+        public CameraView()
         {
             InitializeComponent();
         }
