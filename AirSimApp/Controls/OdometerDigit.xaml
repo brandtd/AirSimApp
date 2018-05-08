@@ -1,0 +1,61 @@
+﻿<UserControl x:Class="AirSimApp.Controls.OdometerDigit"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AirSimApp.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="40" d:DesignWidth="10">
+    <UserControl.Resources>
+        <Style TargetType="Label">
+            <Setter Property="FontFamily" Value="Consolas"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Background" Value="Black"/>
+        </Style>
+    </UserControl.Resources>
+    <Grid Background="Blue" VerticalAlignment="Center" ClipToBounds="True">
+        <Label Content=" "
+               Padding="0,5,0,5"
+               Margin="0,0,0,0" />
+        <Label x:Name="DigitFloater"
+               Content="2"
+               Padding="0,0,0,0"
+               Margin="0,0,0,0">
+            <Label.RenderTransform>
+                <TranslateTransform x:Name="DigitFloaterY" Y="-25" />
+            </Label.RenderTransform>
+        </Label>
+        <Label x:Name="DigitAbove"
+               Content="1"
+               Background="Transparent"
+               Padding="0,0,0,0"
+               Margin="0,0,0,0"
+               ClipToBounds="True">
+            <Label.RenderTransform>
+                <TranslateTransform x:Name="DigitAboveY" Y="-10" />
+            </Label.RenderTransform>
+        </Label>
+        <Label x:Name="DigitCenter"
+               Content="0"
+               Background="Transparent"
+               Padding="0,0,0,0"
+               Margin="0,0,0,0"
+               ClipToBounds="True">
+            <Label.RenderTransform>
+                <TranslateTransform x:Name="DigitCenterY" Y="0" />
+            </Label.RenderTransform>
+        </Label>
+        <Label x:Name="DigitBelow"
+               Content="9"
+               Background="Transparent"
+               Padding="0,0,0,0"
+               Margin="0,0,0,0"
+               ClipToBounds="True">
+            <Label.RenderTransform>
+                <TranslateTransform x:Name="DigitBelowY" Y="10" />
+            </Label.RenderTransform>
+        </Label>
+    </Grid>
+</UserControl>

@@ -1,33 +1,45 @@
-﻿using System;
+﻿using DotSpatial.Positioning;
+using DotSpatialExtensions;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using DotSpatial.Positioning;
-using DotSpatialExtensions;
 
 namespace AirSimApp.Controls
 {
     /// <summary>Interaction logic for Altimeter.xaml</summary>
     public partial class Altimeter : UserControl
     {
+        /// <summary>
+        /// Units to use for altitude tape.
+        /// </summary>
+        public static readonly DependencyProperty UnitsProperty =
+            DependencyProperty.Register(
+                nameof(Units),
+                typeof(DistanceUnit),
+                typeof(Altimeter),
+                new PropertyMetadata(DistanceUnit.Meters, onUnitsChanged));
+
+        private static void onUnitsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            setActualAltitude((Altimeter)d);
+        }
+
+        /// <inheritdoc cref="UnitsProperty"/>
+        public DistanceUnit Units
+        {
+            get => (DistanceUnit)GetValue(UnitsProperty);
+            set => SetValue(UnitsProperty, value);
+        }
+
         /// <summary>Vehicle's actual altitude.</summary>
         public static readonly DependencyProperty ActualAltitudeProperty =
             DependencyProperty.Register(
                 nameof(ActualAltitude),
                 typeof(Distance),
                 typeof(Altimeter),
-                new PropertyMetadata(Distance.Invalid, actualAltitudeChanged));
+                new PropertyMetadata(Distance.Invalid, onActualAltitudeChanged));
 
         /// <summary>Vehicle's commanded altitude.</summary>
         public static readonly DependencyProperty CommandedAltitudeProperty =
@@ -116,38 +128,26 @@ namespace AirSimApp.Controls
             set => SetValue(MinorTicksProperty, value);
         }
 
-        private static void actualAltitudeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void onActualAltitudeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            Altimeter control = (Altimeter)d;
-            double altitude = ((Distance)e.NewValue).InMeters();
-            int altitudeAsInt = (int)altitude;
-
-            int digitValue = altitudeAsInt % 10;
-            int decadeValue = ((altitudeAsInt - digitValue) % 100) / 10;
-            int centuryValue = ((altitudeAsInt - decadeValue - digitValue) % 1000) / 100;
-
-            control.Century.Content = $"{centuryValue}".PadLeft(3, ' ');
-
-            control.DecadeAbove.Content = $"{canonicalModulo((decadeValue + 1), 10)}";
-            control.DecadeCenter.Content = $"{decadeValue}";
-            control.DecadeBelow.Content = $"{canonicalModulo((decadeValue - 1), 10)}";
-
-            control.DigitAbove.Content = $"{canonicalModulo((digitValue + 1), 10)}";
-            control.DigitCenter.Content = $"{digitValue}";
-            control.DigitBelow.Content = $"{canonicalModulo((digitValue - 1), 10)}";
-            double digitFraction = altitude % 1.0;
+            setActualAltitude((Altimeter)d);
         }
 
-        private static int canonicalModulo(int dividend, int divisor)
+        private static void setActualAltitude(Altimeter control)
         {
-            int temp = dividend % divisor;
-            return temp < 0 ? temp + divisor : temp;
-        }
+            double altitude = control.ActualAltitude.In(control.Units);
 
-        private static double canonicalModulo(double dividend, double divisor)
-        {
-            double temp = dividend % divisor;
-            return temp < 0 ? temp + divisor : temp;
+            double digit0 = Mod.CanonicalModulo(altitude, 10);
+            double digit1 = Mod.CanonicalModulo(altitude, 100) / 10;
+            double digit2 = Mod.CanonicalModulo(altitude, 1000) / 100;
+            double digit3 = Mod.CanonicalModulo(altitude, 10000) / 1000;
+            double digit4 = Mod.CanonicalModulo(altitude, 100000) / 10000;
+
+            control.Digit0.Digit = digit0;
+            control.Digit1.Digit = digit1;
+            control.Digit2.Digit = altitude > 100 ? digit2 : double.NaN;
+            control.Digit3.Digit = altitude > 1000 ? digit3 : double.NaN;
+            control.Digit4.Digit = altitude > 10000 ? digit4 : double.NaN;
         }
 
         private static void majorTicksChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

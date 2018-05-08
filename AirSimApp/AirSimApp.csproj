@@ -80,10 +80,14 @@
     <Compile Include="Controls\Altimeter.xaml.cs">
       <DependentUpon>Altimeter.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\AltimeterResources\ActualMarker.cs" />
-    <Compile Include="Controls\AltimeterResources\CommandMarker.cs" />
+    <Compile Include="Controls\ClickedOdometerDigit.xaml.cs">
+      <DependentUpon>ClickedOdometerDigit.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\DraggableMapControl.xaml.cs">
       <DependentUpon>DraggableMapControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\OdometerDigit.xaml.cs">
+      <DependentUpon>OdometerDigit.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\AngleToDecimalDegreesConverter.cs" />
     <Compile Include="Converters\BooleanToCollapsedVisibilityConverter.cs" />
@@ -93,6 +97,7 @@
     <Compile Include="Converters\PositionToDegreeMinutesStringConverter.cs" />
     <Compile Include="Converters\PositionToLocationConverter.cs" />
     <Compile Include="Converters\SwitchSourceConverter.cs" />
+    <Compile Include="Mod.cs" />
     <Compile Include="Models\CameraModel.cs" />
     <Compile Include="Models\ProxyModel.cs" />
     <Compile Include="Models\RcModel.cs" />
@@ -126,7 +131,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\ClickedOdometerDigit.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\DraggableMapControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\OdometerDigit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
