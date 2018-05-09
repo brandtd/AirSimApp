@@ -1,4 +1,25 @@
-﻿using DotSpatial.Positioning;
+﻿#region MIT License (c) 2018 Dan Brandt
+
+// Copyright 2018 Dan Brandt
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+// associated documentation files (the "Software"), to deal in the Software without restriction,
+// including without limitation the rights to use, copy, modify, merge, publish, distribute,
+// sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all copies or
+// substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+// NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
+// OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+#endregion MIT License (c) 2018 Dan Brandt
+
+using DotSpatial.Positioning;
 using DotSpatialExtensions;
 using System;
 using System.Collections.Generic;
@@ -11,28 +32,6 @@ namespace AirSimApp.Controls
     /// <summary>Interaction logic for Altimeter.xaml</summary>
     public partial class Altimeter : UserControl
     {
-        /// <summary>
-        /// Units to use for altitude tape.
-        /// </summary>
-        public static readonly DependencyProperty UnitsProperty =
-            DependencyProperty.Register(
-                nameof(Units),
-                typeof(DistanceUnit),
-                typeof(Altimeter),
-                new PropertyMetadata(DistanceUnit.Meters, onUnitsChanged));
-
-        private static void onUnitsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            setActualAltitude((Altimeter)d);
-        }
-
-        /// <inheritdoc cref="UnitsProperty"/>
-        public DistanceUnit Units
-        {
-            get => (DistanceUnit)GetValue(UnitsProperty);
-            set => SetValue(UnitsProperty, value);
-        }
-
         /// <summary>Vehicle's actual altitude.</summary>
         public static readonly DependencyProperty ActualAltitudeProperty =
             DependencyProperty.Register(
@@ -81,6 +80,14 @@ namespace AirSimApp.Controls
                         typeof(Altimeter),
                         new PropertyMetadata(null, minorTicksChanged));
 
+        /// <summary>Units to use for altitude tape.</summary>
+        public static readonly DependencyProperty UnitsProperty =
+            DependencyProperty.Register(
+                nameof(Units),
+                typeof(DistanceUnit),
+                typeof(Altimeter),
+                new PropertyMetadata(DistanceUnit.Meters, onUnitsChanged));
+
         public Altimeter()
         {
             InitializeComponent();
@@ -128,26 +135,11 @@ namespace AirSimApp.Controls
             set => SetValue(MinorTicksProperty, value);
         }
 
-        private static void onActualAltitudeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        /// <inheritdoc cref="UnitsProperty" />
+        public DistanceUnit Units
         {
-            setActualAltitude((Altimeter)d);
-        }
-
-        private static void setActualAltitude(Altimeter control)
-        {
-            double altitude = control.ActualAltitude.In(control.Units);
-
-            double digit0 = Mod.CanonicalModulo(altitude, 10);
-            double digit1 = Mod.CanonicalModulo(altitude, 100) / 10;
-            double digit2 = Mod.CanonicalModulo(altitude, 1000) / 100;
-            double digit3 = Mod.CanonicalModulo(altitude, 10000) / 1000;
-            double digit4 = Mod.CanonicalModulo(altitude, 100000) / 10000;
-
-            control.Digit0.Digit = digit0;
-            control.Digit1.Digit = digit1;
-            control.Digit2.Digit = altitude > 100 ? digit2 : double.NaN;
-            control.Digit3.Digit = altitude > 1000 ? digit3 : double.NaN;
-            control.Digit4.Digit = altitude > 10000 ? digit4 : double.NaN;
+            get => (DistanceUnit)GetValue(UnitsProperty);
+            set => SetValue(UnitsProperty, value);
         }
 
         private static void majorTicksChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -180,6 +172,33 @@ namespace AirSimApp.Controls
             {
                 newCollection.CollectionChanged += control.minorTicksCollectionChanged;
             }
+        }
+
+        private static void onActualAltitudeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            setActualAltitude((Altimeter)d);
+        }
+
+        private static void onUnitsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            setActualAltitude((Altimeter)d);
+        }
+
+        private static void setActualAltitude(Altimeter control)
+        {
+            double altitude = control.ActualAltitude.In(control.Units);
+
+            double digit0 = Mod.CanonicalModulo(altitude, 10);
+            double digit1 = Mod.CanonicalModulo(altitude, 100) / 10;
+            double digit2 = Mod.CanonicalModulo(altitude, 1000) / 100;
+            double digit3 = Mod.CanonicalModulo(altitude, 10000) / 1000;
+            double digit4 = Mod.CanonicalModulo(altitude, 100000) / 10000;
+
+            control.Digit0.Digit = digit0;
+            control.Digit1.Digit = digit1;
+            control.Digit2.Digit = altitude > 100 ? digit2 : double.NaN;
+            control.Digit3.Digit = altitude > 1000 ? digit3 : double.NaN;
+            control.Digit4.Digit = altitude > 10000 ? digit4 : double.NaN;
         }
 
         private void majorTicksCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
