@@ -21,7 +21,6 @@
 
 using AirSimRpc;
 using DotSpatial.Positioning;
-using DotSpatialExtensions;
 using MsgPackRpc;
 using System;
 using System.Collections.Generic;

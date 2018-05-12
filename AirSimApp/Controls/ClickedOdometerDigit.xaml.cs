@@ -34,7 +34,7 @@ namespace AirSimApp.Controls
                 nameof(Digit),
                 typeof(double),
                 typeof(ClickedOdometerDigit),
-                new PropertyMetadata(0.0, onValueChanged));
+                new PropertyMetadata(double.NaN, onValueChanged));
 
         /// <summary>Character used to fill label if digit is NaN.</summary>
         public static DependencyProperty FillCharacterProperty =
@@ -48,6 +48,7 @@ namespace AirSimApp.Controls
         public ClickedOdometerDigit()
         {
             InitializeComponent();
+            setContent(this);
         }
 
         /// <inheritdoc cref="DigitProperty" />

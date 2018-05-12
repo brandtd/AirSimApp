@@ -4,15 +4,31 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:AirSimApp.Controls"
+             xmlns:conv="clr-namespace:AirSimApp.Converters"
              mc:Ignorable="d"
+             x:Name="_this"
+             Foreground="White"
+             Background="DarkSlateGray"
              d:DesignHeight="450" d:DesignWidth="50">
-    <Grid>
+    <Grid ClipToBounds="True">
+        <local:GraduatedTape
+            Range="50"
+            MajorTick="5"
+            CurrentValue="{Binding ElementName=_this,
+                                   Path=ActualAltitude,
+                                   Converter={conv:DistanceToDoubleConverter}}" />
         <StackPanel Orientation="Horizontal"
+                    VerticalAlignment="Center"
                     HorizontalAlignment="Right">
+            <Polygon Points="4,0 4,4 0,2"
+                     Stroke="Black"
+                     Fill="Black"
+                     Margin="10,0,0,0"
+                     VerticalAlignment="Center" />
             <local:ClickedOdometerDigit x:Name="Digit4" />
             <local:ClickedOdometerDigit x:Name="Digit3" />
             <local:ClickedOdometerDigit x:Name="Digit2" />
-            <local:OdometerDigit x:Name="Digit1" />
+            <local:ClickedOdometerDigit x:Name="Digit1" />
             <local:OdometerDigit x:Name="Digit0" />
         </StackPanel>
     </Grid>

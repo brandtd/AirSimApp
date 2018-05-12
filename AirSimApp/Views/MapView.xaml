@@ -8,24 +8,30 @@
              xmlns:local="clr-namespace:AirSimApp.Views"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
-    <StackPanel Orientation="Horizontal">
-        <controls:Altimeter ActualAltitude="{Binding VehicleAltitude}" />
-        <controls:DraggableMapControl AltimeterCommand="{Binding AltitudeCommand}"
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <controls:Altimeter Grid.Column="0"
+                            ActualAltitude="{Binding VehicleAltitude}" />
+        <controls:DraggableMapControl Grid.Column="1"
+                                      AltimeterCommand="{Binding AltitudeCommand}"
                                       AltitudeTicks="{Binding AltitudeTicks}"
-        MaxAltitude="{Binding MaxAltitude}"
-        MinAltitude="{Binding MinAltitude}"
-        MapCenter="{Binding MapCenter}"
-        ClickCommand="{Binding GoToCommand}"
-        HaveVehicle="{Binding HaveVehicle}"
-        LayerName="{Binding MapLayerName}"
-        LayerNames="{Binding MapLayers}"
-        MapLayer="{Binding MapLayer}"
-        MouseLocation="{Binding MouseLocation}"
-        ShowDescription="True"
-        ShowExtras="True"
-        VehicleAltitude="{Binding VehicleAltitude}"
-        VehicleHeading="{Binding VehicleHeading}"
-        VehicleLocation="{Binding VehicleLocation}"
-        ZoomLevel="{Binding Zoom}" />
-    </StackPanel>
+                                      MaxAltitude="{Binding MaxAltitude}"
+                                      MinAltitude="{Binding MinAltitude}"
+                                      MapCenter="{Binding MapCenter}"
+                                      ClickCommand="{Binding GoToCommand}"
+                                      HaveVehicle="{Binding HaveVehicle}"
+                                      LayerName="{Binding MapLayerName}"
+                                      LayerNames="{Binding MapLayers}"
+                                      MapLayer="{Binding MapLayer}"
+                                      MouseLocation="{Binding MouseLocation}"
+                                      ShowDescription="True"
+                                      ShowExtras="True"
+                                      VehicleAltitude="{Binding VehicleAltitude}"
+                                      VehicleHeading="{Binding VehicleHeading}"
+                                      VehicleLocation="{Binding VehicleLocation}"
+                                      ZoomLevel="{Binding Zoom}" />
+    </Grid>
 </UserControl>
