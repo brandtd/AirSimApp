@@ -19,9 +19,7 @@
 
 #endregion MIT License (c) 2018 Dan Brandt
 
-using DotSpatial.Positioning;
-
-namespace DotSpatialExtensions
+namespace DotSpatial.Positioning
 {
     /// <summary>Extensions for <see cref="Speed" />.</summary>
     public static class SpeedExtensions

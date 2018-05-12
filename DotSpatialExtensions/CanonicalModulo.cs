@@ -19,7 +19,7 @@
 
 #endregion MIT License (c) 2018 Dan Brandt
 
-namespace DotSpatialExtensions
+namespace DotSpatial.Positioning
 {
     /// <summary>Provides a canonical modulo operator.</summary>
     public static class CanonicalModulo

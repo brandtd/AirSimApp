@@ -19,10 +19,9 @@
 
 #endregion MIT License (c) 2018 Dan Brandt
 
-using DotSpatial.Positioning;
 using System;
 
-namespace DotSpatialExtensions
+namespace DotSpatial.Positioning
 {
     /// <summary>Extensions for <see cref="CartesianPoint" />.</summary>
     public static class CartesianPointExtensions

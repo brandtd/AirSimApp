@@ -19,7 +19,6 @@
 
 #endregion MIT License (c) 2018 Dan Brandt
 
-using DotSpatial.Positioning;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -27,7 +26,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DotSpatialExtensions
+namespace DotSpatial.Positioning
 {
     /// <summary>Represents a frame-local north/east/down vector.</summary>
     public struct NedPoint : IFormattable, IEquatable<NedPoint>

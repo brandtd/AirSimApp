@@ -19,7 +19,6 @@
 
 #endregion MIT License (c) 2018 Dan Brandt
 
-using DotSpatialExtensions;
 using DotSpatial.Positioning;
 using System;
 using System.Globalization;
