@@ -9,23 +9,47 @@
              x:Name="_this"
              d:DesignHeight="450"
              d:DesignWidth="300">
+    <UserControl.Resources>
+        <Style x:Key="OdometerStyle" TargetType="local:Odometer">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=_this, Path=RightOrLeft}" Value="Left">
+                    <Setter Property="RenderTransform">
+                        <Setter.Value>
+                            <TranslateTransform X="10" />
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ElementName=_this, Path=RightOrLeft}" Value="Right">
+                    <Setter Property="RenderTransform">
+                        <Setter.Value>
+                            <TranslateTransform X="-10" />
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <local:GraduatedTape
-            RightOrLeft="Left"
-            FontFamily="Lucida Console"
-            Background="DarkSlateGray"
-            Foreground="White"
-            FontSize="10"
-            Range="300"
-            MajorTick="20"
-            CurrentValue="{Binding ElementName=_this,
-                                   Path=ActualAltitude,
-                                   Converter={conv:DistanceToDoubleConverter}}" />
+        <local:GraduatedTape x:Name="tape"
+                             FontFamily="Lucida Console"
+                             RightOrLeft="{Binding ElementName=_this,
+                                                   Path=RightOrLeft}"
+                             Background="DarkSlateGray"
+                             Foreground="White"
+                             FontSize="10"
+                             Range="300"
+                             MajorTick="20"
+                             CurrentValue="{Binding ElementName=_this,
+                                                    Path=ActualAltitude,
+                                                    Converter={conv:DistanceToDoubleConverter}}" />
         <local:Odometer x:Name="odometer"
+                        Style="{StaticResource OdometerStyle}"
                         FontFamily="Consolas"
+                        RightOrLeft="{Binding ElementName=_this,
+                                              Path=RightOrLeft}"
                         Value="0"
                         Resolution="R1"
                         BorderBrush="White"
@@ -37,9 +61,6 @@
             <local:Odometer.Effect>
                 <DropShadowEffect />
             </local:Odometer.Effect>
-            <local:Odometer.RenderTransform>
-                <TranslateTransform X="10" />
-            </local:Odometer.RenderTransform>
         </local:Odometer>
     </Grid>
 </UserControl>

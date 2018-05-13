@@ -55,6 +55,14 @@ namespace AirSimApp.Controls
                 typeof(Odometer),
                 new FrameworkPropertyMetadata(OdometerResolution.R1, FrameworkPropertyMetadataOptions.AffectsRender));
 
+        /// <summary>Whether to draw ticks on the left or right side of the control.</summary>
+        public static readonly DependencyProperty RightOrLeftProperty =
+            DependencyProperty.Register(
+                nameof(RightOrLeft),
+                typeof(HorizontalAlignment),
+                typeof(Odometer),
+                new FrameworkPropertyMetadata(HorizontalAlignment.Left, FrameworkPropertyMetadataOptions.AffectsRender));
+
         /// <summary>Value of odometer.</summary>
         public static readonly DependencyProperty ValueProperty =
             DependencyProperty.Register(
@@ -66,7 +74,6 @@ namespace AirSimApp.Controls
         static Odometer()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(Odometer), new FrameworkPropertyMetadata(typeof(Odometer)));
-            //ClipToBoundsProperty.OverrideMetadata(typeof(Odometer), new FrameworkPropertyMetadata(true));
         }
 
         /// <inheritdoc cref="ResolutionProperty" />
@@ -74,6 +81,13 @@ namespace AirSimApp.Controls
         {
             get => (OdometerResolution)GetValue(ResolutionProperty);
             set => SetValue(ResolutionProperty, value);
+        }
+
+        /// <inheritdoc cref="RightOrLeftProperty" />
+        public HorizontalAlignment RightOrLeft
+        {
+            get => (HorizontalAlignment)GetValue(RightOrLeftProperty);
+            set => SetValue(RightOrLeftProperty, value);
         }
 
         /// <inheritdoc cref="ValueProperty" />
@@ -144,7 +158,7 @@ namespace AirSimApp.Controls
             string lowerTextBelow = $"{Mod.CanonicalModulo((lowerValue - 1), 10)}".PadRight(lowerWidth, '0').PadLeft(6);
             upperText = upperText.PadLeft(upperWidth);
 
-            double x = FontSize / 2.0;
+            double x = RightOrLeft == HorizontalAlignment.Left ? FontSize / 2.0 : 0.0;
             double y = FontSize;
             drawText(drawingContext, new Point(x, y), upperText);
 
@@ -174,24 +188,48 @@ namespace AirSimApp.Controls
 
             double yCenter = size.Height / 2.0;
 
-            Point startPoint = new Point(0.0, yCenter);
-            PointCollection points = new PointCollection
+            if (RightOrLeft == HorizontalAlignment.Left)
             {
-                new Point(FontSize / 2.0, yCenter + FontSize / 2.0),
-                new Point(FontSize / 2.0, size.Height),
-                new Point(size.Width, size.Height),
-                new Point(size.Width, 0.0),
-                new Point(FontSize / 2.0, 0.0),
-                new Point(FontSize / 2.0, yCenter - FontSize / 2.0),
-            };
-            StreamGeometry sg = new StreamGeometry();
-            using (StreamGeometryContext sgc = sg.Open())
-            {
-                sgc.BeginFigure(startPoint, true, true);
-                sgc.PolyLineTo(points, true, false);
+                Point startPoint = new Point(0.0, yCenter);
+                PointCollection points = new PointCollection
+                {
+                    new Point(FontSize / 2.0, yCenter + FontSize / 2.0),
+                    new Point(FontSize / 2.0, size.Height),
+                    new Point(size.Width, size.Height),
+                    new Point(size.Width, 0.0),
+                    new Point(FontSize / 2.0, 0.0),
+                    new Point(FontSize / 2.0, yCenter - FontSize / 2.0),
+                };
+                StreamGeometry sg = new StreamGeometry();
+                using (StreamGeometryContext sgc = sg.Open())
+                {
+                    sgc.BeginFigure(startPoint, true, true);
+                    sgc.PolyLineTo(points, true, false);
+                }
+                sg.Freeze();
+                dc.DrawGeometry(Background, new Pen(BorderBrush, BorderThickness.Left), sg);
             }
-            sg.Freeze();
-            dc.DrawGeometry(Background, new Pen(BorderBrush, BorderThickness.Left), sg);
+            else
+            {
+                Point startPoint = new Point(size.Width, yCenter);
+                PointCollection points = new PointCollection
+                {
+                    new Point(size.Width - FontSize / 2.0, yCenter + FontSize / 2.0),
+                    new Point(size.Width - FontSize / 2.0, size.Height),
+                    new Point(size.Width - size.Width, size.Height),
+                    new Point(size.Width - size.Width, 0.0),
+                    new Point(size.Width - FontSize / 2.0, 0.0),
+                    new Point(size.Width - FontSize / 2.0, yCenter - FontSize / 2.0),
+                };
+                StreamGeometry sg = new StreamGeometry();
+                using (StreamGeometryContext sgc = sg.Open())
+                {
+                    sgc.BeginFigure(startPoint, true, true);
+                    sgc.PolyLineTo(points, true, false);
+                }
+                sg.Freeze();
+                dc.DrawGeometry(Background, new Pen(BorderBrush, BorderThickness.Left), sg);
+            }
         }
 
         private void drawText(DrawingContext dc, Point p, string text)

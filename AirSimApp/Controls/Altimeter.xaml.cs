@@ -47,6 +47,14 @@ namespace AirSimApp.Controls
                 typeof(Altimeter),
                 new PropertyMetadata(Distance.Invalid));
 
+        /// <summary>Whether to draw ticks on the left or right side of the control.</summary>
+        public static readonly DependencyProperty RightOrLeftProperty =
+            DependencyProperty.Register(
+                nameof(RightOrLeft),
+                typeof(HorizontalAlignment),
+                typeof(Altimeter),
+                new PropertyMetadata(HorizontalAlignment.Left));
+
         public Altimeter()
         {
             InitializeComponent();
@@ -66,6 +74,13 @@ namespace AirSimApp.Controls
             set => SetValue(CommandedAltitudeProperty, value);
         }
 
+        /// <inheritdoc cref="RightOrLeftProperty" />
+        public HorizontalAlignment RightOrLeft
+        {
+            get => (HorizontalAlignment)GetValue(RightOrLeftProperty);
+            set => SetValue(RightOrLeftProperty, value);
+        }
+
         private static void onActualAltitudeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             setActualAltitude((Altimeter)d);
@@ -75,6 +90,7 @@ namespace AirSimApp.Controls
         {
             if (control.ActualAltitude.IsInvalid)
             {
+                control.odometer.Value = 0;
             }
             else
             {

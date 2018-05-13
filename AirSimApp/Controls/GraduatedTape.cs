@@ -110,7 +110,6 @@ namespace AirSimApp.Controls
         static GraduatedTape()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(GraduatedTape), new FrameworkPropertyMetadata(typeof(GraduatedTape)));
-            ClipToBoundsProperty.OverrideMetadata(typeof(GraduatedTape), new FrameworkPropertyMetadata(true));
         }
 
         /// <inheritdoc cref="CommandedValueProperty" />
@@ -188,6 +187,7 @@ namespace AirSimApp.Controls
             base.OnRender(drawingContext);
 
             Size size = new Size(ActualWidth, ActualHeight);
+            drawingContext.PushClip(new RectangleGeometry(new Rect(size)));
 
             drawingContext.DrawRectangle(Background, null, new Rect(size));
 
@@ -223,6 +223,8 @@ namespace AirSimApp.Controls
                     drawLine(drawingContext, minorTickPen, lineStart, new Point(lineStart.X + minorTickLength, lineStart.Y));
                 }
             }
+
+            drawingContext.Pop();
         }
 
         private FormattedText buildFormattedText(string text)

@@ -33,7 +33,8 @@
                                       ZoomLevel="{Binding Zoom}" />
         <Border Grid.Column="0" BorderBrush="Black" BorderThickness="2" CornerRadius="2">
             <controls:Altimeter Grid.Column="0"
-                            ActualAltitude="{Binding VehicleAltitude}" />
+                                RightOrLeft="Left"
+                                ActualAltitude="{Binding VehicleAltitude}" />
         </Border>
     </Grid>
 </UserControl>
