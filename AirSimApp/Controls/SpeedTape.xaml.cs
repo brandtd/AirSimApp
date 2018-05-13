@@ -76,6 +76,14 @@ namespace AirSimApp.Controls
                 typeof(SpeedTape),
                 new PropertyMetadata(HorizontalAlignment.Right));
 
+        /// <summary>The units to use for the tape.</summary>
+        public static readonly DependencyProperty SpeedUnitsProperty =
+            DependencyProperty.Register(
+                nameof(SpeedUnits),
+                typeof(SpeedUnit),
+                typeof(SpeedTape),
+                new PropertyMetadata(SpeedUnit.MetersPerSecond));
+
         public SpeedTape()
         {
             InitializeComponent();
@@ -123,6 +131,13 @@ namespace AirSimApp.Controls
             set => SetValue(RightOrLeftProperty, value);
         }
 
+        /// <inheritdoc cref="SpeedUnitsProperty" />
+        public SpeedUnit SpeedUnits
+        {
+            get => (SpeedUnit)GetValue(SpeedUnitsProperty);
+            set => SetValue(SpeedUnitsProperty, value);
+        }
+
         private static void onActualSpeedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             SpeedTape control = (SpeedTape)d;
@@ -132,7 +147,7 @@ namespace AirSimApp.Controls
             }
             else
             {
-                control.odometer.Value = control.ActualSpeed.Value;
+                control.odometer.Value = control.ActualSpeed.In(control.SpeedUnits);
             }
         }
     }

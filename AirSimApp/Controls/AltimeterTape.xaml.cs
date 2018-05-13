@@ -44,6 +44,14 @@ namespace AirSimApp.Controls
                 typeof(AltimeterTape),
                 new PropertyMetadata(Distance.Invalid));
 
+        /// <summary>The units to use for the tape.</summary>
+        public static readonly DependencyProperty DistanceUnitsProperty =
+            DependencyProperty.Register(
+                nameof(DistanceUnits),
+                typeof(DistanceUnit),
+                typeof(AltimeterTape),
+                new PropertyMetadata(DistanceUnit.Meters));
+
         /// <summary>Resolution of the displayed odometer.</summary>
         public static readonly DependencyProperty OdometerResolutionProperty =
             DependencyProperty.Register(
@@ -79,6 +87,13 @@ namespace AirSimApp.Controls
             set => SetValue(CommandedAltitudeProperty, value);
         }
 
+        /// <inheritdoc cref="DistanceUnitsProperty" />
+        public DistanceUnit DistanceUnits
+        {
+            get => (DistanceUnit)GetValue(DistanceUnitsProperty);
+            set => SetValue(DistanceUnitsProperty, value);
+        }
+
         /// <inheritdoc cref="OdometerResolutionProperty" />
         public OdometerResolution OdometerResolution
         {
@@ -102,7 +117,7 @@ namespace AirSimApp.Controls
             }
             else
             {
-                control.odometer.Value = control.ActualAltitude.Value;
+                control.odometer.Value = control.ActualAltitude.In(control.DistanceUnits);
             }
         }
     }

@@ -34,13 +34,27 @@ namespace AirSimApp.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             Distance distance = (Distance)value;
-            return distance.IsInvalid ? 0 : distance.InMeters();
+            if (parameter is DistanceUnit unit)
+            {
+                return distance.IsInvalid ? 0 : distance.In(unit);
+            }
+            else
+            {
+                return distance.IsInvalid ? 0 : distance.InMeters();
+            }
         }
 
         /// <inheritdoc cref="IValueConverter.ConvertBack(object, Type, object, CultureInfo)" />
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return Distance.FromMeters((double)value);
+            if (parameter is DistanceUnit unit)
+            {
+                return new Distance((double)value, unit);
+            }
+            else
+            {
+                return Distance.FromMeters((double)value);
+            }
         }
 
         /// <inheritdoc cref="MarkupExtension.ProvideValue(IServiceProvider)" />

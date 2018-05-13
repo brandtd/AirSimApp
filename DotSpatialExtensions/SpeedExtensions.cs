@@ -24,6 +24,12 @@ namespace DotSpatial.Positioning
     /// <summary>Extensions for <see cref="Speed" />.</summary>
     public static class SpeedExtensions
     {
+        /// <summary>Get speed in given unit.</summary>
+        public static double In(this Speed speed, SpeedUnit unit)
+        {
+            return speed.ToUnitType(unit).Value;
+        }
+
         /// <summary>Get speed in ft/s.</summary>
         public static double InFeetPerSecond(this Speed speed)
         {

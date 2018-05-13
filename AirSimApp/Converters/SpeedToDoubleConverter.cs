@@ -34,13 +34,27 @@ namespace AirSimApp.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             Speed speed = (Speed)value;
-            return speed.IsInvalid ? 0 : speed.InMetersPerSecond();
+            if (parameter is SpeedUnit unit)
+            {
+                return speed.IsInvalid ? 0 : speed.In(unit);
+            }
+            else
+            {
+                return speed.IsInvalid ? 0 : speed.InMetersPerSecond();
+            }
         }
 
         /// <inheritdoc cref="IValueConverter.ConvertBack(object, Type, object, CultureInfo)" />
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return Speed.FromMetersPerSecond((double)value);
+            if (parameter is SpeedUnit unit)
+            {
+                return new Speed((double)value, unit);
+            }
+            else
+            {
+                return Speed.FromMetersPerSecond((double)value);
+            }
         }
 
         /// <inheritdoc cref="MarkupExtension.ProvideValue(IServiceProvider)" />
