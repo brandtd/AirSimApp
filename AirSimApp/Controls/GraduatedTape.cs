@@ -39,16 +39,6 @@ namespace AirSimApp.Controls
 {
     public class GraduatedTape : Control
     {
-        /// <summary>
-        ///     Describes where to draw the commanded value bug. If NaN, no bug will be drawn.
-        /// </summary>
-        public static readonly DependencyProperty CommandedValueProperty =
-            DependencyProperty.Register(
-                nameof(CommandedValue),
-                typeof(double),
-                typeof(GraduatedTape),
-                new FrameworkPropertyMetadata(0.0, FrameworkPropertyMetadataOptions.AffectsRender));
-
         /// <summary>Describes the current value of this control.</summary>
         public static readonly DependencyProperty CurrentValueProperty =
             DependencyProperty.Register(
@@ -110,13 +100,6 @@ namespace AirSimApp.Controls
         static GraduatedTape()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(GraduatedTape), new FrameworkPropertyMetadata(typeof(GraduatedTape)));
-        }
-
-        /// <inheritdoc cref="CommandedValueProperty" />
-        public double CommandedValue
-        {
-            get => (double)GetValue(CommandedValueProperty);
-            set => SetValue(CommandedValueProperty, value);
         }
 
         /// <inheritdoc cref="CurrentValueProperty" />
@@ -182,14 +165,15 @@ namespace AirSimApp.Controls
             return new Size(sampleText.Width * 1.6, constraint.Height);
         }
 
-        protected override void OnRender(DrawingContext drawingContext)
+        /// <inheritdoc cref="UIElement.OnRender(DrawingContext)" />
+        protected override void OnRender(DrawingContext dc)
         {
-            base.OnRender(drawingContext);
+            base.OnRender(dc);
 
             Size size = new Size(ActualWidth, ActualHeight);
-            drawingContext.PushClip(new RectangleGeometry(new Rect(size)));
+            dc.PushClip(new RectangleGeometry(new Rect(size)));
 
-            drawingContext.DrawRectangle(Background, null, new Rect(size));
+            dc.DrawRectangle(Background, null, new Rect(size));
 
             double x = RightOrLeft == HorizontalAlignment.Left ? 0.0 : size.Width;
             double xflip = RightOrLeft == HorizontalAlignment.Left ? 1.0 : -1.0;
@@ -213,18 +197,18 @@ namespace AirSimApp.Controls
             for (double tickValue = majorTickStart; tickValue <= maximum; tickValue += majorTickValue)
             {
                 Point lineStart = new Point(x, m * tickValue + b);
-                drawLine(drawingContext, majorTickPen, lineStart, new Point(lineStart.X + majorTickLength, lineStart.Y));
+                drawLine(dc, majorTickPen, lineStart, new Point(lineStart.X + majorTickLength, lineStart.Y));
 
-                drawText(drawingContext, new Point(lineStart.X + majorTickLength + xflip * FontSize / 2, lineStart.Y), $"{tickValue:F0}");
+                drawText(dc, new Point(lineStart.X + majorTickLength + xflip * FontSize / 2, lineStart.Y), $"{tickValue:F0}");
 
                 for (int minorTick = 1; minorTick < DivisionsPerTick; ++minorTick)
                 {
                     lineStart = new Point(x, m * (tickValue + minorTickValue * minorTick) + b);
-                    drawLine(drawingContext, minorTickPen, lineStart, new Point(lineStart.X + minorTickLength, lineStart.Y));
+                    drawLine(dc, minorTickPen, lineStart, new Point(lineStart.X + minorTickLength, lineStart.Y));
                 }
             }
 
-            drawingContext.Pop();
+            dc.Pop();
         }
 
         private FormattedText buildFormattedText(string text)

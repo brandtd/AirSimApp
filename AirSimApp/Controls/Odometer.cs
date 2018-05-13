@@ -53,7 +53,9 @@ namespace AirSimApp.Controls
                 nameof(Resolution),
                 typeof(OdometerResolution),
                 typeof(Odometer),
-                new FrameworkPropertyMetadata(OdometerResolution.R1, FrameworkPropertyMetadataOptions.AffectsRender));
+                new FrameworkPropertyMetadata(OdometerResolution.R1,
+                    FrameworkPropertyMetadataOptions.AffectsRender |
+                    FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         /// <summary>Whether to draw ticks on the left or right side of the control.</summary>
         public static readonly DependencyProperty RightOrLeftProperty =
@@ -100,16 +102,44 @@ namespace AirSimApp.Controls
         /// <inheritdoc cref="Control.MeasureOverride(Size)" />
         protected override Size MeasureOverride(Size constraint)
         {
-            FormattedText sampleText = buildFormattedText("--00000");
-            return new Size(sampleText.Width, sampleText.Height * 3);
+            double height = buildFormattedText("0", FontSize).Height * 3;
+
+            int bigChars = 5;
+            int smallChars = 2;
+            switch (Resolution)
+            {
+                case OdometerResolution.R1:
+                    bigChars = 5;
+                    smallChars = 2;
+                    break;
+
+                case OdometerResolution.R10:
+                    bigChars = 4;
+                    smallChars = 3;
+                    break;
+
+                case OdometerResolution.R100:
+                    bigChars = 3;
+                    smallChars = 4;
+                    break;
+
+                case OdometerResolution.R1000:
+                    bigChars = 2;
+                    smallChars = 5;
+                    break;
+            }
+            double width = buildFormattedText("0", 1.5 * FontSize).Width * bigChars +
+                           buildFormattedText("0", FontSize).Width * smallChars;
+
+            return new Size(width, height);
         }
 
         /// <inheritdoc cref="UIElement.OnRender(DrawingContext)" />
-        protected override void OnRender(DrawingContext drawingContext)
+        protected override void OnRender(DrawingContext dc)
         {
-            base.OnRender(drawingContext);
-            drawingContext.PushClip(new RectangleGeometry(new Rect(new Size(ActualWidth, ActualHeight))));
-            drawContainer(drawingContext);
+            base.OnRender(dc);
+            dc.PushClip(new RectangleGeometry(new Rect(new Size(ActualWidth, ActualHeight))));
+            drawContainer(dc);
 
             int sign = Math.Sign(Value);
             double steppedValue = Value / (double)Resolution;
@@ -152,25 +182,27 @@ namespace AirSimApp.Controls
             {
                 upperText = "-";
             }
-            string lowerTextFloat = $"{Mod.CanonicalModulo((lowerValue + 2), 10)}".PadRight(lowerWidth, '0').PadLeft(6);
-            string lowerTextAbove = $"{Mod.CanonicalModulo((lowerValue + 1), 10)}".PadRight(lowerWidth, '0').PadLeft(6);
-            string lowerTextMiddle = $"{lowerValue}".PadRight(lowerWidth, '0').PadLeft(6);
-            string lowerTextBelow = $"{Mod.CanonicalModulo((lowerValue - 1), 10)}".PadRight(lowerWidth, '0').PadLeft(6);
+            string lowerTextFloat = $"{Mod.CanonicalModulo((lowerValue + 2), 10)}".PadRight(lowerWidth, '0');
+            string lowerTextAbove = $"{Mod.CanonicalModulo((lowerValue + 1), 10)}".PadRight(lowerWidth, '0');
+            string lowerTextMiddle = $"{lowerValue}".PadRight(lowerWidth, '0');
+            string lowerTextBelow = $"{Mod.CanonicalModulo((lowerValue - 1), 10)}".PadRight(lowerWidth, '0');
             upperText = upperText.PadLeft(upperWidth);
 
             double x = RightOrLeft == HorizontalAlignment.Left ? FontSize / 2.0 : 0.0;
             double y = FontSize;
-            drawText(drawingContext, new Point(x, y), upperText);
+            FormattedText text = buildFormattedText(upperText, 1.5 * FontSize);
+            dc.DrawText(text, new Point(x, 0.75 * FontSize));
 
-            drawText(drawingContext, new Point(x, 0 - y * (1 - spin)), lowerTextFloat);
-            drawText(drawingContext, new Point(x, 0 + y * spin), lowerTextAbove);
-            drawText(drawingContext, new Point(x, y + y * spin), lowerTextMiddle);
-            drawText(drawingContext, new Point(x, 2 * y + y * spin), lowerTextBelow);
+            double textOffset = text.WidthIncludingTrailingWhitespace;
+            drawText(dc, new Point(textOffset + x, 0 - y * (1 - spin)), lowerTextFloat, FontSize);
+            drawText(dc, new Point(textOffset + x, 0 + y * spin), lowerTextAbove, FontSize);
+            drawText(dc, new Point(textOffset + x, y + y * spin), lowerTextMiddle, FontSize);
+            drawText(dc, new Point(textOffset + x, 2 * y + y * spin), lowerTextBelow, FontSize);
 
-            drawingContext.Pop();
+            dc.Pop();
         }
 
-        private FormattedText buildFormattedText(string text)
+        private FormattedText buildFormattedText(string text, double fontSize)
         {
             Typeface typeface = new Typeface(FontFamily, FontStyle, FontWeight, FontStretch);
             return new FormattedText(
@@ -178,7 +210,7 @@ namespace AirSimApp.Controls
                 CultureInfo.CurrentCulture,
                 FlowDirection.LeftToRight,
                 typeface,
-                FontSize,
+                fontSize,
                 Foreground);
         }
 
@@ -232,9 +264,9 @@ namespace AirSimApp.Controls
             }
         }
 
-        private void drawText(DrawingContext dc, Point p, string text)
+        private void drawText(DrawingContext dc, Point p, string text, double fontSize)
         {
-            FormattedText ft = buildFormattedText(text);
+            FormattedText ft = buildFormattedText(text, fontSize);
             dc.DrawText(ft, p);
         }
     }

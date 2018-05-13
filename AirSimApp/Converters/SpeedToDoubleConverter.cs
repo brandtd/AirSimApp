@@ -19,16 +19,34 @@
 
 #endregion MIT License (c) 2018 Dan Brandt
 
-using System.Windows.Controls;
+using DotSpatial.Positioning;
+using System;
+using System.Globalization;
+using System.Windows.Data;
+using System.Windows.Markup;
 
-namespace AirSimApp.Views
+namespace AirSimApp.Converters
 {
-    /// <summary>Interaction logic for MapView.xaml</summary>
-    public partial class MapView : UserControl
+    [ValueConversion(typeof(Speed), typeof(double))]
+    public class SpeedToDoubleConverter : MarkupExtension, IValueConverter
     {
-        public MapView()
+        /// <inheritdoc cref="IValueConverter.Convert(object, Type, object, CultureInfo)" />
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            InitializeComponent();
+            Speed speed = (Speed)value;
+            return speed.IsInvalid ? 0 : speed.InMetersPerSecond();
+        }
+
+        /// <inheritdoc cref="IValueConverter.ConvertBack(object, Type, object, CultureInfo)" />
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return Speed.FromMetersPerSecond((double)value);
+        }
+
+        /// <inheritdoc cref="MarkupExtension.ProvideValue(IServiceProvider)" />
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return this;
         }
     }
 }

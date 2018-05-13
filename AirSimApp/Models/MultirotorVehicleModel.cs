@@ -114,6 +114,13 @@ namespace AirSimApp.Models
             set => SetProperty(ref _vehicleRoll, value);
         }
 
+        /// <summary>Vehicle's current X/Y (North/East) speed.</summary>
+        public Speed VehicleSpeed
+        {
+            get => _vehicleSpeed;
+            set => SetProperty(ref _vehicleSpeed, value);
+        }
+
         public Angle VehicleYaw
         {
             get => _vehicleYaw;
@@ -349,6 +356,10 @@ namespace AirSimApp.Models
                     new Latitude(vehicleState.Value.GpsLocation.Latitude),
                     new Longitude(vehicleState.Value.GpsLocation.Longitude),
                     Distance.FromMeters(vehicleState.Value.GpsLocation.Altitude));
+
+                float x = vehicleState.Value.KinematicsEstimated.LinearVelocity.X;
+                float y = vehicleState.Value.KinematicsEstimated.LinearVelocity.Y;
+                VehicleSpeed = Speed.FromMetersPerSecond(Math.Sqrt(x * x + y * y));
             }
 
             token.ThrowIfCancellationRequested();
@@ -376,6 +387,7 @@ namespace AirSimApp.Models
         private Position3D _vehicleLocationGps = new Position3D(Latitude.Invalid, Longitude.Invalid, Distance.Invalid);
         private Angle _vehiclePitch = Angle.Invalid;
         private Angle _vehicleRoll = Angle.Invalid;
+        private Speed _vehicleSpeed = Speed.Invalid;
         private Angle _vehicleYaw = Angle.Invalid;
 
         private Vector3R toNedFromPosition(Position3D lla)

@@ -12,6 +12,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <controls:DraggableMapControl Grid.Column="1"
                                       AltimeterCommand="{Binding AltitudeCommand}"
@@ -32,9 +33,12 @@
                                       VehicleLocation="{Binding VehicleLocation}"
                                       ZoomLevel="{Binding Zoom}" />
         <Border Grid.Column="0" BorderBrush="Black" BorderThickness="2" CornerRadius="2">
-            <controls:Altimeter Grid.Column="0"
-                                RightOrLeft="Left"
-                                ActualAltitude="{Binding VehicleAltitude}" />
+            <controls:AltimeterTape RightOrLeft="Left"
+                                    ActualAltitude="{Binding VehicleAltitude}" />
+        </Border>
+        <Border Grid.Column="2" BorderBrush="Black" BorderThickness="2" CornerRadius="2">
+            <controls:SpeedTape RightOrLeft="Right"
+                                ActualSpeed="{Binding VehicleSpeed}" />
         </Border>
     </Grid>
 </UserControl>

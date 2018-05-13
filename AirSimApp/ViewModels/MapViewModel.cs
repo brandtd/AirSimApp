@@ -111,6 +111,9 @@ namespace AirSimApp.ViewModels
         /// <summary>Vehicle location.</summary>
         public Position VehicleLocation { get => _vehicleLocation; set => SetProperty(ref _vehicleLocation, value); }
 
+        /// <summary>Vehicle speed (in the X/Y or North/East plane).</summary>
+        public Speed VehicleSpeed { get => _vehicleSpeed; set => SetProperty(ref _vehicleSpeed, value); }
+
         /// <summary>Map's zoom level.</summary>
         public double Zoom { get => _zoom; set => SetProperty(ref _zoom, value); }
 
@@ -212,6 +215,7 @@ namespace AirSimApp.ViewModels
         private Distance _vehicleAltitude = Distance.Invalid;
         private Angle _vehicleHeading = Angle.Invalid;
         private Position _vehicleLocation = Position.Invalid;
+        private Speed _vehicleSpeed = Speed.Invalid;
         private double _zoom = 15.0;
 
         private void onVehiclePropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -226,6 +230,10 @@ namespace AirSimApp.ViewModels
                     MapCenter = new Position(_vehicle.VehicleLocation.Latitude, _vehicle.VehicleLocation.Longitude);
                     VehicleLocation = new Position(_vehicle.VehicleLocation.Latitude, _vehicle.VehicleLocation.Longitude);
                     VehicleAltitude = _vehicle.VehicleLocation.Altitude;
+                    break;
+
+                case (nameof(_vehicle.VehicleSpeed)):
+                    VehicleSpeed = _vehicle.VehicleSpeed;
                     break;
 
                 case (nameof(_vehicle.VehicleYaw)):

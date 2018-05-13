@@ -77,13 +77,17 @@
     <Compile Include="Commands\ICommandWithIndeterminateProgress.cs" />
     <Compile Include="Commands\MultiCommand.cs" />
     <Compile Include="Commands\TakeoffCommand.cs" />
-    <Compile Include="Controls\Altimeter.xaml.cs">
-      <DependentUpon>Altimeter.xaml</DependentUpon>
+    <Compile Include="Controls\SpeedTape.xaml.cs">
+      <DependentUpon>SpeedTape.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AltimeterTape.xaml.cs">
+      <DependentUpon>AltimeterTape.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\DraggableMapControl.xaml.cs">
       <DependentUpon>DraggableMapControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\GraduatedTape.cs" />
+    <Compile Include="Controls\GraduatedTapeWithBug.cs" />
     <Compile Include="Controls\Odometer.cs" />
     <Compile Include="Converters\AngleToDecimalDegreesConverter.cs" />
     <Compile Include="Converters\BooleanToCollapsedVisibilityConverter.cs" />
@@ -92,6 +96,7 @@
     <Compile Include="Converters\LocationToPositionConverter.cs" />
     <Compile Include="Converters\PositionToDegreeMinutesStringConverter.cs" />
     <Compile Include="Converters\PositionToLocationConverter.cs" />
+    <Compile Include="Converters\SpeedToDoubleConverter.cs" />
     <Compile Include="Converters\SwitchSourceConverter.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="Models\CameraModel.cs" />
@@ -123,7 +128,11 @@
     <Compile Include="Views\VehicleStatusView.xaml.cs">
       <DependentUpon>VehicleStatusView.xaml</DependentUpon>
     </Compile>
-    <Page Include="Controls\Altimeter.xaml">
+    <Page Include="Controls\SpeedTape.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\AltimeterTape.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="AirSimApp.Controls.Altimeter"
+﻿<UserControl x:Class="AirSimApp.Controls.AltimeterTape"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -50,8 +50,11 @@
                         FontFamily="Consolas"
                         RightOrLeft="{Binding ElementName=_this,
                                               Path=RightOrLeft}"
-                        Value="0"
-                        Resolution="R1"
+                        Value="{Binding ElementName=_this,
+                                        Path=ActualAltitude,
+                                        Converter={conv:DistanceToDoubleConverter}}"
+                        Resolution="{Binding ElementName=_this,
+                                             Path=OdometerResolution}"
                         BorderBrush="White"
                         BorderThickness="1"
                         HorizontalAlignment="Center"

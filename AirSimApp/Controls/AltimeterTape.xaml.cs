@@ -20,23 +20,20 @@
 #endregion MIT License (c) 2018 Dan Brandt
 
 using DotSpatial.Positioning;
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace AirSimApp.Controls
 {
     /// <summary>Interaction logic for Altimeter.xaml</summary>
-    public partial class Altimeter : UserControl
+    public partial class AltimeterTape : UserControl
     {
         /// <summary>Vehicle's actual altitude.</summary>
         public static readonly DependencyProperty ActualAltitudeProperty =
             DependencyProperty.Register(
                 nameof(ActualAltitude),
                 typeof(Distance),
-                typeof(Altimeter),
+                typeof(AltimeterTape),
                 new PropertyMetadata(Distance.Invalid, onActualAltitudeChanged));
 
         /// <summary>Vehicle's commanded altitude.</summary>
@@ -44,18 +41,26 @@ namespace AirSimApp.Controls
             DependencyProperty.Register(
                 nameof(CommandedAltitude),
                 typeof(Distance),
-                typeof(Altimeter),
+                typeof(AltimeterTape),
                 new PropertyMetadata(Distance.Invalid));
+
+        /// <summary>Resolution of the displayed odometer.</summary>
+        public static readonly DependencyProperty OdometerResolutionProperty =
+            DependencyProperty.Register(
+                nameof(OdometerResolution),
+                typeof(OdometerResolution),
+                typeof(AltimeterTape),
+                new PropertyMetadata(OdometerResolution.R1));
 
         /// <summary>Whether to draw ticks on the left or right side of the control.</summary>
         public static readonly DependencyProperty RightOrLeftProperty =
             DependencyProperty.Register(
                 nameof(RightOrLeft),
                 typeof(HorizontalAlignment),
-                typeof(Altimeter),
+                typeof(AltimeterTape),
                 new PropertyMetadata(HorizontalAlignment.Left));
 
-        public Altimeter()
+        public AltimeterTape()
         {
             InitializeComponent();
         }
@@ -74,6 +79,13 @@ namespace AirSimApp.Controls
             set => SetValue(CommandedAltitudeProperty, value);
         }
 
+        /// <inheritdoc cref="OdometerResolutionProperty" />
+        public OdometerResolution OdometerResolution
+        {
+            get => (OdometerResolution)GetValue(OdometerResolutionProperty);
+            set => SetValue(OdometerResolutionProperty, value);
+        }
+
         /// <inheritdoc cref="RightOrLeftProperty" />
         public HorizontalAlignment RightOrLeft
         {
@@ -83,11 +95,7 @@ namespace AirSimApp.Controls
 
         private static void onActualAltitudeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            setActualAltitude((Altimeter)d);
-        }
-
-        private static void setActualAltitude(Altimeter control)
-        {
+            AltimeterTape control = (AltimeterTape)d;
             if (control.ActualAltitude.IsInvalid)
             {
                 control.odometer.Value = 0;
