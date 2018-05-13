@@ -7,29 +7,39 @@
              xmlns:conv="clr-namespace:AirSimApp.Converters"
              mc:Ignorable="d"
              x:Name="_this"
-             Foreground="White"
-             Background="DarkSlateGray"
-             d:DesignHeight="450" d:DesignWidth="50">
-    <Grid ClipToBounds="True">
+             d:DesignHeight="450"
+             d:DesignWidth="300">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
         <local:GraduatedTape
-            Range="50"
-            MajorTick="5"
+            RightOrLeft="Left"
+            FontFamily="Lucida Console"
+            Background="DarkSlateGray"
+            Foreground="White"
+            FontSize="10"
+            Range="300"
+            MajorTick="20"
             CurrentValue="{Binding ElementName=_this,
                                    Path=ActualAltitude,
                                    Converter={conv:DistanceToDoubleConverter}}" />
-        <StackPanel Orientation="Horizontal"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Right">
-            <Polygon Points="4,0 4,4 0,2"
-                     Stroke="Black"
-                     Fill="Black"
-                     Margin="10,0,0,0"
-                     VerticalAlignment="Center" />
-            <local:ClickedOdometerDigit x:Name="Digit4" />
-            <local:ClickedOdometerDigit x:Name="Digit3" />
-            <local:ClickedOdometerDigit x:Name="Digit2" />
-            <local:ClickedOdometerDigit x:Name="Digit1" />
-            <local:OdometerDigit x:Name="Digit0" />
-        </StackPanel>
+        <local:Odometer x:Name="odometer"
+                        FontFamily="Consolas"
+                        Value="0"
+                        Resolution="R1"
+                        BorderBrush="White"
+                        BorderThickness="1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Background="Black"
+                        Foreground="White">
+            <local:Odometer.Effect>
+                <DropShadowEffect />
+            </local:Odometer.Effect>
+            <local:Odometer.RenderTransform>
+                <TranslateTransform X="10" />
+            </local:Odometer.RenderTransform>
+        </local:Odometer>
     </Grid>
 </UserControl>

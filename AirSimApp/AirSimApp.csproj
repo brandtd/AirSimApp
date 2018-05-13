@@ -80,16 +80,11 @@
     <Compile Include="Controls\Altimeter.xaml.cs">
       <DependentUpon>Altimeter.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ClickedOdometerDigit.xaml.cs">
-      <DependentUpon>ClickedOdometerDigit.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\DraggableMapControl.xaml.cs">
       <DependentUpon>DraggableMapControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\GraduatedTape.cs" />
-    <Compile Include="Controls\OdometerDigit.xaml.cs">
-      <DependentUpon>OdometerDigit.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Controls\Odometer.cs" />
     <Compile Include="Converters\AngleToDecimalDegreesConverter.cs" />
     <Compile Include="Converters\BooleanToCollapsedVisibilityConverter.cs" />
     <Compile Include="Converters\DistanceToDoubleConverter.cs" />
@@ -132,15 +127,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\ClickedOdometerDigit.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\DraggableMapControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\OdometerDigit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

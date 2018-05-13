@@ -75,27 +75,10 @@ namespace AirSimApp.Controls
         {
             if (control.ActualAltitude.IsInvalid)
             {
-                control.Digit0.Digit = double.NaN;
-                control.Digit1.Digit = double.NaN;
-                control.Digit2.Digit = double.NaN;
-                control.Digit3.Digit = double.NaN;
-                control.Digit4.Digit = double.NaN;
             }
             else
             {
-                double altitude = control.ActualAltitude.Value;
-
-                double digit0 = Mod.CanonicalModulo(altitude, 10);
-                double digit1 = Mod.CanonicalModulo(altitude, 100) / 10;
-                double digit2 = Mod.CanonicalModulo(altitude, 1000) / 100;
-                double digit3 = Mod.CanonicalModulo(altitude, 10000) / 1000;
-                double digit4 = Mod.CanonicalModulo(altitude, 100000) / 10000;
-
-                control.Digit0.Digit = digit0;
-                control.Digit1.Digit = digit1;
-                control.Digit2.Digit = altitude > 100 ? digit2 : double.NaN;
-                control.Digit3.Digit = altitude > 1000 ? digit3 : double.NaN;
-                control.Digit4.Digit = altitude > 10000 ? digit4 : double.NaN;
+                control.odometer.Value = control.ActualAltitude.Value;
             }
         }
     }
