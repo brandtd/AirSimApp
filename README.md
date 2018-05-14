@@ -11,6 +11,14 @@ Project containing the actual WPF app. The app demos some command & control of a
 
 Library for accessing [Microsoft AirSim](https://github.com/Microsoft/AirSim) RPC methods from C#.
 
+## Db.Controls
+
+Reusable (hopefully) controls for a vehicle, e.g., altimeter and speed tapes.
+
+## Db.Converters
+
+Value converters used by Db.Controls and this solution.
+
 ## MsgPackRpc
 
 Library for calling [msgpack](https://msgpack.org/) RPCs. I wasn't able to find a supported and current library for doing this. I know this version isn't feature complete (doesn't support notification at the moment), and I'm sure it's not the most efficient, given that it works by taking the encoded JSON in the packed message, decoding that first to actual JSON, then deserializing _that_ into the actual object format, but I wasn't able to find a library that:
