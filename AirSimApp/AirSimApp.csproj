@@ -42,8 +42,8 @@
     <Reference Include="DotSpatial.Positioning, Version=1.9.0.0, Culture=neutral, PublicKeyToken=f6f66d1554473068, processorArchitecture=MSIL">
       <HintPath>..\packages\DotSpatial.Positioning.1.9\lib\net40-Client\DotSpatial.Positioning.dll</HintPath>
     </Reference>
-    <Reference Include="MapControl.WPF, Version=4.7.1.0, Culture=neutral, PublicKeyToken=f26fcf0059638459, processorArchitecture=MSIL">
-      <HintPath>..\packages\XAML.MapControl.4.7.1\lib\net45\MapControl.WPF.dll</HintPath>
+    <Reference Include="MapControl.WPF, Version=4.9.0.0, Culture=neutral, PublicKeyToken=f26fcf0059638459, processorArchitecture=MSIL">
+      <HintPath>..\packages\XAML.MapControl.4.9.0\lib\net45\MapControl.WPF.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -77,28 +77,7 @@
     <Compile Include="Commands\ICommandWithIndeterminateProgress.cs" />
     <Compile Include="Commands\MultiCommand.cs" />
     <Compile Include="Commands\TakeoffCommand.cs" />
-    <Compile Include="Controls\SpeedTape.xaml.cs">
-      <DependentUpon>SpeedTape.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\AltimeterTape.xaml.cs">
-      <DependentUpon>AltimeterTape.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\DraggableMapControl.xaml.cs">
-      <DependentUpon>DraggableMapControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\GraduatedTape.cs" />
-    <Compile Include="Controls\GraduatedTapeWithBug.cs" />
-    <Compile Include="Controls\Odometer.cs" />
-    <Compile Include="Converters\AngleToDecimalDegreesConverter.cs" />
-    <Compile Include="Converters\BooleanToCollapsedVisibilityConverter.cs" />
-    <Compile Include="Converters\DistanceToDoubleConverter.cs" />
-    <Compile Include="Converters\EnumerableDistanceToDoubleCollectionConverter.cs" />
-    <Compile Include="Converters\LocationToPositionConverter.cs" />
-    <Compile Include="Converters\PositionToDegreeMinutesStringConverter.cs" />
-    <Compile Include="Converters\PositionToLocationConverter.cs" />
-    <Compile Include="Converters\SpeedToDoubleConverter.cs" />
     <Compile Include="Converters\SwitchSourceConverter.cs" />
-    <Compile Include="Mod.cs" />
     <Compile Include="Models\CameraModel.cs" />
     <Compile Include="Models\ProxyModel.cs" />
     <Compile Include="Models\RcModel.cs" />
@@ -128,18 +107,6 @@
     <Compile Include="Views\VehicleStatusView.xaml.cs">
       <DependentUpon>VehicleStatusView.xaml</DependentUpon>
     </Compile>
-    <Page Include="Controls\SpeedTape.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\AltimeterTape.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\DraggableMapControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -155,19 +122,11 @@
     <Compile Include="Commands\HoverInPlaceCommand.cs" />
     <Compile Include="Commands\LandNowCommand.cs" />
     <Compile Include="Commands\ResetCommand.cs" />
-    <Compile Include="Converters\AngleToStringConverter.cs" />
-    <Compile Include="Converters\DistanceToStringConverter.cs" />
     <Compile Include="Converters\IpAddressToStringConverter.cs" />
-    <Compile Include="Converters\LatitudeToStringConverter.cs" />
-    <Compile Include="Converters\LongitudeToStringConverter.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Themes\Generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Views\CameraView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -231,6 +190,10 @@
       <Project>{d9a2a20d-6337-4bbb-a0e7-a79b85388cd7}</Project>
       <Name>AirSimRpc</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Db.Converters\Db.Converters.csproj">
+      <Project>{eb1e9762-7f52-488c-b746-4ff9230723d8}</Project>
+      <Name>Db.Converters</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DotSpatialExtensions\DotSpatialExtensions.csproj">
       <Project>{56397a07-8ba7-4029-9eda-5dd5a4f0598e}</Project>
       <Name>DotSpatialExtensions</Name>
@@ -238,6 +201,10 @@
     <ProjectReference Include="..\MsgPackRpc\MsgPackRpc.csproj">
       <Project>{c10f9085-1941-4da6-bcf9-5d16db615249}</Project>
       <Name>MsgPackRpc</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Db.Controls\Db.Controls.csproj">
+      <Project>{f6e4c78d-5799-40b4-bb8e-6186af3b2b4c}</Project>
+      <Name>Db.Controls</Name>
     </ProjectReference>
     <ProjectReference Include="..\WpfBBQWinRTXamlToolkit\WpfBBQWinRTXamlToolkit.csproj">
       <Project>{04c45781-167d-484a-94eb-78418408f7b9}</Project>
