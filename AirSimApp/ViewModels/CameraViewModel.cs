@@ -20,6 +20,7 @@
 #endregion MIT License (c) 2018 Dan Brandt
 
 using AirSimApp.Models;
+using Db.Controls;
 using System;
 using System.ComponentModel;
 using System.Windows.Media;

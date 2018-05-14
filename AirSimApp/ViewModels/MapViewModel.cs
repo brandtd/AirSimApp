@@ -21,6 +21,7 @@
 
 using AirSimApp.Commands;
 using AirSimApp.Models;
+using Db.Controls;
 using DotSpatial.Positioning;
 using MapControl;
 using System;
@@ -61,6 +62,12 @@ namespace AirSimApp.ViewModels
             Distance.FromMeters(900),
             Distance.FromMeters(1000)
         };
+
+        /// <summary>Vehicle's commanded altitude.</summary>
+        public Distance CommandedAltitude { get => _commandedAltitude; set => SetProperty(ref _commandedAltitude, value); }
+
+        /// <summary>Vehicle's commanded speed.</summary>
+        public Speed CommandedSpeed { get => _commandedSpeed; set => SetProperty(ref _commandedSpeed, value); }
 
         /// <summary>Commands vehicle to a location.</summary>
         public ICommand GoToCommand => _gotoCommand;
@@ -106,6 +113,7 @@ namespace AirSimApp.ViewModels
         /// <summary>Vehicle's altitude.</summary>
         public Distance VehicleAltitude { get => _vehicleAltitude; set => SetProperty(ref _vehicleAltitude, value); }
 
+        /// <summary>Vehicle's yaw/heading.</summary>
         public Angle VehicleHeading { get => _vehicleHeading; set => SetProperty(ref _vehicleHeading, value); }
 
         /// <summary>Vehicle location.</summary>
@@ -207,6 +215,8 @@ namespace AirSimApp.ViewModels
         private readonly MultirotorVehicleModel _vehicle;
         private AltitudeCommand _altitudeCommand;
         private Position _center = new Position(new Latitude(47.639666), new Longitude(-122.128245));
+        private Distance _commandedAltitude = Distance.Invalid;
+        private Speed _commandedSpeed = Speed.Invalid;
         private bool _disposed = false;
         private GoToCommand _gotoCommand;
         private bool _haveVehicle = false;

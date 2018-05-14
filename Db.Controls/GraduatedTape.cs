@@ -178,7 +178,7 @@ namespace Db.Controls
             double x = RightOrLeft == HorizontalAlignment.Left ? 0.0 : size.Width;
             double xflip = RightOrLeft == HorizontalAlignment.Left ? 1.0 : -1.0;
 
-            double center = CurrentValue;
+            double center = double.IsNaN(CurrentValue) ? 0.0 : CurrentValue;
             double maximum = center + Range / 2;
             double minimum = center - Range / 2;
             double majorTickLength = xflip * size.Width / 3;

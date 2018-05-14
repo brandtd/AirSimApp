@@ -19,6 +19,7 @@
 
 #endregion MIT License (c) 2018 Dan Brandt
 
+using Db.Controls;
 using System;
 using System.ComponentModel;
 using System.Threading;

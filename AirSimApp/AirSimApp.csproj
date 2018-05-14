@@ -82,7 +82,6 @@
     <Compile Include="Models\ProxyModel.cs" />
     <Compile Include="Models\RcModel.cs" />
     <Compile Include="Models\VehicleMode.cs" />
-    <Compile Include="PropertyChangedBase.cs" />
     <Compile Include="ViewModels\CameraViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\MapViewModel.cs" />

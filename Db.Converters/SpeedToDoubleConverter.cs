@@ -37,7 +37,7 @@ namespace Db.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             Speed speed = (Speed)value;
-            return speed.IsInvalid ? 0 : speed.In(Units);
+            return speed.IsInvalid ? double.NaN : speed.In(Units);
         }
 
         /// <inheritdoc cref="IValueConverter.ConvertBack(object, Type, object, CultureInfo)" />

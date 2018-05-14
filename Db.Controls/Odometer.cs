@@ -141,63 +141,10 @@ namespace Db.Controls
             dc.PushClip(new RectangleGeometry(new Rect(new Size(ActualWidth, ActualHeight))));
             drawContainer(dc);
 
-            int sign = Math.Sign(Value);
-            double steppedValue = Value / (double)Resolution;
-            int upperValue = (int)Math.Truncate(Math.Round(steppedValue) / 10);
-            double remainder = Math.Abs(steppedValue) % 10;
-            int lowerValue = (int)Math.Truncate(remainder);
-            double spin = remainder - lowerValue;
-
-            int upperWidth = 0;
-            int lowerWidth = 0;
-            switch (Resolution)
+            if (!double.IsNaN(Value))
             {
-                case OdometerResolution.R1:
-                    upperWidth = 5;
-                    lowerWidth = 1;
-                    break;
-
-                case OdometerResolution.R10:
-                    upperWidth = 4;
-                    lowerWidth = 2;
-                    break;
-
-                case OdometerResolution.R100:
-                    upperWidth = 3;
-                    lowerWidth = 3;
-                    break;
-
-                case OdometerResolution.R1000:
-                    upperWidth = 2;
-                    lowerWidth = 4;
-                    break;
+                drawValueText(dc);
             }
-
-            string upperText = "";
-            if (upperValue != 0)
-            {
-                upperText = $"{upperValue}";
-            }
-            else if (Value < 0)
-            {
-                upperText = "-";
-            }
-            string lowerTextFloat = $"{Mod.CanonicalModulo((lowerValue + 2), 10)}".PadRight(lowerWidth, '0');
-            string lowerTextAbove = $"{Mod.CanonicalModulo((lowerValue + 1), 10)}".PadRight(lowerWidth, '0');
-            string lowerTextMiddle = $"{lowerValue}".PadRight(lowerWidth, '0');
-            string lowerTextBelow = $"{Mod.CanonicalModulo((lowerValue - 1), 10)}".PadRight(lowerWidth, '0');
-            upperText = upperText.PadLeft(upperWidth);
-
-            double x = RightOrLeft == HorizontalAlignment.Left ? FontSize / 2.0 : 0.0;
-            double y = FontSize;
-            FormattedText text = buildFormattedText(upperText, 1.5 * FontSize);
-            dc.DrawText(text, new Point(x, 0.75 * FontSize));
-
-            double textOffset = text.WidthIncludingTrailingWhitespace;
-            drawText(dc, new Point(textOffset + x, 0 - y * (1 - spin)), lowerTextFloat, FontSize);
-            drawText(dc, new Point(textOffset + x, 0 + y * spin), lowerTextAbove, FontSize);
-            drawText(dc, new Point(textOffset + x, y + y * spin), lowerTextMiddle, FontSize);
-            drawText(dc, new Point(textOffset + x, 2 * y + y * spin), lowerTextBelow, FontSize);
 
             dc.Pop();
         }
@@ -268,6 +215,67 @@ namespace Db.Controls
         {
             FormattedText ft = buildFormattedText(text, fontSize);
             dc.DrawText(ft, p);
+        }
+
+        private void drawValueText(DrawingContext dc)
+        {
+            int sign = Math.Sign(Value);
+            double steppedValue = Value / (double)Resolution;
+            int upperValue = (int)Math.Truncate(Math.Round(steppedValue) / 10);
+            double remainder = Math.Abs(steppedValue) % 10;
+            int lowerValue = (int)Math.Truncate(remainder);
+            double spin = remainder - lowerValue;
+
+            int upperWidth = 0;
+            int lowerWidth = 0;
+            switch (Resolution)
+            {
+                case OdometerResolution.R1:
+                    upperWidth = 5;
+                    lowerWidth = 1;
+                    break;
+
+                case OdometerResolution.R10:
+                    upperWidth = 4;
+                    lowerWidth = 2;
+                    break;
+
+                case OdometerResolution.R100:
+                    upperWidth = 3;
+                    lowerWidth = 3;
+                    break;
+
+                case OdometerResolution.R1000:
+                    upperWidth = 2;
+                    lowerWidth = 4;
+                    break;
+            }
+
+            string upperText = "";
+            if (upperValue != 0)
+            {
+                upperText = $"{upperValue}";
+            }
+            else if (Value < 0)
+            {
+                upperText = "-";
+            }
+            string lowerTextFloat = $"{Mod.CanonicalModulo((lowerValue + 2), 10)}".PadRight(lowerWidth, '0');
+            string lowerTextAbove = $"{Mod.CanonicalModulo((lowerValue + 1), 10)}".PadRight(lowerWidth, '0');
+            string lowerTextMiddle = $"{lowerValue}".PadRight(lowerWidth, '0');
+            string lowerTextBelow = $"{Mod.CanonicalModulo((lowerValue - 1), 10)}".PadRight(lowerWidth, '0');
+            upperText = upperText.PadLeft(upperWidth);
+
+            double x = RightOrLeft == HorizontalAlignment.Left ? FontSize / 2.0 : 0.0;
+            double y = FontSize;
+            FormattedText text = buildFormattedText(upperText, 1.5 * FontSize);
+            dc.DrawText(text, new Point(x, 0.75 * FontSize));
+
+            double textOffset = text.WidthIncludingTrailingWhitespace;
+            drawText(dc, new Point(textOffset + x, 0 - y * (1 - spin)), lowerTextFloat, FontSize);
+            drawText(dc, new Point(textOffset + x, 0 + y * spin), lowerTextAbove, FontSize);
+            drawText(dc, new Point(textOffset + x, y + y * spin), lowerTextMiddle, FontSize);
+            drawText(dc, new Point(textOffset + x, 2 * y + y * spin), lowerTextBelow, FontSize);
         }
     }
 }

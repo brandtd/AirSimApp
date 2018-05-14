@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:converters="clr-namespace:AirSimApp.Converters"
+             xmlns:dbc="clr-namespace:Db.Converters;assembly=Db.Converters"
              xmlns:controls="clr-namespace:Db.Controls;assembly=Db.Controls"
              xmlns:local="clr-namespace:AirSimApp.Views"
              mc:Ignorable="d"
@@ -33,12 +34,18 @@
                                       VehicleLocation="{Binding VehicleLocation}"
                                       ZoomLevel="{Binding Zoom}" />
         <Border Grid.Column="0" BorderBrush="Black" BorderThickness="2" CornerRadius="2">
-            <controls:AltimeterTape RightOrLeft="Left"
-                                    ActualAltitude="{Binding VehicleAltitude}" />
+            <controls:Tape RightOrLeft="Left"
+                           Range="100"
+                           MajorTick="10"
+                           CommandedValue="{Binding CommandedAltitude, Converter={dbc:DistanceToDoubleConverter Units=Meters}}"
+                           CurrentValue="{Binding VehicleAltitude, Converter={dbc:DistanceToDoubleConverter Units=Meters}}" />
         </Border>
         <Border Grid.Column="2" BorderBrush="Black" BorderThickness="2" CornerRadius="2">
-            <controls:SpeedTape RightOrLeft="Right"
-                                ActualSpeed="{Binding VehicleSpeed}" />
+            <controls:Tape RightOrLeft="Right"
+                           Range="20"
+                           MajorTick="5"
+                           CommandedValue="{Binding CommandedSpeed, Converter={dbc:SpeedToDoubleConverter Units=MetersPerSecond}}"
+                           CurrentValue="{Binding VehicleSpeed, Converter={dbc:SpeedToDoubleConverter Units=MetersPerSecond}}" />
         </Border>
     </Grid>
 </UserControl>

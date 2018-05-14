@@ -37,7 +37,7 @@ namespace Db.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             Distance distance = (Distance)value;
-            return distance.IsInvalid ? 0 : distance.In(Units);
+            return distance.IsInvalid ? double.NaN : distance.In(Units);
         }
 
         /// <inheritdoc cref="IValueConverter.ConvertBack(object, Type, object, CultureInfo)" />

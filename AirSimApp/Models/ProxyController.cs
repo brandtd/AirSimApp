@@ -20,6 +20,7 @@
 #endregion MIT License (c) 2018 Dan Brandt
 
 using AirSimRpc;
+using Db.Controls;
 using System;
 using System.Net;
 using System.Threading.Tasks;
