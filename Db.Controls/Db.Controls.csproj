@@ -55,18 +55,12 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AltimeterTape.xaml.cs">
-      <DependentUpon>AltimeterTape.xaml</DependentUpon>
-    </Compile>
     <Compile Include="DraggableMapControl.xaml.cs">
       <DependentUpon>DraggableMapControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="GraduatedTapeBug.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="PropertyChangedBase.cs" />
-    <Compile Include="SpeedTape.xaml.cs">
-      <DependentUpon>SpeedTape.xaml</DependentUpon>
-    </Compile>
     <Compile Include="GraduatedTape.cs" />
     <Compile Include="Odometer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -96,15 +90,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="AltimeterTape.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="DraggableMapControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="SpeedTape.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
