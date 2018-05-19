@@ -33,6 +33,7 @@
                            Range="{Binding AltimeterRange, Converter={dbc:DistanceToDoubleConverter Units=Meters}}"
                            MajorTick="{Binding AltimeterTick, Converter={dbc:DistanceToDoubleConverter Units=Meters}}"
                            CommitPendingValueCommand="{Binding CommitPendingAltitudeCommand}"
+                           PendingCommandValue="{Binding CommitPendingAltitudeCommandValue, Mode=OneWayToSource, Converter={dbc:DistanceToDoubleConverter Units=Meters}}"
                            SnapIncrement="{Binding AltitudeCommandIncrement, Converter={dbc:DistanceToDoubleConverter Units=Meters}}"
                            CommandedValue="{Binding CommandedAltitude, Converter={dbc:DistanceToDoubleConverter Units=Meters}}"
                            CurrentValue="{Binding VehicleAltitude, Converter={dbc:DistanceToDoubleConverter Units=Meters}}" />

@@ -65,11 +65,16 @@
             Range="{Binding ElementName=_this, Path=Range}"
             RightOrLeft="{Binding ElementName=_this, Path=RightOrLeft}"
             CurrentValue="{Binding ElementName=_this, Path=CurrentValue}"
-            CommandedValue="{Binding ElementName=_this, Path=PendingCommandValue}"
-            Visibility="{Binding ElementName=_this, Path=PendingCommandValue, Converter={conv:DoubleValidityToVisibilityConverter}}">
+            CommandedValue="{Binding ElementName=_this, Path=PendingCommandValue}">
             <local:GraduatedTapeBug.Effect>
                 <DropShadowEffect ShadowDepth="1" />
             </local:GraduatedTapeBug.Effect>
+            <local:GraduatedTapeBug.Visibility>
+                <MultiBinding Converter="{conv:IsTrueAndIsNumberToVisibilityConverter}">
+                    <Binding ElementName="_this" Path="CanExecuteAltitudeCommand" />
+                    <Binding ElementName="_this" Path="PendingCommandValue" />
+                </MultiBinding>
+            </local:GraduatedTapeBug.Visibility>
         </local:GraduatedTapeBug>
         <local:Odometer
             x:Name="odometer"

@@ -21,41 +21,49 @@
 
 using System;
 using System.Globalization;
-using System.Net;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
 
-namespace AirSimApp.Converters
+namespace Db.Converters
 {
-    [ValueConversion(typeof(IPAddress), typeof(string))]
-    public class IpAddressToStringConverter : MarkupExtension, IValueConverter
+    /// <summary>
+    ///     Takes two values, a boolean and a double. If the boolean is <c>true</c> and the double is
+    ///     a valid number (is not NaN), returns <c>Visibility.Visibile</c>. Otherwise, returns <c>Visibility.Collapsed</c>
+    /// </summary>
+    public class IsTrueAndIsNumberToVisibilityConverter : MarkupExtension, IMultiValueConverter
     {
-        /// <inheritdoc cref="IValueConverter.Convert(object, Type, object, CultureInfo)" />
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        /// <inheritdoc cref="IMultiValueConverter.Convert(object[], Type, object, CultureInfo)" />
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            string format = parameter as string;
-            if (!string.IsNullOrEmpty(format))
+            bool theBoolean = false;
+            double theDouble = double.NaN;
+
+            if (values[0] is bool)
             {
-                return string.Format(culture, format, value);
+                theBoolean = (bool)values[0];
             }
-            else
+            else if (values[0] is double)
             {
-                return $"{value}";
+                theDouble = (double)values[0];
             }
+
+            if (values[1] is bool)
+            {
+                theBoolean = (bool)values[1];
+            }
+            else if (values[1] is double)
+            {
+                theDouble = (double)values[1];
+            }
+
+            return (theBoolean && !double.IsNaN(theDouble)) ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        /// <inheritdoc cref="IValueConverter.ConvertBack(object, Type, object, CultureInfo)" />
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        /// <inheritdoc cref="IMultiValueConverter.ConvertBack(object, Type[], object, CultureInfo)" />
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
-            string valAsString = value as string;
-            if (!string.IsNullOrEmpty(valAsString) && IPAddress.TryParse(valAsString, out IPAddress address))
-            {
-                return address;
-            }
-            else
-            {
-                return null;
-            }
+            throw new NotImplementedException();
         }
 
         /// <inheritdoc cref="MarkupExtension.ProvideValue(IServiceProvider)" />

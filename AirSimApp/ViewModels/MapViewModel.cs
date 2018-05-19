@@ -63,6 +63,12 @@ namespace AirSimApp.ViewModels
         /// <summary>Commits the pending altitude value.</summary>
         public ICommand CommitPendingAltitudeCommand => _altitudeCommand;
 
+        /// <summary>The pending altitude value.</summary>
+        public Distance CommitPendingAltitudeCommandValue
+        {
+            set => _altitudeCommand.CommandValue = value;
+        }
+
         /// <summary>Commands vehicle to a location.</summary>
         public ICommand GoToCommand => _gotoCommand;
 
@@ -113,7 +119,7 @@ namespace AirSimApp.ViewModels
         /// <summary>Map's zoom level.</summary>
         public double Zoom { get => _zoom; set => SetProperty(ref _zoom, value); }
 
-        /// <inheritdoc cref="IDisposable.Dispose"/>
+        /// <inheritdoc cref="IDisposable.Dispose" />
         public void Dispose()
         {
             if (!_disposed)
@@ -201,7 +207,7 @@ namespace AirSimApp.ViewModels
         };
 
         private readonly MultirotorVehicleModel _vehicle;
-        private Distance _altimeterRange = Distance.FromMeters(100);
+        private Distance _altimeterRange = Distance.FromMeters(30);
         private Distance _altimeterTick = Distance.FromMeters(5);
         private AltitudeCommand _altitudeCommand;
         private Distance _altitudeCommandIncrement = Distance.FromMeters(1);

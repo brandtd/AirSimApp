@@ -39,10 +39,10 @@ namespace AirSimApp.Commands
             _canExecute = CanExecute(null);
         }
 
-        /// <inheritdoc cref="ICommand.CanExecuteChanged"/>
+        /// <inheritdoc cref="ICommand.CanExecuteChanged" />
         public override event EventHandler CanExecuteChanged;
 
-        /// <summary>The altitude to command on a call to <see cref="Execute(object)"/>.</summary>
+        /// <summary>The altitude to command on a call to <see cref="Execute(object)" />.</summary>
         public Distance CommandValue
         {
             get => _commandValue;
@@ -56,35 +56,27 @@ namespace AirSimApp.Commands
             }
         }
 
-        /// <inheritdoc cref="ICommand.CanExecute"/>
+        /// <inheritdoc cref="ICommand.CanExecute" />
         /// <param name="parameter">
-        ///     <see cref="Position"/> object describing location to command vehicle to.
+        ///     <see cref="Position" /> object describing location to command vehicle to.
         /// </param>
         public override bool CanExecute(object parameter)
         {
-            if (parameter is Distance altitude)
-            {
-                return _vehicle.Connected &&
-                       _vehicle.ApiEnabled &&
-                       !altitude.IsInvalid &&
-                       _vehicle.IsFlying &&
-                       !CommandValue.IsInvalid;
-            }
-            else
-            {
-                return false;
-            }
+            return _vehicle.Connected &&
+                    _vehicle.ApiEnabled &&
+                    _vehicle.IsFlying &&
+                    !CommandValue.IsInvalid;
         }
 
-        /// <inheritdoc cref="IDisposable.Dispose"/>
+        /// <inheritdoc cref="IDisposable.Dispose" />
         public void Dispose()
         {
             _vehicle.PropertyChanged -= onControllerPropertyChanged;
         }
 
-        /// <inheritdoc cref="ICommand.Execute"/>
+        /// <inheritdoc cref="ICommand.Execute" />
         /// <param name="parameter">
-        ///     <see cref="Position"/> object describing location to command vehicle to.
+        ///     <see cref="Position" /> object describing location to command vehicle to.
         /// </param>
         public override async void Execute(object parameter)
         {

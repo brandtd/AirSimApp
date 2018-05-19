@@ -68,7 +68,10 @@
                 <ColumnDefinition />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:DraggableMapControl}}, Path=MouseLocation, Converter={conv:PositionToDegreeMinutesStringConverter}}" />
+            <Grid>
+                <TextBlock Margin="10,0,0,0" Text="_____________\n_____________" Visibility="Hidden" />
+                <TextBlock Margin="10,0,0,0" VerticalAlignment="Center" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:DraggableMapControl}}, Path=MouseLocation, Converter={conv:PositionToDegreeMinutesStringConverter}}" />
+            </Grid>
             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
                 <StackPanel Margin="5">
                     <TextBlock Text="Zoom Level" Margin="0,0,0,2" HorizontalAlignment="Center" Foreground="Gray" FontSize="10" />

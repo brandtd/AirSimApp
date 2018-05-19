@@ -5,49 +5,59 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:views="clr-namespace:AirSimApp.Views"
         mc:Ignorable="d"
-        Title="MainWindow" Width="525" ResizeMode="NoResize" SizeToContent="Height">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <GroupBox Header="Vehicle Map" Grid.Row="0">
-            <views:MapView
+        Title="MainWindow"
+        ResizeMode="NoResize"
+        SizeToContent="WidthAndHeight">
+    <StackPanel Orientation="Horizontal">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <GroupBox Header="Vehicle Map" Grid.Row="0">
+                <views:MapView
                 Height="420"
                 DataContext="{Binding Map}" />
-        </GroupBox>
-
-        <GroupBox Header="RPC Proxy" Grid.Row="1">
-            <StackPanel>
-                <views:ProxyView DataContext="{Binding Proxy}" />
-            </StackPanel>
-        </GroupBox>
-        <GroupBox Header="Vehicle Status" Grid.Row="2">
-            <StackPanel>
-                <views:VehicleStatusView DataContext="{Binding Vehicle}" />
-            </StackPanel>
-        </GroupBox>
-        <Grid Grid.Row="3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <GroupBox Header="Remote Controller">
-                <views:RcView DataContext="{Binding Rc}" />
             </GroupBox>
-            <GroupBox Header="Commands" Grid.Column="1">
-                <views:VehicleCommandsView DataContext="{Binding Vehicle}" />
+
+            <GroupBox Header="RPC Proxy" Grid.Row="1">
+                <StackPanel>
+                    <views:ProxyView DataContext="{Binding Proxy}" />
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Vehicle Status" Grid.Row="2">
+                <StackPanel>
+                    <views:VehicleStatusView DataContext="{Binding Vehicle}" />
+                </StackPanel>
             </GroupBox>
         </Grid>
-        <GroupBox Header="Camera" Grid.Row="4">
-            <views:CameraView DataContext="{Binding Camera}" />
-        </GroupBox>
-    </Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <GroupBox Header="Remote Controller">
+                    <views:RcView DataContext="{Binding Rc}" />
+                </GroupBox>
+                <GroupBox Header="Commands" Grid.Column="1">
+                    <views:VehicleCommandsView DataContext="{Binding Vehicle}" />
+                </GroupBox>
+            </Grid>
+            <GroupBox Header="Camera" Grid.Row="1">
+                <views:CameraView DataContext="{Binding Camera}" />
+            </GroupBox>
+        </Grid>
+    </StackPanel>
 </Window>

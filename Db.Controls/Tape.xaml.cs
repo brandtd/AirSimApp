@@ -123,7 +123,7 @@ namespace Db.Controls
                 new PropertyMetadata(HorizontalAlignment.Left));
 
         /// <summary>
-        ///     If set, defines the increment to be used if <see cref="SnapToIncrement"/> is <c>true</c>.
+        ///     If set, defines the increment to be used if <see cref="SnapToIncrement" /> is <c>true</c>.
         /// </summary>
         public static readonly DependencyProperty SnapIncrementProperty =
             DependencyProperty.Register(
@@ -143,96 +143,111 @@ namespace Db.Controls
                 typeof(Tape),
                 new PropertyMetadata(true));
 
+        /// <summary>Whether altitude command can currently be executed.</summary>
+        public static DependencyProperty CanExecuteAltitudeCommandProperty =
+            DependencyProperty.Register(
+                nameof(CanExecuteAltitudeCommand),
+                typeof(bool),
+                typeof(Tape),
+                new PropertyMetadata(false));
+
         public Tape()
         {
             InitializeComponent();
         }
 
-        /// <inheritdoc cref="CommandedAltitudeProperty"/>
+        /// <inheritdoc cref="CanExecuteAltitudeCommandProperty" />
+        public bool CanExecuteAltitudeCommand
+        {
+            get => (bool)GetValue(CanExecuteAltitudeCommandProperty);
+            set => SetValue(CanExecuteAltitudeCommandProperty, value);
+        }
+
+        /// <inheritdoc cref="CommandedAltitudeProperty" />
         public double CommandedValue
         {
             get => (double)GetValue(CommandedValueProperty);
             set => SetValue(CommandedValueProperty, value);
         }
 
-        /// <inheritdoc cref="CommitPendingValueCommandProperty"/>
+        /// <inheritdoc cref="CommitPendingValueCommandProperty" />
         public ICommand CommitPendingValueCommand
         {
             get => (ICommand)GetValue(CommitPendingValueCommandProperty);
             set => SetValue(CommitPendingValueCommandProperty, value);
         }
 
-        /// <inheritdoc cref="CurrentValueProperty"/>
+        /// <inheritdoc cref="CurrentValueProperty" />
         public double CurrentValue
         {
             get => (double)GetValue(CurrentValueProperty);
             set => SetValue(CurrentValueProperty, value);
         }
 
-        /// <inheritdoc cref="DivisionsPerTickProperty"/>
+        /// <inheritdoc cref="DivisionsPerTickProperty" />
         public int DivisionsPerTick
         {
             get => (int)GetValue(DivisionsPerTickProperty);
             set => SetValue(DivisionsPerTickProperty, value);
         }
 
-        /// <inheritdoc cref="MajorStrokeProperty"/>
+        /// <inheritdoc cref="MajorStrokeProperty" />
         public double MajorStroke
         {
             get => (double)GetValue(MajorStrokeProperty);
             set => SetValue(MajorStrokeProperty, value);
         }
 
-        /// <inheritdoc cref="MajorTickProperty"/>
+        /// <inheritdoc cref="MajorTickProperty" />
         public double MajorTick
         {
             get => (double)GetValue(MajorTickProperty);
             set => SetValue(MajorTickProperty, value);
         }
 
-        /// <inheritdoc cref="MinorStrokeProperty"/>
+        /// <inheritdoc cref="MinorStrokeProperty" />
         public double MinorStroke
         {
             get => (double)GetValue(MinorStrokeProperty);
             set => SetValue(MinorStrokeProperty, value);
         }
 
-        /// <inheritdoc cref="OdometerResolutionProperty"/>
+        /// <inheritdoc cref="OdometerResolutionProperty" />
         public OdometerResolution OdometerResolution
         {
             get => (OdometerResolution)GetValue(OdometerResolutionProperty);
             set => SetValue(OdometerResolutionProperty, value);
         }
 
-        /// <inheritdoc cref="PendingCommandValueProperty"/>
+        /// <inheritdoc cref="PendingCommandValueProperty" />
         public double PendingCommandValue
         {
             get => (double)GetValue(PendingCommandValueProperty);
             set => SetValue(PendingCommandValueProperty, value);
         }
 
-        /// <inheritdoc cref="RangeProperty"/>
+        /// <inheritdoc cref="RangeProperty" />
         public double Range
         {
             get => (double)GetValue(RangeProperty);
             set => SetValue(RangeProperty, value);
         }
 
-        /// <inheritdoc cref="RightOrLeftProperty"/>
+        /// <inheritdoc cref="RightOrLeftProperty" />
         public HorizontalAlignment RightOrLeft
         {
             get => (HorizontalAlignment)GetValue(RightOrLeftProperty);
             set => SetValue(RightOrLeftProperty, value);
         }
 
-        /// <inheritdoc cref="SnapIncrementProperty"/>
+        /// <inheritdoc cref="SnapIncrementProperty" />
         public double SnapIncrement
         {
             get => (double)GetValue(SnapIncrementProperty);
             set => SetValue(SnapIncrementProperty, value);
         }
 
-        /// <inheritdoc cref="SnapToIncrementProperty"/>
+        /// <inheritdoc cref="SnapToIncrementProperty" />
         public bool SnapToIncrement
         {
             get => (bool)GetValue(SnapToIncrementProperty);
@@ -279,10 +294,7 @@ namespace Db.Controls
 
         private void _this_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (CommitPendingValueCommand?.CanExecute(null) == true)
-            {
-                pendingCommandValueYPos = e.GetPosition(this).Y;
-            }
+            pendingCommandValueYPos = e.GetPosition(this).Y;
 
             e.Handled = true;
         }
@@ -311,15 +323,17 @@ namespace Db.Controls
             if (newCommand != null)
             {
                 newCommand.CanExecuteChanged += onCommitCommandCanExecuteChanged;
+                CanExecuteAltitudeCommand = newCommand.CanExecute(null);
+            }
+            else
+            {
+                CanExecuteAltitudeCommand = false;
             }
         }
 
         private void onCommitCommandCanExecuteChanged(object sender, EventArgs e)
         {
-            if (CommitPendingValueCommand?.CanExecute(null) == false)
-            {
-                pendingCommandValueYPos = double.NaN;
-            }
+            CanExecuteAltitudeCommand = CommitPendingValueCommand.CanExecute(null);
         }
 
         private void setPendingCommandValue()
