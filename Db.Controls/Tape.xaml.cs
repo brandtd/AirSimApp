@@ -143,10 +143,10 @@ namespace Db.Controls
                 typeof(Tape),
                 new PropertyMetadata(true));
 
-        /// <summary>Whether altitude command can currently be executed.</summary>
-        public static DependencyProperty CanExecuteAltitudeCommandProperty =
+        /// <summary>Whether pending value command can currently be executed.</summary>
+        public static DependencyProperty CanExecutePendingValueCommandProperty =
             DependencyProperty.Register(
-                nameof(CanExecuteAltitudeCommand),
+                nameof(CanExecutePendingValueCommand),
                 typeof(bool),
                 typeof(Tape),
                 new PropertyMetadata(false));
@@ -156,14 +156,14 @@ namespace Db.Controls
             InitializeComponent();
         }
 
-        /// <inheritdoc cref="CanExecuteAltitudeCommandProperty" />
-        public bool CanExecuteAltitudeCommand
+        /// <inheritdoc cref="CanExecutePendingValueCommandProperty" />
+        public bool CanExecutePendingValueCommand
         {
-            get => (bool)GetValue(CanExecuteAltitudeCommandProperty);
-            set => SetValue(CanExecuteAltitudeCommandProperty, value);
+            get => (bool)GetValue(CanExecutePendingValueCommandProperty);
+            set => SetValue(CanExecutePendingValueCommandProperty, value);
         }
 
-        /// <inheritdoc cref="CommandedAltitudeProperty" />
+        /// <inheritdoc cref="CommandedValueProperty" />
         public double CommandedValue
         {
             get => (double)GetValue(CommandedValueProperty);
@@ -281,7 +281,7 @@ namespace Db.Controls
 
         private void _this_MouseLeave(object sender, MouseEventArgs e)
         {
-            pendingCommandValueYPos = double.NaN;
+            cancelPendingValueCommand();
         }
 
         private void _this_MouseMove(object sender, MouseEventArgs e)
@@ -313,6 +313,11 @@ namespace Db.Controls
             e.Handled = true;
         }
 
+        private void cancelPendingValueCommand()
+        {
+            pendingCommandValueYPos = double.NaN;
+        }
+
         private void commitPendingValueCommandChanged(ICommand oldCommand, ICommand newCommand)
         {
             if (oldCommand != null)
@@ -323,17 +328,17 @@ namespace Db.Controls
             if (newCommand != null)
             {
                 newCommand.CanExecuteChanged += onCommitCommandCanExecuteChanged;
-                CanExecuteAltitudeCommand = newCommand.CanExecute(null);
+                CanExecutePendingValueCommand = newCommand.CanExecute(null);
             }
             else
             {
-                CanExecuteAltitudeCommand = false;
+                CanExecutePendingValueCommand = false;
             }
         }
 
         private void onCommitCommandCanExecuteChanged(object sender, EventArgs e)
         {
-            CanExecuteAltitudeCommand = CommitPendingValueCommand.CanExecute(null);
+            CanExecutePendingValueCommand = CommitPendingValueCommand.CanExecute(null);
         }
 
         private void setPendingCommandValue()

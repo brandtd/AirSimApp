@@ -71,7 +71,7 @@
             </local:GraduatedTapeBug.Effect>
             <local:GraduatedTapeBug.Visibility>
                 <MultiBinding Converter="{conv:IsTrueAndIsNumberToVisibilityConverter}">
-                    <Binding ElementName="_this" Path="CanExecuteAltitudeCommand" />
+                    <Binding ElementName="_this" Path="CanExecutePendingValueCommand" />
                     <Binding ElementName="_this" Path="PendingCommandValue" />
                 </MultiBinding>
             </local:GraduatedTapeBug.Visibility>
