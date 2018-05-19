@@ -88,9 +88,5 @@
                 <DropShadowEffect ShadowDepth="1" />
             </local:Odometer.Effect>
         </local:Odometer>
-        <Label
-            Content="{Binding ElementName=_this, Path=PendingCommandValue}"
-            Foreground="Red"
-            FontWeight="Bold"/>
     </Grid>
 </UserControl>
