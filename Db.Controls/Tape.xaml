@@ -51,9 +51,10 @@
             Range="{Binding ElementName=_this, Path=Range}"
             CurrentValue="{Binding ElementName=_this, Path=CurrentValue}" />
         <local:GraduatedTapeBug
-            x:Name="bug"
+            x:Name="commandedBug"
             Range="{Binding ElementName=_this, Path=Range}"
             RightOrLeft="{Binding ElementName=_this, Path=RightOrLeft}"
+            BugBrush="{Binding ElementName=_this, Path=CommandedBugBrush}"
             CurrentValue="{Binding ElementName=_this, Path=CurrentValue}"
             CommandedValue="{Binding ElementName=_this, Path=CommandedValue}">
             <local:GraduatedTapeBug.Effect>
@@ -61,9 +62,10 @@
             </local:GraduatedTapeBug.Effect>
         </local:GraduatedTapeBug>
         <local:GraduatedTapeBug
-            x:Name="commandBug"
+            x:Name="pendingBug"
             Range="{Binding ElementName=_this, Path=Range}"
             RightOrLeft="{Binding ElementName=_this, Path=RightOrLeft}"
+            BugBrush="{Binding ElementName=_this, Path=PendingBugBrush}"
             CurrentValue="{Binding ElementName=_this, Path=CurrentValue}"
             CommandedValue="{Binding ElementName=_this, Path=PendingCommandValue}">
             <local:GraduatedTapeBug.Effect>

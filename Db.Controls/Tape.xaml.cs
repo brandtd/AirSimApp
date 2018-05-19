@@ -23,12 +23,21 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace Db.Controls
 {
     /// <summary>Interaction logic for Tape.xaml</summary>
     public partial class Tape : UserControl
     {
+        /// <summary>Brush to use when drawing the commanded value bug.</summary>
+        public static readonly DependencyProperty CommandedBugBrushProperty =
+            DependencyProperty.Register(
+                nameof(CommandedBugBrush),
+                typeof(Brush),
+                typeof(Tape),
+                new PropertyMetadata(GraduatedTapeBug.BugBrushProperty.DefaultMetadata.DefaultValue));
+
         /// <summary>Commanded value (for bug).</summary>
         public static readonly DependencyProperty CommandedValueProperty =
             DependencyProperty.Register(
@@ -94,6 +103,14 @@ namespace Db.Controls
                 typeof(OdometerResolution),
                 typeof(Tape),
                 new PropertyMetadata(OdometerResolution.R1));
+
+        /// <summary>Brush to use when drawing the pending value bug.</summary>
+        public static readonly DependencyProperty PendingBugBrushProperty =
+            DependencyProperty.Register(
+                nameof(PendingBugBrush),
+                typeof(Brush),
+                typeof(Tape),
+                new PropertyMetadata(GraduatedTapeBug.BugBrushProperty.DefaultMetadata.DefaultValue));
 
         /// <summary>
         ///     The pending command value (e.g., from the command bug being dragged around but not
@@ -163,6 +180,13 @@ namespace Db.Controls
             set => SetValue(CanExecutePendingValueCommandProperty, value);
         }
 
+        /// <inheritdoc cref="CommandedBugBrushProperty" />
+        public Brush CommandedBugBrush
+        {
+            get => (Brush)GetValue(CommandedBugBrushProperty);
+            set => SetValue(CommandedBugBrushProperty, value);
+        }
+
         /// <inheritdoc cref="CommandedValueProperty" />
         public double CommandedValue
         {
@@ -217,6 +241,13 @@ namespace Db.Controls
         {
             get => (OdometerResolution)GetValue(OdometerResolutionProperty);
             set => SetValue(OdometerResolutionProperty, value);
+        }
+
+        /// <inheritdoc cref="PendingBugBrushProperty" />
+        public Brush PendingBugBrush
+        {
+            get => (Brush)GetValue(PendingBugBrushProperty);
+            set => SetValue(PendingBugBrushProperty, value);
         }
 
         /// <inheritdoc cref="PendingCommandValueProperty" />

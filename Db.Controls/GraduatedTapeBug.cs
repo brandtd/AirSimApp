@@ -20,24 +20,22 @@
 #endregion MIT License (c) 2018 Dan Brandt
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Db.Controls
 {
     public class GraduatedTapeBug : Control
     {
+        /// <summary>Brush to use when drawing bug.</summary>
+        public static readonly DependencyProperty BugBrushProperty =
+            DependencyProperty.Register(
+                nameof(BugBrush),
+                typeof(Brush),
+                typeof(GraduatedTapeBug),
+                new FrameworkPropertyMetadata(Brushes.Magenta, FrameworkPropertyMetadataOptions.AffectsRender));
+
         /// <summary>
         ///     Describes where to draw the commanded value bug. If NaN, no bug will be drawn.
         /// </summary>
@@ -75,6 +73,13 @@ namespace Db.Controls
         static GraduatedTapeBug()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(GraduatedTapeBug), new FrameworkPropertyMetadata(typeof(GraduatedTapeBug)));
+        }
+
+        /// <inheritdoc cref="BugBrushProperty" />
+        public Brush BugBrush
+        {
+            get => (Brush)GetValue(BugBrushProperty);
+            set => SetValue(BugBrushProperty, value);
         }
 
         /// <inheritdoc cref="CommandedValueProperty" />
@@ -125,8 +130,8 @@ namespace Db.Controls
             double drawnValue = Math.Min(Math.Max(CommandedValue, CurrentValue - Range / 2), CurrentValue + Range / 2);
             double yMarker = -size.Height / Range * (CommandedValue - CurrentValue) + yCenter;
 
-            dc.DrawLine(new Pen(Brushes.Magenta, 0.5), new Point(0.0, yMarker), new Point(size.Width, yMarker - 1));
-            dc.DrawLine(new Pen(Brushes.Magenta, 0.5), new Point(0.0, yMarker), new Point(size.Width, yMarker + 1));
+            dc.DrawLine(new Pen(BugBrush, 0.5), new Point(0.0, yMarker), new Point(size.Width, yMarker - 1));
+            dc.DrawLine(new Pen(BugBrush, 0.5), new Point(0.0, yMarker), new Point(size.Width, yMarker + 1));
 
             double xOffset = 0.1 * FontSize;
             if (RightOrLeft == HorizontalAlignment.Left)
@@ -148,7 +153,7 @@ namespace Db.Controls
                     sgc.PolyLineTo(points, true, false);
                 }
                 sg.Freeze();
-                dc.DrawGeometry(Brushes.Magenta, null, sg);
+                dc.DrawGeometry(BugBrush, null, sg);
             }
             else
             {
@@ -169,7 +174,7 @@ namespace Db.Controls
                     sgc.PolyLineTo(points, true, false);
                 }
                 sg.Freeze();
-                dc.DrawGeometry(Brushes.Magenta, null, sg);
+                dc.DrawGeometry(BugBrush, null, sg);
             }
         }
     }
