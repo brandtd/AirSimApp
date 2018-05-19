@@ -22,10 +22,8 @@
 using DotSpatial.Positioning;
 using MapControl;
 using System.Collections;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
 namespace Db.Controls
@@ -33,20 +31,10 @@ namespace Db.Controls
     /// <summary>Interaction logic for DraggableMapControl.xaml</summary>
     public partial class DraggableMapControl : UserControl
     {
-        public static readonly DependencyProperty AltimeterCommandProperty =
-            DependencyProperty.Register(
-                nameof(AltimeterCommand),
-                typeof(ICommand),
-                typeof(DraggableMapControl),
-                new PropertyMetadata(null));
-
-        public static readonly DependencyProperty AltitudeTicksProperty =
-                    DependencyProperty.Register(
-                nameof(AltitudeTicks),
-                typeof(IEnumerable<Distance>),
-                typeof(DraggableMapControl),
-                new PropertyMetadata(null));
-
+        /// <summary>
+        ///     Command to execute on clicking the map. Will be passed a <see cref="Position"/>
+        ///     object describing the click location.
+        /// </summary>
         public static readonly DependencyProperty ClickCommandProperty =
             DependencyProperty.Register(
                 nameof(ClickCommand),
@@ -54,21 +42,9 @@ namespace Db.Controls
                 typeof(DraggableMapControl),
                 new PropertyMetadata(null));
 
-        public static readonly DependencyProperty CommandedAltitudeProperty =
-            DependencyProperty.Register(
-                nameof(CommandedAltitude),
-                typeof(Distance),
-                typeof(DraggableMapControl),
-                new PropertyMetadata(Distance.Invalid,
-                    (o, e) =>
-                    {
-                        ICommand command = ((DraggableMapControl)o).AltimeterCommand;
-                        if (command != null && command.CanExecute(e.NewValue))
-                        {
-                            command.Execute(e.NewValue);
-                        }
-                    }));
-
+        /// <summary>
+        ///     Whether a vehicle is connected (and its location/properties should be drawn).
+        /// </summary>
         public static readonly DependencyProperty HaveVehicleProperty =
                     DependencyProperty.Register(
                 nameof(HaveVehicle),
@@ -76,6 +52,7 @@ namespace Db.Controls
                 typeof(DraggableMapControl),
                 new PropertyMetadata(false));
 
+        /// <summary>Name of the map layer currently being used.</summary>
         public static readonly DependencyProperty LayerNameProperty =
             DependencyProperty.Register(
                 nameof(LayerName),
@@ -83,6 +60,7 @@ namespace Db.Controls
                 typeof(DraggableMapControl),
                 new PropertyMetadata(""));
 
+        /// <summary>Available layers.</summary>
         public static readonly DependencyProperty LayerNamesProperty =
             DependencyProperty.Register(
                 nameof(LayerNames),
@@ -90,6 +68,7 @@ namespace Db.Controls
                 typeof(DraggableMapControl),
                 new PropertyMetadata(null));
 
+        /// <summary>Center position of the map.</summary>
         public static readonly DependencyProperty MapCenterProperty =
             DependencyProperty.Register(
                 nameof(MapCenter),
@@ -97,6 +76,7 @@ namespace Db.Controls
                 typeof(DraggableMapControl),
                 new PropertyMetadata(Position.Invalid));
 
+        /// <summary>The actual map layer currently being used.</summary>
         public static readonly DependencyProperty MapLayerProperty =
             DependencyProperty.Register(
                 nameof(MapLayer),
@@ -104,20 +84,7 @@ namespace Db.Controls
                 typeof(DraggableMapControl),
                 new PropertyMetadata(null));
 
-        public static readonly DependencyProperty MaxAltitudeProperty =
-            DependencyProperty.Register(
-                nameof(MaxAltitude),
-                typeof(Distance),
-                typeof(DraggableMapControl),
-                new PropertyMetadata(Distance.FromMeters(100)));
-
-        public static readonly DependencyProperty MinAltitudeProperty =
-            DependencyProperty.Register(
-                nameof(MinAltitude),
-                typeof(Distance),
-                typeof(DraggableMapControl),
-                new PropertyMetadata(Distance.FromMeters(0)));
-
+        /// <summary>Location of the mouse as a geographic <see cref="Position"/>.</summary>
         public static readonly DependencyProperty MouseLocationProperty =
             DependencyProperty.Register(
                 nameof(MouseLocation),
@@ -125,6 +92,7 @@ namespace Db.Controls
                 typeof(DraggableMapControl),
                 new PropertyMetadata(Position.Invalid));
 
+        /// <summary>Whether the map description (layer name and source) should be shown.</summary>
         public static readonly DependencyProperty ShowDescriptionProperty =
             DependencyProperty.Register(
                 nameof(ShowDescription),
@@ -132,6 +100,7 @@ namespace Db.Controls
                 typeof(DraggableMapControl),
                 new PropertyMetadata(false));
 
+        /// <summary>Whether the zoom level and mouse location should be displayed.</summary>
         public static readonly DependencyProperty ShowExtrasProperty =
             DependencyProperty.Register(
                 nameof(ShowExtras),
@@ -139,13 +108,7 @@ namespace Db.Controls
                 typeof(DraggableMapControl),
                 new PropertyMetadata(false));
 
-        public static readonly DependencyProperty VehicleAltitudeProperty =
-            DependencyProperty.Register(
-                nameof(VehicleAltitude),
-                typeof(Distance),
-                typeof(DraggableMapControl),
-                new PropertyMetadata(Distance.Invalid));
-
+        /// <summary>Vehicle's current heading.</summary>
         public static readonly DependencyProperty VehicleHeadingProperty =
             DependencyProperty.Register(
                 nameof(VehicleHeading),
@@ -153,6 +116,7 @@ namespace Db.Controls
                 typeof(DraggableMapControl),
                 new PropertyMetadata(Angle.Invalid));
 
+        /// <summary>Vehicle's current location.</summary>
         public static readonly DependencyProperty VehicleLocationProperty =
             DependencyProperty.Register(
                 nameof(VehicleLocation),
@@ -160,6 +124,7 @@ namespace Db.Controls
                 typeof(DraggableMapControl),
                 new PropertyMetadata(Position.Invalid));
 
+        /// <summary>Map's current zoom level.</summary>
         public static readonly DependencyProperty ZoomLevelProperty =
             DependencyProperty.Register(
                 nameof(ZoomLevel),
@@ -172,108 +137,84 @@ namespace Db.Controls
             InitializeComponent();
         }
 
-        public ICommand AltimeterCommand
-        {
-            get => (ICommand)GetValue(AltimeterCommandProperty);
-            set => SetValue(AltimeterCommandProperty, value);
-        }
-
-        public IEnumerable<Distance> AltitudeTicks
-        {
-            get => (IEnumerable<Distance>)GetValue(AltitudeTicksProperty);
-            set => SetValue(AltitudeTicksProperty, value);
-        }
-
+        /// <inheritdoc cref="ClickCommandProperty"/>
         public ICommand ClickCommand
         {
             get => (ICommand)GetValue(ClickCommandProperty);
             set => SetValue(ClickCommandProperty, value);
         }
 
-        public Distance CommandedAltitude
-        {
-            get => (Distance)GetValue(CommandedAltitudeProperty);
-            set => SetValue(CommandedAltitudeProperty, value);
-        }
-
+        /// <inheritdoc cref="HaveVehicleProperty"/>
         public bool HaveVehicle
         {
             get => (bool)GetValue(HaveVehicleProperty);
             set => SetValue(HaveVehicleProperty, value);
         }
 
+        /// <inheritdoc cref="LayerNameProperty"/>
         public string LayerName
         {
             get => (string)GetValue(LayerNameProperty);
             set => SetValue(LayerNameProperty, value);
         }
 
+        /// <inheritdoc cref="LayerNamesProperty"/>
         public IEnumerable LayerNames
         {
             get => (IEnumerable)GetValue(LayerNamesProperty);
             set => SetValue(LayerNamesProperty, value);
         }
 
+        /// <inheritdoc cref="MapCenterProperty"/>
         public Position MapCenter
         {
             get => (Position)GetValue(MapCenterProperty);
             set => SetValue(MapCenterProperty, value);
         }
 
+        /// <inheritdoc cref="MapLayerProperty"/>
         public UIElement MapLayer
         {
             get => (UIElement)GetValue(MapLayerProperty);
             set => SetValue(MapLayerProperty, value);
         }
 
-        public Distance MaxAltitude
-        {
-            get => (Distance)GetValue(MaxAltitudeProperty);
-            set => SetValue(MaxAltitudeProperty, value);
-        }
-
-        public Distance MinAltitude
-        {
-            get => (Distance)GetValue(MinAltitudeProperty);
-            set => SetValue(MinAltitudeProperty, value);
-        }
-
+        /// <inheritdoc cref="MouseLocationProperty"/>
         public Position MouseLocation
         {
             get => (Position)GetValue(MouseLocationProperty);
             set => SetValue(MouseLocationProperty, value);
         }
 
+        /// <inheritdoc cref="ShowDescriptionProperty"/>
         public bool ShowDescription
         {
             get => (bool)GetValue(ShowDescriptionProperty);
             set => SetValue(ShowDescriptionProperty, value);
         }
 
+        /// <inheritdoc cref="ShowExtrasProperty"/>
         public bool ShowExtras
         {
             get => (bool)GetValue(ShowExtrasProperty);
             set => SetValue(ShowExtrasProperty, value);
         }
 
-        public Distance VehicleAltitude
-        {
-            get => (Distance)GetValue(VehicleAltitudeProperty);
-            set => SetValue(VehicleAltitudeProperty, value);
-        }
-
+        /// <inheritdoc cref="VehicleHeadingProperty"/>
         public Angle VehicleHeading
         {
             get => (Angle)GetValue(VehicleHeadingProperty);
             set => SetValue(VehicleHeadingProperty, value);
         }
 
+        /// <inheritdoc cref="VehicleLocationProperty"/>
         public Position VehicleLocation
         {
             get => (Position)GetValue(VehicleLocationProperty);
             set => SetValue(VehicleLocationProperty, value);
         }
 
+        /// <inheritdoc cref="ZoomLevelProperty"/>
         public double ZoomLevel
         {
             get => (double)GetValue(ZoomLevelProperty);

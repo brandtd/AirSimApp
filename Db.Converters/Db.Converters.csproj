@@ -60,6 +60,7 @@
     <Compile Include="BooleanToCollapsedVisibilityConverter.cs" />
     <Compile Include="DistanceToDoubleConverter.cs" />
     <Compile Include="DistanceToStringConverter.cs" />
+    <Compile Include="DoubleValidityToVisibilityConverter.cs" />
     <Compile Include="EnumerableDistanceToDoubleCollectionConverter.cs" />
     <Compile Include="LatitudeToStringConverter.cs" />
     <Compile Include="LocationToPositionConverter.cs" />

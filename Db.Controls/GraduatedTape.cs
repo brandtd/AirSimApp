@@ -39,7 +39,7 @@ namespace Db.Controls
 {
     public class GraduatedTape : Control
     {
-        /// <summary>Describes the current value of this control.</summary>
+        /// <summary>The tape's current value.</summary>
         public static readonly DependencyProperty CurrentValueProperty =
             DependencyProperty.Register(
                 nameof(CurrentValue),

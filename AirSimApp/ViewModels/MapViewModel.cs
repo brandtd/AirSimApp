@@ -45,29 +45,23 @@ namespace AirSimApp.ViewModels
             _gotoCommand = new GoToCommand(_vehicle);
         }
 
-        /// <summary>Commands vehicle to an altitude.</summary>
-        public ICommand AltitudeCommand => _altitudeCommand;
+        /// <summary>Range of altimeter tape.</summary>
+        public Distance AltimeterRange { get => _altimeterRange; set => SetProperty(ref _altimeterRange, value); }
 
-        /// <summary>Altitude ticks to show on altitude slider.</summary>
-        public IEnumerable<Distance> AltitudeTicks { get; } = new Distance[] {
-            Distance.FromMeters(0),
-            Distance.FromMeters(100),
-            Distance.FromMeters(200),
-            Distance.FromMeters(300),
-            Distance.FromMeters(400),
-            Distance.FromMeters(500),
-            Distance.FromMeters(600),
-            Distance.FromMeters(700),
-            Distance.FromMeters(800),
-            Distance.FromMeters(900),
-            Distance.FromMeters(1000)
-        };
+        /// <summary>Value of a major tick on the altimeter tape.</summary>
+        public Distance AltimeterTick { get => _altimeterTick; set => SetProperty(ref _altimeterTick, value); }
+
+        /// <summary>Increment to use with altitude command bug.</summary>
+        public Distance AltitudeCommandIncrement { get => _altitudeCommandIncrement; set => SetProperty(ref _altitudeCommandIncrement, value); }
 
         /// <summary>Vehicle's commanded altitude.</summary>
         public Distance CommandedAltitude { get => _commandedAltitude; set => SetProperty(ref _commandedAltitude, value); }
 
         /// <summary>Vehicle's commanded speed.</summary>
         public Speed CommandedSpeed { get => _commandedSpeed; set => SetProperty(ref _commandedSpeed, value); }
+
+        /// <summary>Commits the pending altitude value.</summary>
+        public ICommand CommitPendingAltitudeCommand => _altitudeCommand;
 
         /// <summary>Commands vehicle to a location.</summary>
         public ICommand GoToCommand => _gotoCommand;
@@ -101,12 +95,6 @@ namespace AirSimApp.ViewModels
         /// <summary>All map layer names.</summary>
         public IEnumerable<string> MapLayerNames => _mapLayers.Keys;
 
-        /// <summary>Max altitude to show on altitude slider.</summary>
-        public Distance MaxAltitude { get; } = Distance.FromMeters(1000);
-
-        /// <summary>Min altitude to show on altitude slider.</summary>
-        public Distance MinAltitude { get; } = Distance.FromMeters(0);
-
         /// <summary>Projection type to use.</summary>
         public MapProjection Projection { get; } = new WebMercatorProjection();
 
@@ -125,7 +113,7 @@ namespace AirSimApp.ViewModels
         /// <summary>Map's zoom level.</summary>
         public double Zoom { get => _zoom; set => SetProperty(ref _zoom, value); }
 
-        /// <inheritdoc cref="IDisposable.Dispose" />
+        /// <inheritdoc cref="IDisposable.Dispose"/>
         public void Dispose()
         {
             if (!_disposed)
@@ -213,7 +201,10 @@ namespace AirSimApp.ViewModels
         };
 
         private readonly MultirotorVehicleModel _vehicle;
+        private Distance _altimeterRange = Distance.FromMeters(100);
+        private Distance _altimeterTick = Distance.FromMeters(5);
         private AltitudeCommand _altitudeCommand;
+        private Distance _altitudeCommandIncrement = Distance.FromMeters(1);
         private Position _center = new Position(new Latitude(47.639666), new Longitude(-122.128245));
         private Distance _commandedAltitude = Distance.Invalid;
         private Speed _commandedSpeed = Speed.Invalid;
@@ -222,7 +213,7 @@ namespace AirSimApp.ViewModels
         private bool _haveVehicle = false;
         private Position _home = Position.Invalid;
         private string _mapLayerName = "OpenStreetMap";
-        private Distance _vehicleAltitude = Distance.Invalid;
+        private Distance _vehicleAltitude = Distance.FromMeters(0);
         private Angle _vehicleHeading = Angle.Invalid;
         private Position _vehicleLocation = Position.Invalid;
         private Speed _vehicleSpeed = Speed.Invalid;

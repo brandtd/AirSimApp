@@ -23,7 +23,6 @@ using AirSimApp.Models;
 using DotSpatial.Positioning;
 using System;
 using System.ComponentModel;
-using System.Windows.Input;
 
 namespace AirSimApp.Commands
 {
@@ -40,12 +39,26 @@ namespace AirSimApp.Commands
             _canExecute = CanExecute(null);
         }
 
-        /// <inheritdoc cref="ICommand.CanExecuteChanged" />
+        /// <inheritdoc cref="ICommand.CanExecuteChanged"/>
         public override event EventHandler CanExecuteChanged;
 
-        /// <inheritdoc cref="ICommand.CanExecute" />
+        /// <summary>The altitude to command on a call to <see cref="Execute(object)"/>.</summary>
+        public Distance CommandValue
+        {
+            get => _commandValue;
+            set
+            {
+                if (_commandValue != value)
+                {
+                    _commandValue = value;
+                    checkCanExecute();
+                }
+            }
+        }
+
+        /// <inheritdoc cref="ICommand.CanExecute"/>
         /// <param name="parameter">
-        ///     <see cref="Position" /> object describing location to command vehicle to.
+        ///     <see cref="Position"/> object describing location to command vehicle to.
         /// </param>
         public override bool CanExecute(object parameter)
         {
@@ -54,7 +67,8 @@ namespace AirSimApp.Commands
                 return _vehicle.Connected &&
                        _vehicle.ApiEnabled &&
                        !altitude.IsInvalid &&
-                       _vehicle.IsFlying;
+                       _vehicle.IsFlying &&
+                       !CommandValue.IsInvalid;
             }
             else
             {
@@ -62,31 +76,31 @@ namespace AirSimApp.Commands
             }
         }
 
-        /// <inheritdoc cref="IDisposable.Dispose" />
+        /// <inheritdoc cref="IDisposable.Dispose"/>
         public void Dispose()
         {
             _vehicle.PropertyChanged -= onControllerPropertyChanged;
         }
 
-        /// <inheritdoc cref="ICommand.Execute" />
+        /// <inheritdoc cref="ICommand.Execute"/>
         /// <param name="parameter">
-        ///     <see cref="Position" /> object describing location to command vehicle to.
+        ///     <see cref="Position"/> object describing location to command vehicle to.
         /// </param>
         public override async void Execute(object parameter)
         {
             if (CanExecute(parameter))
             {
                 StartingExecution();
-                await _vehicle.MoveToAltitudeAsync((Distance)parameter, Speed.FromMetersPerSecond(1), TimeSpan.FromSeconds(30));
+                await _vehicle.MoveToAltitudeAsync(CommandValue, Speed.FromMetersPerSecond(1), TimeSpan.FromSeconds(30));
                 ExecutionCompleted();
             }
         }
 
         private readonly MultirotorVehicleModel _vehicle;
-
         private bool _canExecute;
+        private Distance _commandValue;
 
-        private void onControllerPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void checkCanExecute()
         {
             bool newCanExecute = CanExecute(null);
             if (newCanExecute != _canExecute)
@@ -94,6 +108,11 @@ namespace AirSimApp.Commands
                 _canExecute = newCanExecute;
                 CanExecuteChanged?.Invoke(this, EventArgs.Empty);
             }
+        }
+
+        private void onControllerPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            checkCanExecute();
         }
     }
 }

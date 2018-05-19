@@ -16,10 +16,6 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <controls:DraggableMapControl Grid.Column="1"
-                                      AltimeterCommand="{Binding AltitudeCommand}"
-                                      AltitudeTicks="{Binding AltitudeTicks}"
-                                      MaxAltitude="{Binding MaxAltitude}"
-                                      MinAltitude="{Binding MinAltitude}"
                                       MapCenter="{Binding MapCenter}"
                                       ClickCommand="{Binding GoToCommand}"
                                       HaveVehicle="{Binding HaveVehicle}"
@@ -29,14 +25,15 @@
                                       MouseLocation="{Binding MouseLocation}"
                                       ShowDescription="True"
                                       ShowExtras="True"
-                                      VehicleAltitude="{Binding VehicleAltitude}"
                                       VehicleHeading="{Binding VehicleHeading}"
                                       VehicleLocation="{Binding VehicleLocation}"
                                       ZoomLevel="{Binding Zoom}" />
         <Border Grid.Column="0" BorderBrush="Black" BorderThickness="2" CornerRadius="2">
             <controls:Tape RightOrLeft="Left"
-                           Range="100"
-                           MajorTick="10"
+                           Range="{Binding AltimeterRange, Converter={dbc:DistanceToDoubleConverter Units=Meters}}"
+                           MajorTick="{Binding AltimeterTick, Converter={dbc:DistanceToDoubleConverter Units=Meters}}"
+                           CommitPendingValueCommand="{Binding CommitPendingAltitudeCommand}"
+                           SnapIncrement="{Binding AltitudeCommandIncrement, Converter={dbc:DistanceToDoubleConverter Units=Meters}}"
                            CommandedValue="{Binding CommandedAltitude, Converter={dbc:DistanceToDoubleConverter Units=Meters}}"
                            CurrentValue="{Binding VehicleAltitude, Converter={dbc:DistanceToDoubleConverter Units=Meters}}" />
         </Border>

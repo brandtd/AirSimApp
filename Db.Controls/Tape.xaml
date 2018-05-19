@@ -3,9 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:conv="clr-namespace:Db.Converters;assembly=Db.Converters"
              xmlns:local="clr-namespace:Db.Controls"
              mc:Ignorable="d"
              x:Name="_this"
+             PreviewMouseLeftButtonDown="_this_PreviewMouseLeftButtonDown"
+             PreviewMouseLeftButtonUp="_this_PreviewMouseLeftButtonUp"
+             MouseLeave="_this_MouseLeave"
+             PreviewMouseMove="_this_MouseMove"
              d:DesignHeight="450"
              d:DesignWidth="300">
     <UserControl.Resources>
@@ -55,6 +60,17 @@
                 <DropShadowEffect ShadowDepth="1" />
             </local:GraduatedTapeBug.Effect>
         </local:GraduatedTapeBug>
+        <local:GraduatedTapeBug
+            x:Name="commandBug"
+            Range="{Binding ElementName=_this, Path=Range}"
+            RightOrLeft="{Binding ElementName=_this, Path=RightOrLeft}"
+            CurrentValue="{Binding ElementName=_this, Path=CurrentValue}"
+            CommandedValue="{Binding ElementName=_this, Path=PendingCommandValue}"
+            Visibility="{Binding ElementName=_this, Path=PendingCommandValue, Converter={conv:DoubleValidityToVisibilityConverter}}">
+            <local:GraduatedTapeBug.Effect>
+                <DropShadowEffect ShadowDepth="1" />
+            </local:GraduatedTapeBug.Effect>
+        </local:GraduatedTapeBug>
         <local:Odometer
             x:Name="odometer"
             Style="{StaticResource OdometerStyle}"
@@ -72,5 +88,9 @@
                 <DropShadowEffect ShadowDepth="1" />
             </local:Odometer.Effect>
         </local:Odometer>
+        <Label
+            Content="{Binding ElementName=_this, Path=PendingCommandValue}"
+            Foreground="Red"
+            FontWeight="Bold"/>
     </Grid>
 </UserControl>

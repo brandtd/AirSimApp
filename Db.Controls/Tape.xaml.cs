@@ -19,8 +19,10 @@
 
 #endregion MIT License (c) 2018 Dan Brandt
 
+using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Db.Controls
 {
@@ -35,13 +37,21 @@ namespace Db.Controls
                 typeof(Tape),
                 new PropertyMetadata(double.NaN));
 
+        /// <summary>Commits the pending command value.</summary>
+        public static readonly DependencyProperty CommitPendingValueCommandProperty =
+            DependencyProperty.Register(
+                nameof(CommitPendingValueCommand),
+                typeof(ICommand),
+                typeof(Tape),
+                new PropertyMetadata(null, onCommitPendingValueCommandChanged));
+
         /// <summary>Actual/current value.</summary>
         public static readonly DependencyProperty CurrentValueProperty =
             DependencyProperty.Register(
                 nameof(CurrentValue),
                 typeof(double),
                 typeof(Tape),
-                new PropertyMetadata(double.NaN));
+                new PropertyMetadata(double.NaN, onCurrentValueChanged));
 
         /// <summary>Number of divisions drawn per major tick.</summary>
         public static readonly DependencyProperty DivisionsPerTickProperty =
@@ -85,6 +95,17 @@ namespace Db.Controls
                 typeof(Tape),
                 new PropertyMetadata(OdometerResolution.R1));
 
+        /// <summary>
+        ///     The pending command value (e.g., from the command bug being dragged around but not
+        ///     yet released).
+        /// </summary>
+        public static readonly DependencyProperty PendingCommandValueProperty =
+            DependencyProperty.Register(
+                nameof(PendingCommandValue),
+                typeof(double),
+                typeof(Tape),
+                new PropertyMetadata(double.NaN));
+
         /// <summary>The total range of the tape.</summary>
         public static readonly DependencyProperty RangeProperty =
             DependencyProperty.Register(
@@ -101,72 +122,229 @@ namespace Db.Controls
                 typeof(Tape),
                 new PropertyMetadata(HorizontalAlignment.Left));
 
+        /// <summary>
+        ///     If set, defines the increment to be used if <see cref="SnapToIncrement"/> is <c>true</c>.
+        /// </summary>
+        public static readonly DependencyProperty SnapIncrementProperty =
+            DependencyProperty.Register(
+                nameof(SnapIncrement),
+                typeof(double),
+                typeof(Tape),
+                new PropertyMetadata(double.NaN));
+
+        /// <summary>
+        ///     Whether command bug should snap to the nearest increment tick. If the SnapIncrement
+        ///     is not set, the nearest major/minor tick will be used.
+        /// </summary>
+        public static readonly DependencyProperty SnapToIncrementProperty =
+            DependencyProperty.Register(
+                nameof(SnapToIncrement),
+                typeof(bool),
+                typeof(Tape),
+                new PropertyMetadata(true));
+
         public Tape()
         {
             InitializeComponent();
         }
 
-        /// <inheritdoc cref="CommandedAltitudeProperty" />
+        /// <inheritdoc cref="CommandedAltitudeProperty"/>
         public double CommandedValue
         {
             get => (double)GetValue(CommandedValueProperty);
             set => SetValue(CommandedValueProperty, value);
         }
 
-        /// <inheritdoc cref="CurrentValueProperty" />
+        /// <inheritdoc cref="CommitPendingValueCommandProperty"/>
+        public ICommand CommitPendingValueCommand
+        {
+            get => (ICommand)GetValue(CommitPendingValueCommandProperty);
+            set => SetValue(CommitPendingValueCommandProperty, value);
+        }
+
+        /// <inheritdoc cref="CurrentValueProperty"/>
         public double CurrentValue
         {
             get => (double)GetValue(CurrentValueProperty);
             set => SetValue(CurrentValueProperty, value);
         }
 
-        /// <inheritdoc cref="DivisionsPerTickProperty" />
+        /// <inheritdoc cref="DivisionsPerTickProperty"/>
         public int DivisionsPerTick
         {
             get => (int)GetValue(DivisionsPerTickProperty);
             set => SetValue(DivisionsPerTickProperty, value);
         }
 
-        /// <inheritdoc cref="MajorStrokeProperty" />
+        /// <inheritdoc cref="MajorStrokeProperty"/>
         public double MajorStroke
         {
             get => (double)GetValue(MajorStrokeProperty);
             set => SetValue(MajorStrokeProperty, value);
         }
 
-        /// <inheritdoc cref="MajorTickProperty" />
+        /// <inheritdoc cref="MajorTickProperty"/>
         public double MajorTick
         {
             get => (double)GetValue(MajorTickProperty);
             set => SetValue(MajorTickProperty, value);
         }
 
-        /// <inheritdoc cref="MinorStrokeProperty" />
+        /// <inheritdoc cref="MinorStrokeProperty"/>
         public double MinorStroke
         {
             get => (double)GetValue(MinorStrokeProperty);
             set => SetValue(MinorStrokeProperty, value);
         }
 
-        /// <inheritdoc cref="OdometerResolutionProperty" />
+        /// <inheritdoc cref="OdometerResolutionProperty"/>
         public OdometerResolution OdometerResolution
         {
             get => (OdometerResolution)GetValue(OdometerResolutionProperty);
             set => SetValue(OdometerResolutionProperty, value);
         }
 
-        /// <inheritdoc cref="RangeProperty" />
+        /// <inheritdoc cref="PendingCommandValueProperty"/>
+        public double PendingCommandValue
+        {
+            get => (double)GetValue(PendingCommandValueProperty);
+            set => SetValue(PendingCommandValueProperty, value);
+        }
+
+        /// <inheritdoc cref="RangeProperty"/>
         public double Range
         {
             get => (double)GetValue(RangeProperty);
             set => SetValue(RangeProperty, value);
         }
 
-        /// <inheritdoc cref="RightOrLeftProperty" />
+        /// <inheritdoc cref="RightOrLeftProperty"/>
         public HorizontalAlignment RightOrLeft
         {
             get => (HorizontalAlignment)GetValue(RightOrLeftProperty);
             set => SetValue(RightOrLeftProperty, value);
+        }
+
+        /// <inheritdoc cref="SnapIncrementProperty"/>
+        public double SnapIncrement
+        {
+            get => (double)GetValue(SnapIncrementProperty);
+            set => SetValue(SnapIncrementProperty, value);
+        }
+
+        /// <inheritdoc cref="SnapToIncrementProperty"/>
+        public bool SnapToIncrement
+        {
+            get => (bool)GetValue(SnapToIncrementProperty);
+            set => SetValue(SnapToIncrementProperty, value);
+        }
+
+        private double _pendingCommandValueYPos = double.NaN;
+
+        private double pendingCommandValueYPos
+        {
+            get => _pendingCommandValueYPos;
+            set
+            {
+                if (_pendingCommandValueYPos != value)
+                {
+                    _pendingCommandValueYPos = value;
+                    setPendingCommandValue();
+                }
+            }
+        }
+
+        private static void onCommitPendingValueCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((Tape)d).commitPendingValueCommandChanged((ICommand)e.OldValue, (ICommand)e.NewValue);
+        }
+
+        private static void onCurrentValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((Tape)d).setPendingCommandValue();
+        }
+
+        private void _this_MouseLeave(object sender, MouseEventArgs e)
+        {
+            pendingCommandValueYPos = double.NaN;
+        }
+
+        private void _this_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (!double.IsNaN(_pendingCommandValueYPos))
+            {
+                pendingCommandValueYPos = e.GetPosition(this).Y;
+            }
+        }
+
+        private void _this_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (CommitPendingValueCommand?.CanExecute(null) == true)
+            {
+                pendingCommandValueYPos = e.GetPosition(this).Y;
+            }
+
+            e.Handled = true;
+        }
+
+        private void _this_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (!double.IsNaN(_pendingCommandValueYPos))
+            {
+                if (CommitPendingValueCommand?.CanExecute(null) == true)
+                {
+                    CommitPendingValueCommand.Execute(null);
+                }
+                pendingCommandValueYPos = double.NaN;
+            }
+
+            e.Handled = true;
+        }
+
+        private void commitPendingValueCommandChanged(ICommand oldCommand, ICommand newCommand)
+        {
+            if (oldCommand != null)
+            {
+                oldCommand.CanExecuteChanged -= onCommitCommandCanExecuteChanged;
+            }
+
+            if (newCommand != null)
+            {
+                newCommand.CanExecuteChanged += onCommitCommandCanExecuteChanged;
+            }
+        }
+
+        private void onCommitCommandCanExecuteChanged(object sender, EventArgs e)
+        {
+            if (CommitPendingValueCommand?.CanExecute(null) == false)
+            {
+                pendingCommandValueYPos = double.NaN;
+            }
+        }
+
+        private void setPendingCommandValue()
+        {
+            if (!double.IsNaN(_pendingCommandValueYPos) && !double.IsNaN(CurrentValue))
+            {
+                double minValue = CurrentValue - Range / 2.0;
+                double maxValue = CurrentValue + Range / 2.0;
+                double b = maxValue;
+                double m = (minValue - maxValue) / ActualHeight;
+
+                double newPendingValue = m * _pendingCommandValueYPos + b;
+
+                if (SnapToIncrement)
+                {
+                    double snapSize = !double.IsNaN(SnapIncrement) ? SnapIncrement : MajorTick / DivisionsPerTick;
+                    newPendingValue = snapSize * Math.Round(newPendingValue / snapSize);
+                }
+
+                PendingCommandValue = newPendingValue;
+            }
+            else
+            {
+                PendingCommandValue = double.NaN;
+            }
         }
     }
 }
