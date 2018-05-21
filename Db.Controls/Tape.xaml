@@ -11,6 +11,7 @@
              PreviewMouseLeftButtonUp="_this_PreviewMouseLeftButtonUp"
              MouseLeave="_this_MouseLeave"
              PreviewMouseMove="_this_MouseMove"
+             LostFocus="_this_LostFocus"
              d:DesignHeight="450"
              d:DesignWidth="300">
     <UserControl.Resources>

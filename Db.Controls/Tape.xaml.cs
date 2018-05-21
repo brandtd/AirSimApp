@@ -332,7 +332,11 @@ namespace Db.Controls
 
         private void _this_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (!double.IsNaN(_pendingCommandValueYPos))
+            if (Keyboard.IsKeyDown(Key.Escape))
+            {
+                cancelPendingValueCommand();
+            }
+            else if (!double.IsNaN(_pendingCommandValueYPos))
             {
                 if (CommitPendingValueCommand?.CanExecute(null) == true)
                 {
@@ -395,6 +399,11 @@ namespace Db.Controls
             {
                 PendingCommandValue = double.NaN;
             }
+        }
+
+        private void _this_LostFocus(object sender, RoutedEventArgs e)
+        {
+            cancelPendingValueCommand();
         }
     }
 }
