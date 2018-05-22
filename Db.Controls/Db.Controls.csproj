@@ -59,6 +59,7 @@
       <DependentUpon>DraggableMapControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="GraduatedTapeBug.cs" />
+    <Compile Include="IndeterminateButton.cs" />
     <Compile Include="Mod.cs" />
     <Compile Include="PropertyChangedBase.cs" />
     <Compile Include="GraduatedTape.cs" />

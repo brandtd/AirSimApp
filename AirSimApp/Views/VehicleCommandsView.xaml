@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:Db.Controls;assembly=Db.Controls"
              mc:Ignorable="d"
              d:DesignHeight="250" d:DesignWidth="300">
     <StackPanel VerticalAlignment="Center">
@@ -20,34 +21,16 @@
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Button Grid.Row="0" Grid.Column="0" Content="Arm Motors" Command="{Binding ArmCommand}" />
-            <ProgressBar Grid.Row="0" Grid.Column="1" IsIndeterminate="{Binding ArmCommand.InProgress}" Width="30" />
-
-            <Button Grid.Row="1" Content="Disarm Motors" Command="{Binding DisarmCommand}" />
-            <ProgressBar Grid.Row="1" Grid.Column="1" IsIndeterminate="{Binding DisarmCommand.InProgress}" Width="30" />
-
-            <Button Grid.Row="2" Content="Takeoff" Command="{Binding TakeoffCommand}" />
-            <ProgressBar Grid.Row="2" Grid.Column="1" IsIndeterminate="{Binding TakeoffCommand.InProgress}" Width="30" />
-
-            <Button Grid.Row="3" Content="Hover In Place" Command="{Binding HoverInPlaceCommand}" />
-            <ProgressBar Grid.Row="3" Grid.Column="1" IsIndeterminate="{Binding HoverInPlaceCommand.InProgress}" Width="30" />
-
-            <Button Grid.Row="4" Content="Reset" Command="{Binding ResetCommand}" />
-            <ProgressBar Grid.Row="4" Grid.Column="1" IsIndeterminate="{Binding ResetCommand.InProgress}" Width="30" />
-
-            <Button Grid.Row="5" Content="Land Now" Command="{Binding LandNowCommand}" />
-            <ProgressBar Grid.Row="5" Grid.Column="1" IsIndeterminate="{Binding LandNowCommand.InProgress}" Width="30" />
-
-            <Button Grid.Row="6" Content="Go Home" Command="{Binding GoHomeCommand}" />
-            <ProgressBar Grid.Row="6" Grid.Column="1" IsIndeterminate="{Binding GoHomeCommand.InProgress}" Width="30" />
-
-            <Button Grid.Row="7" Content="Enable API" Command="{Binding EnableApiCommand}" />
-            <ProgressBar Grid.Row="7" Grid.Column="1" IsIndeterminate="{Binding EnableApiCommand.InProgress}" Width="30" />
-
-            <Button Grid.Row="8" Content="Disable API" Command="{Binding DisableApiCommand}" />
-            <ProgressBar Grid.Row="8" Grid.Column="1" IsIndeterminate="{Binding DisableApiCommand.InProgress}" Width="30" />
+            <controls:IndeterminateButton Grid.Row="0" Content="Arm Motors" Command="{Binding ArmCommand}" Executing="{Binding ArmCommand.InProgress}" />
+            <controls:IndeterminateButton Grid.Row="1" Content="Disarm Motors" Command="{Binding DisarmCommand}" Executing="{Binding DisarmCommand.InProgress}" />
+            <controls:IndeterminateButton Grid.Row="2" Content="Takeoff" Command="{Binding TakeoffCommand}" Executing="{Binding TakeoffCommand.InProgress}" />
+            <controls:IndeterminateButton Grid.Row="3" Content="Hover In Place" Command="{Binding HoverInPlaceCommand}" Executing="{Binding HoverInPlaceCommand.InProgress}" />
+            <controls:IndeterminateButton Grid.Row="4" Content="Reset" Command="{Binding ResetCommand}" Executing="{Binding ResetCommand.InProgress}" />
+            <controls:IndeterminateButton Grid.Row="5" Content="Land Now" Command="{Binding LandNowCommand}" Executing="{Binding LandNowCommand.InProgress}" />
+            <controls:IndeterminateButton Grid.Row="6" Content="Go Home" Command="{Binding GoHomeCommand}" Executing="{Binding GoHomeCommand.InProgress}" />
+            <controls:IndeterminateButton Grid.Row="7" Content="Enable API" Command="{Binding EnableApiCommand}" Executing="{Binding EnableApiCommand.InProgress}" />
+            <controls:IndeterminateButton Grid.Row="8" Content="Disable API" Command="{Binding DisableApiCommand}" Executing="{Binding DisableApiCommand.InProgress}" />
         </Grid>
         <Grid HorizontalAlignment="Center">
             <Grid.RowDefinitions>
