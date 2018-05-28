@@ -246,7 +246,7 @@ namespace AirSimApp.Models
         public Task MoveToAltitudeAsync(Distance altitude, Speed speed) => MoveToAltitudeAsync(altitude, speed, TimeSpan.Zero);
 
         public Task MoveToAltitudeAsync(Distance altitude, Speed speed, TimeSpan allowedTimeToComplete)
-            => MoveToAltitudeAsync(altitude, speed, allowedTimeToComplete, new YawMode { IsRate = false, YawOrRate = 0 }, -1.0f, 0.0f);
+            => MoveToAltitudeAsync(altitude, speed, allowedTimeToComplete, new YawMode { IsRate = false, YawOrRate = (float)VehicleYaw.InDegrees() }, -1.0f, 0.0f);
 
         public Task MoveToAltitudeAsync(Distance altitude, Speed speed, TimeSpan allowedTimeToComplete, YawMode yawMode, float lookahead, float adaptiveLookahead)
             => MoveToZAsync(HomeLocation.Altitude - altitude, speed, allowedTimeToComplete, yawMode, lookahead, adaptiveLookahead);
