@@ -25,14 +25,24 @@ using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Markup;
 
 namespace Db.Controls
 {
     /// <summary>Interaction logic for DraggableMapControl.xaml</summary>
+    [ContentProperty(nameof(AdditionalContent))]
     public partial class DraggableMapControl : UserControl
     {
+        /// <summary>Additional content to draw on the map (e.g. a MapItemsControl).</summary>
+        public static readonly DependencyProperty AdditionalContentProperty =
+            DependencyProperty.Register(
+                nameof(AdditionalContent),
+                typeof(object),
+                typeof(DraggableMapControl),
+                new PropertyMetadata(null));
+
         /// <summary>
-        ///     Command to execute on clicking the map. Will be passed a <see cref="Position"/>
+        ///     Command to execute on clicking the map. Will be passed a <see cref="Position" />
         ///     object describing the click location.
         /// </summary>
         public static readonly DependencyProperty ClickCommandProperty =
@@ -41,16 +51,6 @@ namespace Db.Controls
                 typeof(ICommand),
                 typeof(DraggableMapControl),
                 new PropertyMetadata(null));
-
-        /// <summary>
-        ///     Whether a vehicle is connected (and its location/properties should be drawn).
-        /// </summary>
-        public static readonly DependencyProperty HaveVehicleProperty =
-                    DependencyProperty.Register(
-                nameof(HaveVehicle),
-                typeof(bool),
-                typeof(DraggableMapControl),
-                new PropertyMetadata(false));
 
         /// <summary>Name of the map layer currently being used.</summary>
         public static readonly DependencyProperty LayerNameProperty =
@@ -84,7 +84,7 @@ namespace Db.Controls
                 typeof(DraggableMapControl),
                 new PropertyMetadata(null));
 
-        /// <summary>Location of the mouse as a geographic <see cref="Position"/>.</summary>
+        /// <summary>Location of the mouse as a geographic <see cref="Position" />.</summary>
         public static readonly DependencyProperty MouseLocationProperty =
             DependencyProperty.Register(
                 nameof(MouseLocation),
@@ -108,22 +108,6 @@ namespace Db.Controls
                 typeof(DraggableMapControl),
                 new PropertyMetadata(false));
 
-        /// <summary>Vehicle's current heading.</summary>
-        public static readonly DependencyProperty VehicleHeadingProperty =
-            DependencyProperty.Register(
-                nameof(VehicleHeading),
-                typeof(Angle),
-                typeof(DraggableMapControl),
-                new PropertyMetadata(Angle.Invalid));
-
-        /// <summary>Vehicle's current location.</summary>
-        public static readonly DependencyProperty VehicleLocationProperty =
-            DependencyProperty.Register(
-                nameof(VehicleLocation),
-                typeof(Position),
-                typeof(DraggableMapControl),
-                new PropertyMetadata(Position.Invalid));
-
         /// <summary>Map's current zoom level.</summary>
         public static readonly DependencyProperty ZoomLevelProperty =
             DependencyProperty.Register(
@@ -137,84 +121,70 @@ namespace Db.Controls
             InitializeComponent();
         }
 
-        /// <inheritdoc cref="ClickCommandProperty"/>
+        /// <inheritdoc cref="AdditionalContentProperty" />
+        public object AdditionalContent
+        {
+            get => GetValue(AdditionalContentProperty);
+            set => SetValue(AdditionalContentProperty, value);
+        }
+
+        /// <inheritdoc cref="ClickCommandProperty" />
         public ICommand ClickCommand
         {
             get => (ICommand)GetValue(ClickCommandProperty);
             set => SetValue(ClickCommandProperty, value);
         }
 
-        /// <inheritdoc cref="HaveVehicleProperty"/>
-        public bool HaveVehicle
-        {
-            get => (bool)GetValue(HaveVehicleProperty);
-            set => SetValue(HaveVehicleProperty, value);
-        }
-
-        /// <inheritdoc cref="LayerNameProperty"/>
+        /// <inheritdoc cref="LayerNameProperty" />
         public string LayerName
         {
             get => (string)GetValue(LayerNameProperty);
             set => SetValue(LayerNameProperty, value);
         }
 
-        /// <inheritdoc cref="LayerNamesProperty"/>
+        /// <inheritdoc cref="LayerNamesProperty" />
         public IEnumerable LayerNames
         {
             get => (IEnumerable)GetValue(LayerNamesProperty);
             set => SetValue(LayerNamesProperty, value);
         }
 
-        /// <inheritdoc cref="MapCenterProperty"/>
+        /// <inheritdoc cref="MapCenterProperty" />
         public Position MapCenter
         {
             get => (Position)GetValue(MapCenterProperty);
             set => SetValue(MapCenterProperty, value);
         }
 
-        /// <inheritdoc cref="MapLayerProperty"/>
+        /// <inheritdoc cref="MapLayerProperty" />
         public UIElement MapLayer
         {
             get => (UIElement)GetValue(MapLayerProperty);
             set => SetValue(MapLayerProperty, value);
         }
 
-        /// <inheritdoc cref="MouseLocationProperty"/>
+        /// <inheritdoc cref="MouseLocationProperty" />
         public Position MouseLocation
         {
             get => (Position)GetValue(MouseLocationProperty);
             set => SetValue(MouseLocationProperty, value);
         }
 
-        /// <inheritdoc cref="ShowDescriptionProperty"/>
+        /// <inheritdoc cref="ShowDescriptionProperty" />
         public bool ShowDescription
         {
             get => (bool)GetValue(ShowDescriptionProperty);
             set => SetValue(ShowDescriptionProperty, value);
         }
 
-        /// <inheritdoc cref="ShowExtrasProperty"/>
+        /// <inheritdoc cref="ShowExtrasProperty" />
         public bool ShowExtras
         {
             get => (bool)GetValue(ShowExtrasProperty);
             set => SetValue(ShowExtrasProperty, value);
         }
 
-        /// <inheritdoc cref="VehicleHeadingProperty"/>
-        public Angle VehicleHeading
-        {
-            get => (Angle)GetValue(VehicleHeadingProperty);
-            set => SetValue(VehicleHeadingProperty, value);
-        }
-
-        /// <inheritdoc cref="VehicleLocationProperty"/>
-        public Position VehicleLocation
-        {
-            get => (Position)GetValue(VehicleLocationProperty);
-            set => SetValue(VehicleLocationProperty, value);
-        }
-
-        /// <inheritdoc cref="ZoomLevelProperty"/>
+        /// <inheritdoc cref="ZoomLevelProperty" />
         public double ZoomLevel
         {
             get => (double)GetValue(ZoomLevelProperty);

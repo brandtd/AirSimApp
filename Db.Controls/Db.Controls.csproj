@@ -77,6 +77,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="QuadCopterMapIcon.xaml.cs">
+      <DependentUpon>QuadCopterMapIcon.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tape.xaml.cs">
       <DependentUpon>Tape.xaml</DependentUpon>
     </Compile>
@@ -94,6 +97,10 @@
     <Page Include="DraggableMapControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="QuadCopterMapIcon.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Tape.xaml">
       <SubType>Designer</SubType>

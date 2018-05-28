@@ -18,16 +18,18 @@
         <controls:DraggableMapControl Grid.Column="1"
                                       MapCenter="{Binding MapCenter}"
                                       ClickCommand="{Binding GoToCommand}"
-                                      HaveVehicle="{Binding HaveVehicle}"
                                       LayerName="{Binding MapLayerName}"
                                       LayerNames="{Binding MapLayers}"
                                       MapLayer="{Binding MapLayer}"
                                       MouseLocation="{Binding MouseLocation}"
                                       ShowDescription="True"
                                       ShowExtras="True"
-                                      VehicleHeading="{Binding VehicleHeading}"
-                                      VehicleLocation="{Binding VehicleLocation}"
-                                      ZoomLevel="{Binding Zoom}" />
+                                      ZoomLevel="{Binding Zoom}">
+            <controls:QuadCopterMapIcon
+                HaveVehicle="{Binding HaveVehicle}"
+                VehicleHeading="{Binding VehicleHeading}"
+                VehicleLocation="{Binding VehicleLocation}" />
+        </controls:DraggableMapControl>
         <Border Grid.Column="0" BorderBrush="Black" BorderThickness="2" CornerRadius="2">
             <controls:Tape RightOrLeft="Left"
                            Range="{Binding AltimeterRange, Converter={dbc:DistanceToDoubleConverter Units=Meters}}"
