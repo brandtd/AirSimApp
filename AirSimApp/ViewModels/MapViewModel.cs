@@ -181,7 +181,7 @@ namespace AirSimApp.ViewModels
                 new WmsImageLayer
                 {
                     Description = "© [terrestris GmbH & Co. KG](http://ows.terrestris.de/)\nData © [OpenStreetMap contributors](http://www.openstreetmap.org/copyright)",
-                    ServerUri = new Uri("http://ows.terrestris.de/osm/service"),
+                    ServiceUri = new Uri("http://ows.terrestris.de/osm/service"),
                     Layers = "OSM-WMS"
                 }
             },
@@ -190,7 +190,7 @@ namespace AirSimApp.ViewModels
                 new WmsImageLayer
                 {
                     Description = "© [terrestris GmbH & Co. KG](http://ows.terrestris.de/)\nData © [OpenStreetMap contributors](http://www.openstreetmap.org/copyright)",
-                    ServerUri = new Uri("http://ows.terrestris.de/osm/service"),
+                    ServiceUri = new Uri("http://ows.terrestris.de/osm/service"),
                     Layers = "TOPO-OSM-WMS"
                 }
             },
@@ -199,7 +199,7 @@ namespace AirSimApp.ViewModels
                 new WmsImageLayer
                 {
                     Description = "© [SevenCs GmbH](http://www.sevencs.com)",
-                    ServerUri = new Uri("http://chartserver4.sevencs.com:8080"),
+                    ServiceUri = new Uri("http://chartserver4.sevencs.com:8080"),
                     Layers = "ENC",
                     MaxBoundingBoxWidth = 360
                 }

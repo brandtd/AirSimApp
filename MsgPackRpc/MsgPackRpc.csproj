@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
-    <TargetFrameworks>net461;netstandard1.6</TargetFrameworks>
+    <TargetFrameworks>net462;netstandard1.6</TargetFrameworks>
     <RootNamespace>MsgPackRpc</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
